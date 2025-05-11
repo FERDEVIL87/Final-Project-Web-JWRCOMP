@@ -1,3 +1,4 @@
+
 <template>
   <section class="container my-5" data-aos="fade-up">
     <h2 class="h3 mb-4 text-primary text-center futuristic-title">Pendidikan</h2>
