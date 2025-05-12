@@ -1,98 +1,179 @@
 <template>
-  <section class="skills-section" :style="{ backgroundPosition: backgroundPosition }">
+  <section
+    class="locations-section"
+    aria-label="Lokasi Toko"
+  >
     <div class="content">
-      <h2 class="h3 mb-4 text-primary">Keterampilan Saya</h2>
-      <ul class="skills-list">
-        <li v-for="skill in skills" :key="skill" class="skill-item">
-          {{ skill }}
-        </li>
-      </ul>
+      <h2 class="title">Lokasi Cabang Kami</h2>
+      <div class="branches-container">
+        <div
+          v-for="branch in branches"
+          :key="branch.name"
+          class="branch-card"
+        >
+          <h3 class="branch-name">{{ branch.name }}</h3>
+          <img
+            :src="`https://maps.googleapis.com/maps/api/staticmap?center=${branch.lat},${branch.lng}&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7C${branch.lat},${branch.lng}&key=YOUR_GOOGLE_MAPS_API_KEY`"
+            :alt="`Peta lokasi ${branch.name}`"
+            class="branch-map"
+          />
+          <p class="branch-address">{{ branch.address }}</p>
+        </div>
+      </div>
     </div>
   </section>
 </template>
 
 <script>
 export default {
+  name: "StoreLocation",
   data() {
     return {
-      skills: [
-        "Pemrograman (JavaScript, Python, C++)",
-        "Pengembangan Web (Vue.js, React, HTML, CSS)",
-        "Desain UI/UX",
-        "Bermain Game Kompetitif",
-        "Analisis Data",
-        "Manajemen Proyek",
+      branches: [
+        {
+          name: "Cabang Jakarta",
+          address: "Jl. Sudirman No. 123, Jakarta, Indonesia",
+          lat: -6.2088,
+          lng: 106.8456,
+        },
+        {
+          name: "Cabang Bandung",
+          address: "Jl. Asia Afrika No. 45, Bandung, Indonesia",
+          lat: -6.9175,
+          lng: 107.6191,
+        },
+        {
+          name: "Cabang Surabaya",
+          address: "Jl. Tunjungan No. 10, Surabaya, Indonesia",
+          lat: -7.2575,
+          lng: 112.7521,
+        },
       ],
-      backgroundPosition: "0% 50%", // Posisi awal background
     };
-  },
-  mounted() {
-    window.addEventListener("scroll", this.handleScroll);
-  },
-  beforeUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
-  },
-  methods: {
-    handleScroll() {
-      // Hitung posisi scroll
-      const scrollTop = window.scrollY;
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-
-      // Ubah posisi background berdasarkan posisi scroll
-      const scrollPercentage = (scrollTop / scrollHeight) * 100;
-      this.backgroundPosition = `${scrollPercentage}% 50%`;
-    },
   },
 };
 </script>
 
 <style scoped>
-/* Animasi latar belakang */
-.skills-section {
-  height: 100vh;
+.locations-section {
+  height: auto;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  background: linear-gradient(120deg, #1e1e2f, #828282, #006476);
-  background-size: 200% 200%;
-  color: #fff;
+  background: linear-gradient(135deg, #e0f7fa, #e1bee7);
+  color: #333;
   text-align: center;
-  padding: 20px;
+  padding: 40px 20px;
   box-sizing: border-box;
-  transition: background-position 0.1s ease-out;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInBackground 2s ease-in-out;
 }
 
-/* Konten */
-.content {
-  max-width: 600px;
+@keyframes fadeInBackground {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-.content h2 {
+.title {
   font-size: 2.5rem;
-  margin-bottom: 20px;
-  text-shadow: 0 0 10px #7d1eff, 0 0 20px #c300ff;
+  margin-bottom: 30px;
+  color: #006476;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  animation: textGlow 2s infinite alternate;
 }
 
-/* Daftar keterampilan */
-.skills-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+@keyframes textGlow {
+  from {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), 0 0 10px #006476, 0 0 20px #006476;
+  }
+  to {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), 0 0 15px #00bcd4, 0 0 30px #00bcd4;
+  }
 }
 
-.skill-item {
-  font-size: 1.2rem;
+.branches-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.branch-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  animation: slideIn 1s ease-in-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.branch-card:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.branch-name {
+  font-size: 1.5rem;
   margin-bottom: 10px;
-  padding: 10px;
-  background: rgba(125, 30, 255, 0.1);
-  border-radius: 5px;
-  box-shadow: 0 0 5px rgba(125, 30, 255, 0.5);
-  transition: transform 0.3s ease, background 0.3s ease;
+  color: #333;
+  font-weight: bold;
+  animation: bounceText 1.5s infinite;
 }
 
-.skill-item:hover {
-  transform: translateY(-5px);
-  background: rgba(125, 30, 255, 0.2);
-  box-shadow: 0 5px 15px rgba(125, 30, 255, 0.7);
+@keyframes bounceText {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.branch-map {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.branch-map:hover {
+  transform: scale(1.1);
+}
+
+.branch-address {
+  font-size: 1.2rem;
+  color: #555;
+  font-style: italic;
+  animation: fadeInText 1.5s ease-in-out;
+}
+
+@keyframes fadeInText {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 </style>
