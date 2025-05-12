@@ -674,10 +674,16 @@ body {
 }
 
 /* Komponen */
-.component-list {
-  list-style: none;
-  padding: 0;
+.component-list li {
+  border: 1px solid #00bfff; /* warna border tetap */
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #1e1e2f;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 0; /* ubah dari misal 8px jadi 0 */
 }
+
 
 .component-item {
   padding: 0.5rem;
