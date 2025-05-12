@@ -544,7 +544,7 @@ export default {
       searchQuery: "",
       selectedBrand: "",
       priceRange:1000,
-      brands: ["Intel", "AMD", "ASUS", "Corsair, Acer, Kingston, Crucial, Western Digital, Samsung, Dell, LG"], // Daftar brand
+      brands: ["Intel", "AMD", "ASUS", "Corsair", "Acer", "Kingston", "Crucial", "Western Digital", "Samsung", "Dell", "LG"], // Daftar brand
       selectedProduct: null, // Produk yang dipilih
     };
   },
