@@ -41,7 +41,18 @@ export default {
           details: "<strong>Institusi:</strong> Adobe Academy<br><strong>Tahun:</strong> 2021",
           icon: "🎨",
         },
-        // Tambahkan data lainnya jika perlu
+        {
+          id: 7,
+          title: "Workshop Pemrograman",
+          details: "<strong>Institusi:</strong> CodePolitan<br><strong>Tahun:</strong> 2022",
+          icon: "💻",
+        },
+        {
+          id: 8,
+          title: "Kursus Public Speaking",
+          details: "<strong>Institusi:</strong> Toastmasters<br><strong>Tahun:</strong> 2020",
+          icon: "🎤",
+        },
       ],
     };
   },
