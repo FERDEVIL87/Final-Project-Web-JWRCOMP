@@ -254,7 +254,7 @@ export default {
           price: 69,
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Switch+Pro",
+          image: "https://www.psegameshop.com/wp-content/uploads/2022/06/Nintendo-Switch-Pro-Controller-Monster-Hunter-Rise-Sunbreak-Edition-1.jpg",
           specs: ["Wireless Controller", "HD Rumble", "Motion Controls"]
         },
         {
@@ -263,7 +263,7 @@ export default {
           price: 299,
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Wii+U",
+          image: "https://images.tokopedia.net/img/cache/700/OJWluG/2022/6/24/6986517e-9687-4a69-bb5a-440c418f2f23.jpg?ect=4g",
           specs: ["Dual-screen gameplay", "Wii U GamePad", "HD Graphics"]
         },
         {
@@ -272,7 +272,7 @@ export default {
           price: 49,
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Wii+U+Pro",
+          image: "https://down-id.img.susercontent.com/file/d2acba54d7bac4439c5b914bf9a8f991",
           specs: ["Wireless Controller", "Ergonomic Design", "HD Rumble"]
         },
         {
@@ -281,7 +281,7 @@ export default {
           price: 799,
           brand: "GPD",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=GPD+Win+3",
+          image: "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2021/4/24/4ef5f38a-5679-486c-9217-e7d331552ae1.jpg",
           specs: ["Intel i5-1135G7", "8GB RAM", "512GB SSD", "5.5-inch Touchscreen"]
         },
         {
@@ -290,7 +290,7 @@ export default {
           price: 649,
           brand: "GPD",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=GPD+Win+2",
+          image: "https://nwzimg.wezhan.hk/contents/sitefiles3601/18006016/images/451210.png",
           specs: ["Intel Core m3-7Y30", "8GB RAM", "128GB SSD", "6-inch Touchscreen"]
         },
         {
@@ -299,7 +299,7 @@ export default {
           price: 899,
           brand: "Ayaneo",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Ayaneo+Next",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXenkCzYTH1OY_bNMRRaoh13FmdeT_BMohg0gS-rl8RQ&s&ec=72940545",
           specs: ["AMD Ryzen 5 3500U", "16GB RAM", "512GB SSD", "7-inch Touchscreen"]
         },
         {
@@ -308,7 +308,7 @@ export default {
           price: 999,
           brand: "One-Netbook",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=OneXPlayer",
+          image: "https://onexplayerstore.com/cdn/shop/files/4_4ea280a7-79dc-4f9d-ab9d-6d1ba4b168ca.png?v=1716797081",
           specs: ["Intel Core i7-1165G7", "16GB RAM", "1TB SSD", "8.4-inch Touchscreen"]
         },
         {
@@ -317,7 +317,7 @@ export default {
           price: 899,
           brand: "GPD",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=GPD+Win+Max",
+          image: "https://gpdstore.net/wp-content/uploads/2024/12/GPD-WIN-MAX-2-2025-INFOGRAPHIC-NEW-GENERIC-01.png",
           specs: ["Intel i7-1165G7", "16GB RAM", "512GB SSD", "8-inch Touchscreen"]
         },
         {
@@ -326,7 +326,7 @@ export default {
           price: 199,
           brand: "Atari",
           category: "✨ Explore More Consoles",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Atari+2600",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShsvsuHl9YWwTHsuK0yWafyIW6v4WVBQza_v7CsVZogQ&s&ec=72940545",
           specs: ["2600 Games Library", "Joystick Controllers", "Woodgrain Finish"],
         },
         {
@@ -335,7 +335,7 @@ export default {
           price: 149,
           brand: "Sega",
           category: "✨ Explore More Consoles",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Sega+Genesis",
+          image: "https://upload.wikimedia.org/wikipedia/commons/a/a1/Sega-Mega-Drive-JP-Mk1-Console-Set.jpg",
           specs: ["16-bit Console", "Iconic Games Library", "Classic Controllers"],
         },
         {
@@ -344,7 +344,7 @@ export default {
           price: 179,
           brand: "Nintendo",
           category: "✨ Explore More Consoles",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=SNES",
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Wikipedia_SNES_PAL.jpg/250px-Wikipedia_SNES_PAL.jpg",
           specs: ["16-bit Console", "Super Mario World", "Two Controllers"],
         },
         {
@@ -353,7 +353,7 @@ export default {
           price: 399,
           brand: "SNK",
           category: "✨ Explore More Consoles",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Neo+Geo",
+          image: "https://upload.wikimedia.org/wikipedia/commons/8/8e/Neo-Geo-AES-Console-Set.png",
           specs: ["AES System", "Arcade Quality", "Iconic Games Library"],
         },
         {
@@ -361,7 +361,7 @@ export default {
           name: "Dreamcast",
           price: 299,brand: "Sega",
           category: "✨ Explore More Consoles",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Dreamcast",
+          image: "https://upload.wikimedia.org/wikipedia/commons/8/81/Dreamcast-Console-Set.jpg",
           specs: ["128-bit System", "VGA Output", "Virtual Fighter 3"],
         },
         {
@@ -370,7 +370,7 @@ export default {
           price: 499,
           brand: "Microsoft",
           category: "🟩 Xbox Universe",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Xbox+Series+X+(Black)",
+          image: "https://down-id.img.susercontent.com/file/sg-11134201-7rbmb-ln2utcc0bol1c4",
           specs: ["12 TFLOPS GPU", "1TB SSD", "4K Gaming"],
         },
         {
@@ -379,7 +379,7 @@ export default {
           price: 299,
           brand: "Microsoft",
           category: "🟩 Xbox Universe",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Xbox+Series+S+(White)",
+          image: "https://xboxwire.thesourcemediaassets.com/sites/2/2020/09/XboxSeriesS_HERO.jpg",
           specs: ["4 TFLOPS GPU", "512GB SSD", "1440p Gaming"],
         },
         {
@@ -388,7 +388,7 @@ export default {
           price: 229,
           brand: "Sony",
           category: "🎮 PlayStation Powerhouse",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=PS+Vita+Slim",
+          image: "https://bimg.akulaku.net/goods/spu/04e8656d5a8a42d2b6ef6245a1faaa7a5724.jpg?w=726&q=80&fit=1",
           specs: ["5-inch LCD", "Slim Design", "Wi-Fi + 3G Model"],
         },
         {
@@ -397,7 +397,7 @@ export default {
           price: 599,
           brand: "Razer",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Razer+Edge+5G",
+          image: "https://i.ebayimg.com/images/g/g18AAOSwZq5m0guO/s-l400.png",
           specs: ["Snapdragon G3X", "5G Connectivity", "6.8-inch AMOLED"],
         },
         {
@@ -406,7 +406,7 @@ export default {
           price: 699,
           brand: "GPD",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=GPD+Pocket+2",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrPEAFC5S8qJZ6BJlTieMxm999DST6IWnlHHS-vQOYEw&s&ec=72940545",
           specs: ["Intel Atom x7", "8GB RAM", "128GB SSD", "7-inch Display"],
         },
         {
@@ -415,16 +415,16 @@ export default {
           price: 899,
           brand: "Alienware",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Alienware+UFO",
+          image: "https://www.cnet.com/a/img/resize/972706c237fada8f3a0f4bed22e7789858d414b7/hub/2020/01/02/ee0faff3-0d1b-45fb-8ec9-171a5c9acd2a/08-alienware-concept-ufo-gaming-device.jpg?auto=webp&fit=crop&height=900&width=1200",
           specs: ["Intel Core i7", "16GB RAM", "512GB SSD", "8-inch Display"],
         },
-         {
+        {
           id: 37,
           name: "Ayn Odin Base",
           price: 199,
           brand: "Ayn",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Ayn+Odin+Base",
+          image: "https://cdn.mos.cms.futurecdn.net/bmu2ZY5FDLU4ayVe5eg5yc.jpg",
           specs: ["Snapdragon 845", "4GB RAM", "32GB Storage", "5.98-inch Display"],
         },
         {
@@ -433,7 +433,7 @@ export default {
           price: 299,
           brand: "Ayn",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Ayn+Odin+Pro",
+          image: "https://droix.net/wp-content/uploads/2023/09/AYN-ODIN-CLEAR_WHITE-DONE-LISTING-IMAGE-1.png",
           specs: ["Snapdragon 865", "8GB RAM", "128GB Storage", "6-inch Display"],
         },
         {
@@ -442,7 +442,7 @@ export default {
           price: 199,
           brand: "Atari",
           category: "✨ Explore More Consoles",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Atari+Jaguar",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzRjN4iXeOUrtUOGX3mCJoOEYAjls96Np5gck5-5YtcA&s&ec=72940545",
           specs: ["64-bit Console", "Alien vs. Predator", "Jaguar Controller"],
         },
         {
@@ -451,7 +451,7 @@ export default {
           price: 129,
           brand: "Coleco",
           category: "✨ Explore More Consoles",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=ColecoVision",
+          image: "https://images.computerhistory.org/revonline/images/102626599p-03-05.jpg?w=600",
           specs: ["8-bit Console", "Classic Games", "Expansion Modules"],
         },
         {
@@ -460,7 +460,7 @@ export default {
           price: 399,
           brand: "SNK",
           category: "✨ Explore More Consoles",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Neo+Geo+CD",
+          image: "https://upload.wikimedia.org/wikipedia/commons/a/a2/Neo-Geo-CD-TopLoader-wController-FL.jpg",
           specs: ["CD-based Games", "128-bit Graphics", "Dual Joysticks"],
         },
         {
@@ -469,7 +469,7 @@ export default {
           price: 249,
           brand: "Sega",
           category: "✨ Explore More Consoles",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Sega+Saturn",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpyuDuyR7dgwRx_R7wEBrNOHY4lngVgpkha8ahtGyoZQ&s&ec=72940545",
           specs: ["32-bit Console", "2D/3D Capabilities", "Iconic Games"],
         },
         {
@@ -478,7 +478,7 @@ export default {
           price: 99,
           brand: "Sony",
           category: "🎮 PlayStation Powerhouse",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=PS+Classic",
+          image: "https://jagatplay.com/wp-content/uploads/2018/09/playstation-classic2-600x400.jpg",
           specs: ["20 Pre-installed Games", "Mini Design", "HDMI Output"],
         },
         {
@@ -487,7 +487,7 @@ export default {
           price: 129,
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Game+Boy+Advance",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTattPFsoha6OXDSQ9CzBLfPxLh3qBoRvXMJkmNmV_qPg&s&ec=72940545",
           specs: ["2.9-inch Display", "Backlit Screen", "Link Cable Support"],
         },
         {
@@ -496,7 +496,7 @@ export default {
           price: 89,
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Game+Boy+Color",
+          image: "https://images-cdn.ubuy.qa/635d16472e74682cd7382b12-game-boy-color-kiwi-renewed.jpg",
           specs: ["Color Screen", "Backward Compatibility", "Link Cable Support"],
         },
         {
@@ -505,7 +505,7 @@ export default {
           price: 99,
           brand: "Sony",
           category: "🎮 PlayStation Powerhouse",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=PS+TV",
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/PlayStation-TV-BL.jpg/330px-PlayStation-TV-BL.jpg",
           specs: ["PlayStation Vita Games", "Remote Play", "HDMI Output"],
         },
         {
@@ -514,7 +514,7 @@ export default {
           price: 79,
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=SNES+Classic",
+          image: "https://m.media-amazon.com/images/I/71itkDwgyyL._AC_UF1000,1000_QL80_.jpg",
           specs: ["21 Pre-installed Games", "Mini Design", "HDMI Output"],
         },
         {
@@ -523,7 +523,7 @@ export default {
           price: 79,
           brand: "Sega",
           category: "✨ Explore More Consoles",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Genesis+Mini",
+          image: "https://sm.pcmag.com/t/pcmag_au/review/s/sega-genes/sega-genesis-mini-2_7mbp.1920.jpg",
           specs: ["42 Pre-installed Games", "Mini Design", "HDMI Output"],
         },
         {
@@ -532,7 +532,7 @@ export default {
           price: 249,
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=N64",
+          image: "https://m.media-amazon.com/images/I/61xoifvahFL.jpg",
           specs: ["64-bit System", "4 Controller Ports", "Iconic Games"],
         },
         {
@@ -541,16 +541,16 @@ export default {
           price: 49,
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=N64+Controller",
+          image: "https://assets.nintendo.com/image/upload/q_auto:best/f_auto/dpr_2.0/ncom/en_US/products/accessories/nintendo-switch/controllers/other-controllers/n64-controller/114294-switch-nso-n64-controller-front-view-1200x675",
           specs: ["Analog Stick", "Z Button", "Iconic Design"],
         },
-         {
+        {
           id: 51,
           name: "GPD Win 4",
           price: 899,
           brand: "GPD",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=GPD+Win+4",
+          image: "https://gpdstore.net/wp-content/uploads/2024/12/GPD-WIN-4-2025-LISTING-GENERIC-01.png",
           specs: ["AMD Ryzen 7 6800U", "16GB RAM", "512GB SSD", "6-inch Touchscreen"],
         },
         {
@@ -559,7 +559,7 @@ export default {
           price: 899,
           brand: "One-Netbook",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=OneXPlayer+Mini+Pro",
+          image: "https://s.alicdn.com/@sc04/kf/H7e01368670d045d395dcf773163afe35S.jpg_720x720q50.jpg",
           specs: ["Intel Core i7", "16GB RAM", "512GB SSD", "7-inch Display"],
         },
         {
@@ -568,7 +568,7 @@ export default {
           price: 249,
           brand: "Ayn",
           category: "💻 Handheld PC Heroes",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=Ayn+Odin+Base+2",
+          image: "https://down-id.img.susercontent.com/file/id-11134207-7r98p-lo6hqyj6sp4432",
           specs: ["Snapdragon 865", "6GB RAM", "64GB Storage", "5.98-inch Display"],
         },
         {
@@ -577,7 +577,7 @@ export default {
           price: 99,
           brand: "RetroFlag",
           category: "✨ Explore More Consoles",
-          image: "https://via.placeholder.com/150/00d4ff/ffffff?text=RetroFlag+GPI+Case",
+          image: "https://thepihut.com/cdn/shop/products/gpi-case-2-for-cm4-deluxe-edition-with-dock-retroflag-104830-31588494704835_grande.jpg?v=1646517796",
           specs: ["Retro Design", "Raspberry Pi Compatible", "Portable Gaming"],
         },
       ],
