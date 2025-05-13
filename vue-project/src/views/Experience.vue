@@ -1,4 +1,4 @@
-<template>
+<template >
   <section class="container my-5" data-aos="fade-up">
     <h2 class="h3 mb-4 text-primary text-center futuristic-title fw-bold">
       🎮 Ultimate Game Consoles Hub 🚀
@@ -38,7 +38,7 @@
           step="50"
           class="form-range"
         />
-        <span>Max Price: {{ formatPrice(priceRangeUSD) }}</span>
+        <span class="price-label">Max Price: {{ formatPrice(priceRangeUSD) }}</span>
       </div>
 
       <div class="console-grid">
@@ -91,8 +91,8 @@ export default {
       selectedCategory: null,
       searchQuery: "",
       selectedBrand: "",
-      priceRangeUSD: 1500, // Harga dalam USD
-      usdToIdrRate: 15000, // Nilai tukar USD ke IDR (perkiraan)
+      priceRangeUSD: 1500,
+      usdToIdrRate: 15000,
       selectedProduct: null,
       consoles: [
         {
@@ -585,35 +585,31 @@ export default {
   },
   computed: {
     brands() {
-      const allBrands = this.consoles.map((c) => c.brand);
-      return [...new Set(allBrands)];
+      return [...new Set(this.consoles.map((console) => console.brand))];
     },
     filteredConsoles() {
-      return this.consoles.filter((console) => {
-        return (
-          console.category === this.selectedCategory.title &&
-          console.name.toLowerCase().includes(this.searchQuery.toLowerCase()) &&
-          (this.selectedBrand === "" || console.brand === this.selectedBrand) &&
-          console.price <= this.priceRangeUSD
+      let filtered = this.consoles.filter(
+        (console) => console.category === this.selectedCategory.title
+      );
+
+      if (this.searchQuery) {
+        filtered = filtered.filter((console) =>
+          console.name.toLowerCase().includes(this.searchQuery.toLowerCase())
         );
-      });
-    },
-    priceRangeIDR() {
-      return this.priceRangeUSD * this.usdToIdrRate;
+      }
+
+      if (this.selectedBrand) {
+        filtered = filtered.filter((console) => console.brand === this.selectedBrand);
+      }
+
+      filtered = filtered.filter((console) => console.price <= this.priceRangeUSD);
+
+      return filtered;
     },
   },
   methods: {
-    selectCategory(card) {
-      this.selectedCategory = card;
-      this.searchQuery = "";
-      this.selectedBrand = "";
-      this.priceRangeUSD = 1500;
-    },
-    showDetails(console) {
-      this.selectedProduct = console;
-    },
-    closeDetails() {
-      this.selectedProduct = null;
+    selectCategory(category) {
+      this.selectedCategory = category;
     },
     formatPrice(priceUSD) {
       const priceIDR = priceUSD * this.usdToIdrRate;
@@ -624,194 +620,203 @@ export default {
         maximumFractionDigits: 0,
       }).format(priceIDR);
     },
+    showDetails(console) {
+      this.selectedProduct = console;
+    },
+    closeDetails() {
+      this.selectedProduct = null;
+    },
   },
 };
 </script>
 
-<style scoped>
-body {
-  background-color: #000 !important;
-  color: #00d4ff;
+<style scoped >
+.container {
+  max-width: 95%;
+  margin: auto;
+  padding: 0,5%;
 }
 
-/* Grid Kategori */
+.futuristic-title {
+  color: #333;
+  /* Dark Gray */
+  text-shadow: 0 0 5px #ccc, 0 0 10px #ccc;
+  /* Subtle Glow */
+  animation: flicker 1.5s infinite alternate;
+  /* Optional: Add a subtle flicker */
+}
+
+@keyframes flicker {
+  0%,
+  18%,
+  22%,
+  25%,
+  53%,
+  57%,
+  100% {
+    text-shadow: 0 0 5px #ccc, 0 0 10px #ccc;
+  }
+
+  20%,
+  24%,
+  55% {
+    text-shadow: none;
+  }
+}
+
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .category-button {
-  padding: 1rem;
-  background: linear-gradient(145deg, #0d1b2a, #1b263b);
-  color: #00d4ff;
-  border: 1px solid #1b263b;
-  border-radius: 10px;
+  background-color: #333;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .category-button:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.5);
+  background-color: #371cea;
+  transform: scale(1.05);
 }
 
-/* Filter */
 .filters {
-  margin-top: 2rem;
-  background: #0d1b2a;
-  padding: 1rem;
-  border-radius: 10px;
-  border: 1px solid #1b263b;
-  color: #00d4ff;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .filter-controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-.form-control,
+.form-control {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 .form-range {
-  flex: 1;
-  min-width: 150px;
-  background: #1b263b;
-  color: #00d4ff;
-  border: 1px solid #00d4ff;
+  -webkit-appearance: none;
+  width: 30%;
+  height: 10px;
   border-radius: 5px;
-  padding: 0.5rem;
+  background: #d3d3d3;
+  outline: none;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
 }
 
-.form-control::placeholder {
-  color: #00d4ff;
+.form-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: bl;
+  cursor: pointer;
+  border-radius: 50%;
 }
 
-/* Grid Konsol */
+.price-label {
+  margin-left: 10px;
+  color: #555;
+}
+
 .console-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
 }
 
 .console-card {
-  background: #1b263b;
-  border-radius: 10px;
+  background-color: white;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
 }
 
 .console-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 18px rgba(0, 212, 255, 0.5);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .console-image {
   width: 100%;
-  height: 150px;
+  height: 200px;
   object-fit: cover;
 }
 
 .console-info {
-  padding: 1rem;
+  padding: 15px;
 }
 
 .console-name {
-  margin-bottom: 0.5rem;
-  color: #00d4ff;
+  color: #333;
+  margin-bottom: 5px;
 }
 
-.console-brand {
-  font-size: 0.9em;
-  color: #aaa;
-  margin-bottom: 0.3rem;
-}
-
+.console-brand,
 .console-price {
-  font-weight: bold;
-  color: #fff;
+  color: #777;
+  margin-bottom: 5px;
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  animation: fadeIn 0.3s ease-out forwards;
 }
 
 .modal-content {
-  background: #0d1b2a;
-  color: #00d4ff;
-  padding: 2rem;
-  border-radius: 10px;
-  max-width: 500px;
-  width: 90%;
-  text-width: 90%;
-  text-align: center;
-  border: 1px solid #00d4ff;
-  animation: slideIn 0.3s ease-out forwards;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 40%;
+  max-height: 65%;
+  overflow-y: auto;
 }
 
 .product-image {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 1rem;
-  border: 1px solid #00d4ff;
-  border-radius: 5px;
+  padding: auto;
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  margin-bottom: 10px;
 }
 
 .close-button {
-  background: #00d4ff;
-  color: #0d1b2a;
+  background-color: #ddd;
+  color: #333;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 10px 15px;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 1rem;
-  transition: background 0.3s ease, transform 0.3s ease;
+  transition: background-color 0.3s;
 }
 
 .close-button:hover {
-  background: #00a3cc;
-  transform: scale(1.1);
-}
-
-/* Animasi */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(20px);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-/* Futuristic Title */
-.futuristic-title {
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  text-shadow: 0 0 0.5em #00d4ff;
+  background-color: #ccc;
 }
 </style>
