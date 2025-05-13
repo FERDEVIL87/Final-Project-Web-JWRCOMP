@@ -6,22 +6,22 @@ export default {
     return {
       laptops: [
         { id: 1, name: "Acer Aspire 3", category: "Low-End", price: 5000000, image: "https://parto.id/asset/foto_produk/Screenshot_104.jpg", description: "A reliable choice for everyday tasks, browsing, and light productivity. Offers good value for its price." },
-        { id: 2, name: "HP 14s", category: "Low-End", price: 6000000, image: "https://www.hp.com/id-id/shop/media/catalog/product/cache/74c1057f7991b4edb2bc7bdaa94de933/c/0/c08182006_1.png", description: "Compact and lightweight, ideal for students and users on the go. Decent performance for basic applications." },
-        { id: 3, name: "ASUS VivoBook 15", category: "Mid-Range", price: 8000000, image: "https://dlcdnwebimgs.asus.com/gain/07959480-035b-4953-813d-84176131780e/w717/h717", description: "Balances performance and portability with a stylish design. Suitable for multitasking and moderate creative work." },
-        { id: 4, name: "Lenovo IdeaPad 5", category: "Mid-Range", price: 10000000, image: "https://p3-ofp.static.pub/fes/cms/2022/10/27/k10rgnnrvmxhtnkjsvy3j7z8qmb6g1648255.png", description: "Offers robust performance with modern features, good for work, study, and entertainment." },
-        { id: 5, name: "Dell Inspiron 15", category: "Mid-Range", price: 12000000, image: "https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/notebooks/inspiron-notebooks/15-3520/media-gallery/in3520-cnb-00000ff090-gy.psd?fmt=png-alpha&pscan=auto&scl=1&hei=402&wid=669&qlt=100,0&resMode=sharp2&size=669,402&chrss=full", description: "A versatile laptop known for its reliability and solid build quality. Handles demanding applications smoothly." },
+        { id: 2, name: "HP 14s", category: "Low-End", price: 6000000, image: "src/img/Hp 14s.png", description: "Compact and lightweight, ideal for students and users on the go. Decent performance for basic applications." },
+        { id: 3, name: "ASUS VivoBook 15", category: "Mid-Range", price: 8000000, image: "src/img/Asus Vivobook 15.png", description: "Balances performance and portability with a stylish design. Suitable for multitasking and moderate creative work." },
+        { id: 4, name: "Lenovo IdeaPad 5", category: "Mid-Range", price: 10000000, image: "src/img/Lenovo IdeaPad 5.png", description: "Offers robust performance with modern features, good for work, study, and entertainment." },
+        { id: 5, name: "Dell Inspiron 15", category: "Mid-Range", price: 12000000, image: "src/img/Dell Inspiron 15.png", description: "A versatile laptop known for its reliability and solid build quality. Handles demanding applications smoothly." },
         { id: 6, name: "MacBook Air M1", category: "High-End", price: 15000000, image: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-gold-select-201810?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1664472289059", description: "Revolutionary performance and battery life with Apple's M1 chip. Sleek, light, and powerful for professionals and creatives." },
-        { id: 7, name: "ASUS ROG Zephyrus G14", category: "High-End", price: 20000000, image: "https://dlcdnwebimgs.asus.com/gain/698252FB-E460-4011-8D9B-8175F45E158D/w717/h717", description: "A gaming powerhouse in a compact form factor. Delivers exceptional performance for gaming and intensive tasks." },
-        { id: 8, name: "Dell XPS 13", category: "High-End", price: 25000000, image: "https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/notebooks/xps-notebooks/xps-13-9315/media-gallery/notebook-xps-13-9315-gray-gallery-1.psd?fmt=png-alpha&pscan=auto&scl=1&hei=402&wid=669&qlt=100,0&resMode=sharp2&size=669,402&chrss=full", description: "Premium ultrabook with a stunning display and exceptional build quality. Perfect for professionals needing portability and power." },
+        { id: 7, name: "ASUS ROG Zephyrus G14", category: "High-End", price: 20000000, image: "src/img/ASUSROGZephyrusG14.png", description: "A gaming powerhouse in a compact form factor. Delivers exceptional performance for gaming and intensive tasks." },
+        { id: 8, name: "Dell XPS 13", category: "High-End", price: 25000000, image: "src/img/Dell XPS 13.png", description: "Premium ultrabook with a stunning display and exceptional build quality. Perfect for professionals needing portability and power." },
         { id: 9, name: "MacBook Pro 16-inch", category: "High-End", price: 30000000, image: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/mbp16-spacegray-select-202301?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1671304673202", description: "The ultimate Mac laptop for demanding creative workflows, offering incredible power, a large display, and long battery life." },
-        { id: 10, name: "Razer Blade 15", category: "High-End", price: 35000000, image: "https://assets3.razerzone.com/NqZgBdfhA9HaYTgpR33p20G_2AY=/1500x1000/https%3A%2F%2Fhybrismediaprod.blob.core.windows.net%2Fsys-master-phoenix-images-container%2Fh30%2Fh49%2F9442500608030%2Fblade-15-ch9-2-500x500.png", description: "Sleek gaming laptop with top-tier performance, advanced cooling, and a high-refresh-rate display for an immersive experience." },
+        { id: 10, name: "Razer Blade 15", category: "High-End", price: 35000000, image: "src/img/Razer Blade 15.png", description: "Sleek gaming laptop with top-tier performance, advanced cooling, and a high-refresh-rate display for an immersive experience." },
       ],
       searchQuery: "",
       selectedCategoryFilter: "", // Renamed for clarity
       isModalVisible: false,
       selectedLaptopForModal: null,
-    };
-  },
+    };
+  },
   computed: {
     filteredLaptops() {
       return this.laptops.filter((laptop) => {
