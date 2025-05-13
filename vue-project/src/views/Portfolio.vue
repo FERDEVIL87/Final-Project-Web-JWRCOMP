@@ -33,7 +33,7 @@
           type="range"
           v-model="priceRange"
           min="0"
-          max="1000"
+          max="60000000"
           step="10"
           class="form-range"
         />
@@ -96,7 +96,7 @@ export default {
           price: 605,
           brand: "Intel",
           category: "PROCESSOR Intel",
-          image: "https://via.placeholder.com/150",
+          image: "/src/img/ASUSROGZephyrusG14.png",
           specs: ["24 Cores", "32 Threads", "5.80 GHz Base Clock"],
         },
         {
@@ -588,9 +588,11 @@ export default {
 /* Animasi glow */
 @keyframes glow {
   from {
+    color: #00d4ff;
     text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
   }
   to {
+    color: #00d4ff;
     text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc, 0 0 120px #00a3cc;
   }
 }
