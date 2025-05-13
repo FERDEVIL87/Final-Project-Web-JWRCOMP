@@ -580,7 +580,7 @@ export default {
 .neon-title {
   font-size: 4rem; /* Ukuran font lebih besar */
   font-weight: bold;
-  color: #00d4ff; /* Neon biru */
+  color: #f5f5f5 !important; /* Warna font baru dengan prioritas tinggi */
   text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
   animation: glow 1.5s infinite alternate;
 }
@@ -588,11 +588,11 @@ export default {
 /* Animasi glow */
 @keyframes glow {
   from {
-    color: #00d4ff;
+    color: #f5f5f5; /* Warna font baru */
     text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
   }
   to {
-    color: #00d4ff;
+    color: #f5f5f5; /* Warna font baru */
     text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc, 0 0 120px #00a3cc;
   }
 }
