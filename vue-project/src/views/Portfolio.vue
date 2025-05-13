@@ -58,7 +58,7 @@
       <div class="modal-content">
         <h3>{{ selectedProduct.name }}</h3>
         <img :src="selectedProduct.image" alt="Product Image" class="product-image" />
-        <p><strong>Price:</strong> ${{ selectedProduct.price }}</p>
+        <p><strong>Price:</strong> Rp{{ selectedProduct.price }}</p>
         <p><strong>Brand:</strong> {{ selectedProduct.brand }}</p>
         <p><strong>Specifications:</strong></p>
         <ul>
