@@ -2,143 +2,274 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { ref } from 'vue'
 
-// Data untuk menu navbar
 const items = [
-  { to: '/',          name: 'Tentang' },
-  { to: '/education', name: 'Pendidikan' },
-  { to: '/experience',name: 'Pengalaman' },
-  { to: '/portfolio', name: 'Portofolio' },
-  { to: '/skills',    name: 'Keahlian' },
-  { to: '/contact',   name: 'Kontak' }
+  { to: '/', name: 'Tentang', color: '#00bcd4' },
+  { to: '/education', name: 'Laptop', color: '#ffc107' },
+  { to: '/experience', name: 'Console and Handheld PC', color: '#4caf50' },
+  { to: '/portfolio', name: 'PC Parts', color: '#ff5722' },
+  { to: '/skills', name: 'Paket Rakitan PC', color: '#e91e63' },
+  { to: '/contact', name: 'Customer Service', color: '#9c27b0' }
 ]
 
-// State untuk toggle navbar
-const isNavCollapsed = ref(true)
-
-// Fungsi untuk toggle navbar
-const toggleNavbar = () => {
-  isNavCollapsed.value = !isNavCollapsed.value
-}
-
-// Fungsi untuk menangani posisi kursor
-const handleMouseMove = (event) => {
-  const navbar = document.querySelector('.navbar')
-  const rect = navbar.getBoundingClientRect()
-  const x = event.clientX - rect.left
-  const y = event.clientY - rect.top
-  navbar.style.setProperty('--x', `${x}px`)
-  navbar.style.setProperty('--y', `${y}px`)
+const isSidebarOpen = ref(false)
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value
 }
 </script>
 
 <template>
-  <!-- Navbar -->
-  <nav 
-    class="navbar navbar-expand-lg navbar-dark sticky-top navbar-gradient" 
-    @mousemove="handleMouseMove"
-  >
-    <div class="container">
-      <RouterLink class="navbar-brand" to="/">FERDEVIL87</RouterLink>
-      <button 
-        class="navbar-toggler" 
-        type="button" 
-        @click="toggleNavbar" 
-        aria-controls="nav" 
-        :aria-expanded="!isNavCollapsed" 
-        aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div 
-        id="nav" 
-        class="collapse navbar-collapse" 
-        :class="{ show: !isNavCollapsed }">
-        <ul class="navbar-nav ms-auto">
-          <li v-for="i in items" :key="i.to" class="nav-item">
-            <RouterLink 
-              class="nav-link btn" 
-              :to="i.to"
-            >
-              <button>
-                <span>{{ i.name }}</span>
-                <i></i>
-              </button>
-            </RouterLink>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <div class="layout">
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="logo">JWR Comp</div>
+      <button class="toggle-btn" @click="toggleSidebar">☰</button>
+      <ul class="menu">
+        <li v-for="i in items" :key="i.to" class="menu-item">
+          <RouterLink
+            class="animated-btn"
+            :to="i.to"
+            :style="{ '--clr': i.color }"
+          >
+            <span>{{ i.name }}</span>
+            <i></i>
+          </RouterLink>
+        </li>
+      </ul>
+    </nav>
 
-  <!-- Transisi halaman -->
-  <transition name="fade-page" mode="out-in">
-    <RouterView />
-  </transition>
+    <!-- Sidebar -->
+    <aside :class="{ open: isSidebarOpen }" class="sidebar">
+      <button class="close-btn" @click="toggleSidebar">✖</button>
+      <ul class="menu">
+        <li v-for="i in items" :key="i.to" class="menu-item">
+          <RouterLink
+            class="sidebar-btn"
+            :to="i.to"
+            :style="{ '--clr': i.color }"
+            @click="toggleSidebar"
+          >
+            <span>{{ i.name }}</span>
+            <i></i>
+          </RouterLink>
+        </li>
+      </ul>
+    </aside>
 
-  <!-- Footer -->
-  <footer class="bg-primary text-center text-white py-3">
-    © 2025 FERDEVIL87
-  </footer>
+    <!-- Main Content -->
+    <main class="content">
+      <transition name="fade-page" mode="out-in">
+        <RouterView />
+      </transition>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      © 2025 FERDEVIL87
+    </footer>
+  </div>
 </template>
 
 <style scoped>
-/* Navbar brand */
-.navbar-brand {
-  font-size: 1.8rem; /* Ukuran teks diperbesar */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #1c1c1c;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1c1c1c;
+  padding: 1rem;
+  flex-wrap: wrap;
+}
+
+.logo {
+  font-size: 1.4rem;
   font-weight: bold;
-  color: #fff;
-  text-transform: uppercase;
+  color: white;
 }
 
-/* Navbar Gradient Background */
-.navbar-gradient {
-  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), #adadad, #292929);
-  transition: background 0.2s ease;
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+  display: none;
 }
 
-/* Button styles for Navbar Links */
-button {
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.menu-item {
+  list-style: none;
+}
+
+.animated-btn {
   position: relative;
   background: #444;
   color: #fff;
-  text-decoration: none;
   text-transform: uppercase;
   border: none;
   letter-spacing: 0.1rem;
-  font-size: 0.8rem; /* Ukuran teks tombol diperkecil */
-  padding: 0.5rem 1.5rem; /* Padding tombol diperkecil */
+  font-size: 0.85rem;
+  padding: 0.4rem 2rem;
   transition: 0.2s;
+  display: inline-block;
+  cursor: pointer;
+  text-decoration: none;
 }
 
-button:hover {
-  letter-spacing: 0.15rem; /* Hover spacing lebih kecil */
-  padding: 0.6rem 1.6rem; /* Hover padding lebih kecil */
+.animated-btn:hover {
   background: var(--clr);
   color: var(--clr);
   animation: box 3s infinite;
 }
 
-button::before {
+.animated-btn::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: #1c1c1c;
+}
+
+.animated-btn span {
+  position: relative;
+  z-index: 1;
+}
+
+.animated-btn i {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.animated-btn i::before,
+.animated-btn i::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 2px;
+  background: #1c1c1c;
+  border: 2px solid var(--clr);
+  transition: 0.3s;
+}
+
+.animated-btn i::before {
+  left: 80%;
+  top: -2px;
+}
+
+.animated-btn i::after {
+  left: 20%;
+  bottom: -2px;
+}
+
+.animated-btn:hover i::before {
+  width: 15px;
+  left: 20%;
+  animation: move 3s infinite;
+}
+
+.animated-btn:hover i::after {
+  width: 15px;
+  left: 80%;
+  animation: move 3s infinite;
+}
+
+.router-link-exact-active.animated-btn {
+  background: var(--clr);
+  color: var(--clr);
+  animation: box 3s infinite;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background: #1c1c1c;
+  padding: 1rem;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar .menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar .menu-item {
+  list-style: none;
+}
+
+.sidebar-btn {
+  position: relative;
+  background: #444;
+  color: #fff;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  letter-spacing: 0.1rem;
+  font-size: 0.9rem;
+  padding: 1rem 1rem;
+  transition: 0.2s;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+.sidebar-btn:hover {
+  letter-spacing: 0.2rem;
+  padding: 1.1rem 3.1rem;
+  background: var(--clr);
+  color: var(--clr);
+  animation: box 3s infinite;
+}
+
+.sidebar-btn::before {
   content: "";
   position: absolute;
   inset: 2px;
   background: #272822;
 }
 
-button span {
+.sidebar-btn span {
   position: relative;
   z-index: 1;
 }
 
-button i {
+.sidebar-btn i {
   position: absolute;
   inset: 0;
   display: block;
 }
 
-button i::before {
+.sidebar-btn i::before {
   content: "";
   position: absolute;
-  width: 8px; /* Lebar garis diperkecil */
+  width: 10px;
   height: 2px;
   left: 80%;
   top: -2px;
@@ -147,16 +278,16 @@ button i::before {
   transition: 0.2s;
 }
 
-button:hover i::before {
-  width: 12px; /* Hover lebar garis lebih kecil */
+.sidebar-btn:hover i::before {
+  width: 15px;
   left: 20%;
   animation: move 3s infinite;
 }
 
-button i::after {
+.sidebar-btn i::after {
   content: "";
   position: absolute;
-  width: 8px; /* Lebar garis diperkecil */
+  width: 10px;
   height: 2px;
   left: 20%;
   bottom: -2px;
@@ -165,33 +296,61 @@ button i::after {
   transition: 0.2s;
 }
 
-button:hover i::after {
-  width: 12px; /* Hover lebar garis lebih kecil */
+.sidebar-btn:hover i::after {
+  width: 15px;
   left: 80%;
   animation: move 3s infinite;
 }
 
+.router-link-exact-active.sidebar-btn {
+  background: var(--clr);
+  color: var(--clr);
+  animation: box 3s infinite;
+}
+
+.sidebar .close-btn {
+  background: none;
+  color: white;
+  font-size: 1.4rem;
+  border: none;
+  cursor: pointer;
+  align-self: flex-end;
+  margin-bottom: 1rem;
+}
+
+/* Animations */
 @keyframes move {
-  0% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(5px);
-  }
-  100% {
-    transform: translateX(0);
-  }
+  0% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
 }
 
 @keyframes box {
-  0% {
-    box-shadow: #27272c;
+  0% { box-shadow: #27272c; }
+  50% { box-shadow: 0 0 25px var(--clr); }
+  100% { box-shadow: #27272c; }
+}
+
+.content {
+  padding: 1rem;
+}
+
+.footer {
+  background: #1c1c1c;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .toggle-btn {
+    display: block;
   }
-  50% {
-    box-shadow: 0 0 25px var(--clr);
-  }
-  100% {
-    box-shadow: #27272c;
+
+  .menu {
+    display: none;
   }
 }
 </style>
