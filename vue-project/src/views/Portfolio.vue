@@ -1,6 +1,6 @@
 <template>
   <section class="container my-5" data-aos="fade-up">
-    <h2 class="h3 mb-4 text-primary text-center futuristic-title">HARDWARE</h2>
+    <h2 class="h3 mb-4 text-primary text-center futuristic-title neon-title">HARDWARE</h2>
     <!-- Kategori Grid -->
     <div class="category-grid">
       <button
@@ -516,7 +516,7 @@ export default {
         {
           id: 48,
           name: "ASUS ROG Swift PG32UQX",
-          price: 3000,
+          price: 300,
           brand: "ASUS",
           category: "LED MONITOR",
           image: "https://via.placeholder.com/150",
@@ -525,7 +525,7 @@ export default {
         {
           id: 49,
           name: "Dell Alienware AW2521H",
-          price: 2000,
+          price: 200,
           brand: "Dell",
           category: "LED MONITOR",
           image: "https://via.placeholder.com/150",
@@ -534,7 +534,7 @@ export default {
         {
           id: 50,
           name: "Acer Predator X27",
-          price: 1200,
+          price: 120,
           brand: "Acer",
           category: "LED MONITOR",
           image: "https://via.placeholder.com/150",
@@ -543,7 +543,7 @@ export default {
       ],
       searchQuery: "",
       selectedBrand: "",
-      priceRange:1000,
+      priceRange:60000000,
       brands: ["Intel", "AMD", "ASUS", "Corsair", "Acer", "Kingston", "Crucial", "Western Digital", "Samsung", "Dell", "LG"], // Daftar brand
       selectedProduct: null, // Produk yang dipilih
     };
@@ -565,7 +565,7 @@ export default {
       this.selectedCategory = card;
       this.searchQuery = "";
       this.selectedBrand = "";
-      this.priceRange = 1000;
+      this.priceRange = 60000000;
     },
     showDetails(component) {
       this.selectedProduct = component;
@@ -577,6 +577,23 @@ export default {
 };
 </script>
 <style scoped>
+.neon-title {
+  font-size: 4rem; /* Ukuran font lebih besar */
+  font-weight: bold;
+  color: #00d4ff; /* Neon biru */
+  text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
+  animation: glow 1.5s infinite alternate;
+}
+
+/* Animasi glow */
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
+  }
+  to {
+    text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc, 0 0 120px #00a3cc;
+  }
+}
 /* Grid untuk kategori */
 .category-grid {
   display: grid;
