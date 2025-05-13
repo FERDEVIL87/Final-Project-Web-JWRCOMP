@@ -37,7 +37,7 @@
           step="10"
           class="form-range"
         />
-        <span>Max Price: ${{ priceRange }}</span>
+        <span>Max Price: Rp.{{ priceRange }}</span>
       </div>
 
       <!-- List Komponen -->
@@ -48,7 +48,7 @@
           class="component-item"
           @click="showDetails(component)"
         >
-          {{ component.name }} - ${{ component.price }} ({{ component.brand }})
+          {{ component.name }} - Rp.{{ component.price }} ({{ component.brand }})
         </li>
       </ul>
     </div>
@@ -58,7 +58,7 @@
       <div class="modal-content">
         <h3>{{ selectedProduct.name }}</h3>
         <img :src="selectedProduct.image" alt="Product Image" class="product-image" />
-        <p><strong>Price:</strong> Rp{{ selectedProduct.price }}</p>
+        <p><strong>Price:</strong> Rp.{{ selectedProduct.price }}</p>
         <p><strong>Brand:</strong> {{ selectedProduct.brand }}</p>
         <p><strong>Specifications:</strong></p>
         <ul>
