@@ -144,7 +144,7 @@ export default {
           price: 299,
           brand: "Sony",
           category: "🎮 PlayStation Powerhouse",
-          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGVIbBHnZlGYBuSOr5Nm099nzJEsLI23SA0DOzRT-vUw&s&ec=72940545",
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Sony-PlayStation-4-PS4-wDualShock-4.jpg/330px-Sony-PlayStation-4-PS4-wDualShock-4.jpg",
           specs: ["8-core Jaguar CPU", "500GB/1TB HDD", "1080p Gaming"],
         },
         {
@@ -153,7 +153,7 @@ export default {
           price: 399,
           brand: "Sony",
           category: "🎮 PlayStation Powerhouse",
-          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV_8MbIBX9_iLMgnIJMYJWqe3VEtbPlF1JOevhmfgppw&s&ec=72940545",
+          image: "https://img.antaranews.com/cache/1200x800/2018/08/PS4-Pro.jpg.webp",
           specs: ["4.2 TFLOPS GPU", "1TB HDD", "4K Upscaling"],
         },
         {
@@ -162,7 +162,7 @@ export default {
           price: 399,
           brand: "Sony",
           category: "🎮 PlayStation Powerhouse",
-          image: "https://prof.lv/media/catalog/product/cache/bb2e4f278882af2cb0666a1a14d552d6/5/d/5d661c774e13cf7908e1d6adcb06e4af9f9f02e223aa68acb72215c17984c441.jpeg",
+          image: "https://akcdn.detik.net.id/community/media/visual/2024/09/12/ps5_169.webp?w=700&q=90",
           specs: ["No Disc Drive", "825GB SSD", "4K Gaming"],
         },
         {
@@ -386,7 +386,7 @@ export default {
           price: 229,
           brand: "Sony",
           category: "🎮 PlayStation Powerhouse",
-          image: "https://bimg.akulaku.net/goods/spu/04e8656d5a8a42d2b6ef6245a1faaa7a5724.jpg?w=726&q=80&fit=1",
+          image: "https://www.cnet.com/a/img/resize/88d0ac012d8023385c3064e754cf09d2afc08c0f/hub/2014/01/30/f371d294-a5c4-11e3-a24e-d4ae52e62bcc/sony-ps-vita-slim-14.jpg?auto=webp&width=1200",
           specs: ["5-inch LCD", "Slim Design", "Wi-Fi + 3G Model"],
         },
         {
@@ -485,7 +485,7 @@ export default {
           price: 129,
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
-          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTattPFsoha6OXDSQ9CzBLfPxLh3qBoRvXMJkmNmV_qPg&s&ec=72940545",
+          image: "https://i.guim.co.uk/img/media/96a7a0b6779452c2e29ecb1b1d7bb8ae8b37fd88/63_0_1489_894/master/1489.jpg?width=620&dpr=2&s=none&crop=none",
           specs: ["2.9-inch Display", "Backlit Screen", "Link Cable Support"],
         },
         {
@@ -628,261 +628,499 @@ export default {
 };
 </script>
 
-<style scoped >
+<style scoped>
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+/* General Styles */
+body {
+    background: linear-gradient(to bottom, #050a13, #171e2e);
+    color: #f0f0f0;
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    animation: background-gradient 5s ease infinite alternate;
+    background-size: 200% 200%;
+    scroll-behavior: smooth; /* Smooth scrolling */
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+/* Animated Background Gradient */
+@keyframes background-gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+/* Parallax Effect (Subtle - Add to specific elements) */
+.parallax {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Neon Title */
 .neon-title {
-  font-size: 4rem; /* Ukuran font lebih besar */
-  font-weight: bold;
-  color: #f5f5f5 !important; /* Warna font baru dengan prioritas tinggi */
-  text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
-  animation: glow 1.5s infinite alternate;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #f9feff !important;
+    text-shadow: 0 0 0.3125rem #00eaff, 0 0 0.625rem #00eaff, 0 0 1.25rem #00eaff, 0 0 2.5rem #00a3cc, 0 0 5rem #00a3cc;
+    animation: neon-glow 1.5s infinite alternate;
+    text-align: center;
+    margin-bottom: 2rem;
+    letter-spacing: 0.1rem;
 }
 
-/* Animasi glow */
-@keyframes glow {
-  from {
-    color: #f5f5f5; /* Warna font baru */
-    text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
-  }
-  to {
-    color: #f5f5f5; /* Warna font baru */
-    text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc, 0 0 120px #00a3cc;
-  }
+@keyframes neon-glow {
+    from {
+        text-shadow: 0 0 0.3125rem #00eaff, 0 0 0.625rem #00eaff, 0 0 1.25rem #00eaff, 0 0 2.5rem #00a3cc, 0 0 5rem #00a3cc;
+    }
+    to {
+        text-shadow: 0 0 0.625rem #00eaff, 0 0 1.25rem #00eaff, 0 0 2.5rem #00a3cc, 0 0 5rem #00a3cc, 0 0 7.5rem #00a3cc;
+    }
 }
 
+/* Category Grid */
 .category-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
 }
 
 .category-button {
-  padding: 1rem;
-  background: linear-gradient(145deg, #0d1b2a, #1b263b); /* Neon dark biru */
-  color: #00d4ff; /* Neon biru */
-  border: 1px solid #303b1b;
-  border-radius: 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(145deg, #121c33, #202b47);
+    color: #00eaff;
+    border: none;
+    border-radius: 0.8rem;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
 }
 
 .category-button:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.5); /* Neon efek */
+    transform: translateY(-0.4rem);
+    box-shadow: 0 0.5rem 1.2rem rgba(0, 234, 255, 0.4);
+    background: linear-gradient(145deg, #202b47, #121c33);
 }
 
+/* Category Button Glow Effect */
+.category-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 234, 255, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+}
+
+.category-button:hover::before {
+    opacity: 1;
+    animation: glow 1s ease infinite alternate;
+}
+
+@keyframes glow {
+    0% {
+        opacity: 0.2;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+/* Filters */
 .filters {
-  margin-top: 2rem;
-  background: #0d1b2a; /* Neon dark biru */
-  padding: 1rem;
-  border-radius: 10px;
-  border: 1px solid #1b263b;
-  color: #00d4ff; /* Neon biru */
+    margin-top: 2rem;
+    background: rgba(13, 27, 42, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 1.75rem;
+    border-radius: 0.8rem;
+    border: 1px solid rgba(0, 234, 255, 0.1);
+    color: #00eaff;
+    box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.4);
+}
+
+.filters h3 {
+    text-align: center;
+    margin-bottom: 1.75rem;
+    font-weight: 600;
+    font-size: 1.6rem;
 }
 
 .filter-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+    align-items: center;
 }
 
-.filter-controls .form-control::placeholder {
-  color: #00d4ff; /* Placeholder neon biru */
-}
-
+/* Search Bar */
 .form-control {
-  padding: 8px;
-  border: 1px solid #00d4ff; /* Tetap neon biru untuk border */
-  border-radius: 4px;
-  background-color: #1b263b; /* Latar belakang neon dark biru */
-  color: #00d4ff; /* Warna teks neon biru */
-  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Tambahkan transisi untuk efek yang lebih halus */
+    flex: 1;
+    min-width: 150px;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid rgba(0, 234, 255, 0.3);
+    border-radius: 0.3rem;
+    background: rgba(27, 38, 59, 0.6); /* Dark background */
+    color: #00eaff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    /* Add search icon (replace with your icon styling) */
+    background-image: url("search-icon.png"); /* Replace with your icon */
+    background-repeat: no-repeat;
+    background-position: 0.5rem center;
+    padding-left: 2.5rem; /* Adjust padding for icon */
 }
 
 .form-control:focus {
-  background-color: #1b263b; /* Pastikan latar belakang tetap sama saat fokus */
-  color: #00d4ff; /* Pastikan warna teks tetap sama saat fokus */
-  border-color: #00a3cc; /* Anda bisa sedikit menggelapkan border saat fokus jika mau */
-  box-shadow: 0 0 8px rgba(0, 212, 255, 0.6); /* Efek glow saat fokus */
-  outline: none; /* Hilangkan outline default browser */
+    border-color: #00c4ff;
+    box-shadow: 0 0 0 0.15rem rgba(0, 196, 255, 0.25);
+    outline: none;
+    animation: search-focus 0.5s ease-in-out;
+    background: rgba(27, 38, 59, 0.6); /* Keep dark background on focus */
+    color: #00eaff; /* Keep text color on focus */
 }
 
-.filter-controls .form-control::placeholder {
-  color: #00d4ff; /* Placeholder neon biru */
-  opacity: 0.7; /* Buat placeholder sedikit lebih transparan */
+@keyframes search-focus {
+    0% {
+        box-shadow: 0 0 0 0.15rem rgba(0, 196, 255, 0.25);
+    }
+    100% {
+        box-shadow: 0 0 0 0.25rem rgba(0, 196, 255, 0.25), 0 0 0.5rem rgba(0, 196, 255, 0.1);
+    }
 }
 
+
+.form-control::placeholder {
+    color: #00eaff;
+    opacity: 0.7;
+}
+
+
+/* Range Input */
 .form-range {
-  flex: 1;
-  min-width: 150px;
-  background: #1b263b; /* Neon dark biru */
-  color: #00d4ff; /* Neon biru */
-  border: 1px solid #00d4ff;
-  border-radius: 5px;
-  padding: 0.5rem;
+    flex: 1;
+    min-width: 150px;
+    background: rgba(27, 38, 59, 0.6);
+    color: #00eaff;
+    border: 1px solid rgba(0, 234, 255, 0.3);
+    border-radius: 0.35rem;
+    padding: 0.6rem;
+    -webkit-appearance: none;
+    height: 1.2rem;
+    cursor: pointer;
 }
 
 .form-range::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 15px;
-  height: 15px;
-  background: #00d4ff; /* Warna thumb tetap neon biru */
-  cursor: pointer;
-  border-radius: 50%;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    background: #00c4ff;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0.15rem 0.3rem rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.form-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
 }
 
 .price-label {
-  margin-left: 10px;
-  color: #00d4ff;
+    margin-left: 0.75rem;
+    color: #00eaff;
+    font-weight: 500;
 }
 
+/* Console Grid */
 .console-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.75rem;
+    margin-top: 1.75rem;
 }
 
-.component-list {
-  list-style: none;
-  padding: 0;
-}
-
-
+/* Console Card */
 .console-card {
-  background-color: #1b263b;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
-  cursor: pointer;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-  display: flex;       /* Menggunakan Flexbox */
-  flex-direction: column; /* Menyusun item secara vertikal */
+    background: linear-gradient(to bottom, #18223d, #243054);
+    border-radius: 0.8rem;
+    overflow: hidden;
+    box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    transform-style: preserve-3d; /* Enable 3D transforms for perspective */
+    position: relative; /* For border animation */
 }
 
 .console-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-0.5rem) perspective(600px) rotateX(5deg) rotateY(5deg); /* Perspective tilt */
+    box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.5);
 }
 
 .console-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
+    width: 100%;
+    height: 14rem;
+    object-fit: cover;
+    opacity: 0.95;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.console-card:hover .console-image {
+    opacity: 1;
 }
 
 .console-info {
- padding: 15px;
-  display: flex;
-  flex-direction: column;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-grow: 1;
 }
 
 .console-name {
-color: #00d4ff;
-  margin-bottom: 5px; /* Spasi lebih kecil */
-  text-align: left;   /* Rata kiri */
+    color: #00eaff;
+    margin-bottom: 0.4rem;
+    text-align: left;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+select.form-control { /* Target select elements with form-control class */
+    appearance: none; /* Remove default select styling */
+    -webkit-appearance: none; /* For Safari */
+    -moz-appearance: none; /* For Firefox */
+    background-image: url("dropdown-icon.png"); /* Replace with your dropdown icon */
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    padding-right: 2rem; /* Space for the icon */
+}
+
+select.form-control:focus {
+    border-color: #00c4ff;
+    box-shadow: 0 0 0 0.15rem rgba(0, 196, 255, 0.25);
+    outline: none;
+    animation: search-focus 0.5s ease-in-out;
+    background: rgba(27, 38, 59, 0.6); /* Keep dark background on focus */
+    color: #00eaff; /* Keep text color on focus */
 }
 
 .console-brand,
 .console-price {
-  color: #f6fdff; /* Placeholder neon biru */
-  margin-bottom: 5px;
+    color: #e0e0e0;
+    margin-bottom: 0.4rem;
+    font-size: 1.1rem;
+    transition: color 0.3s ease; /* Price animation */
 }
 
+.console-card:hover .console-price {
+    color: #fff; /* Highlight price on hover */
+    animation: price-pulse 0.5s ease-in-out;
+}
+
+@keyframes price-pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Console Card Border Animation */
+.console-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 2px solid transparent;
+    border-radius: inherit;
+    transition: border-color 0.4s ease;
+    pointer-events: none; /* Don't interfere with hover */
+}
+
+.console-card:hover::after {
+    border-color: rgba(0, 234, 255, 0.3); /* Animated border */
+}
+
+
+/* Modal Overlay */
 .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.9); /* Hitam transparan */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+    backdrop-filter: blur(15px);
 }
 
+/* Modal Content */
 .modal-content {
-  background: #0d1b2a; /* Neon dark biru */
-  color: #00d4ff; /* Neon biru */
-  padding: 2rem;
-  border-radius: 10px;
-  max-width: 500px;
-  width: 90%;
-  text-align: center;
-  border: 1px solid #00d4ff;
-  animation: slideIn 0.3s ease-out forwards;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.2), /* Glow tipis */
-                0 10px 30px rgba(0, 0, 0, 0.3);   /* Bayangan lebih kuat */
- animation: modalIn 0.5s ease-out forwards; /* Animasi masuk */
- padding: 2rem 2.5rem; /* Tambah padding */
+    background: linear-gradient(to bottom, #18223d, #243054);
+    color: #00eaff;
+    padding: 1.5rem 2rem; /* Reduced padding */
+    border-radius: 0.8rem;
+    max-width: 450px; /* Significantly smaller width */
+    width: 95%;
+    text-align: center;
+    border: 1px solid rgba(0, 234, 255, 0.1);
+    animation: modalIn 0.5s ease-out forwards;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 234, 255, 0.2),
+                0 0.8rem 2.2rem rgba(0, 0, 0, 0.4);
+    overflow-y: auto;
+    max-height: 70vh; /* Potentially smaller height */
 }
 
-.modal-content h3 {
-    font-size: 1.75rem; /* Ukuran judul lebih besar */
-    font-weight: bold;
-    margin-bottom: 1.5rem;
-}
-
-.modal-content p {
-    margin-bottom: 0.75rem;
-    line-height: 1.4; /* Spasi baris lebih baik */
-}
-
-.modal-content p strong {
-    font-weight: 600; /* Label lebih tebal */
-}
-
-.modal-content ul {
-    list-style: disc; /* Gaya daftar */
-    margin-left: 1.25rem;
-    margin-bottom: 1rem;
-}
-
+/* More Dramatic Modal Entrance */
 @keyframes modalIn {
     from {
         opacity: 0;
-        transform: translateY(-50px);
+        transform: translateY(-60px) scale(0.9);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 }
 
+.modal-content h3 {
+    font-size: 1.5rem; /* Slightly smaller title */
+    font-weight: 700;
+    margin-bottom: 1rem; /* Less bottom margin */
+    text-align: center; /* Explicitly center the title */
+}
+
+.modal-content p,
+.modal-content ul {
+    text-align: left; /* Align details to the left */
+    margin-bottom: 0.5rem; /* Reduced bottom margin */
+    color: #e0e0e0;
+    font-size: 0.95rem; /* Slightly smaller details text */
+}
+
+.modal-content p strong {
+    font-weight: 600;
+    color: #fff;
+}
+
+.modal-content ul {
+    list-style: disc;
+    margin-left: 1.25rem;
+}
+
 .product-image {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 1rem;
-  border: 1px solid #00d4ff; /* Neon biru */
-  border-radius: 5px;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 1rem; /* Reduced bottom margin */
+    border: 2px solid rgba(0, 234, 255, 0.2);
+    border-radius: 0.4rem;
+    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
 }
 
 .close-button {
-  background: #00d4ff; /* Neon biru */
-  color: #0d1b2a; /* Dark biru */
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: background 0.3s ease, transform 0.3s ease;
-  transition: background 0.3s ease, transform 0.2s ease-in-out, opacity 0.2s ease-in-out; /* Transisi lebih banyak properti */
+    background: linear-gradient(to right, #00c4ff, #00a3cc);
+    color: #fff;
+    border: none;
+    padding: 0.4rem 0.8rem; /* Smaller button */
+    border-radius: 0.4rem;
+    cursor: pointer;
+    margin-top: 0.75rem; /* Reduced top margin */
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
+    font-size: 0.9rem; /* Smaller button text */
 }
 
 .close-button:hover {
-  background: #00a3cc; /* Biru lebih gelap */
-  transform: scale(1.1);
-  transform: scale(1.05); /* Sedikit membesar */
-  opacity: 0.8; /* Sedikit transparan */
+    background: linear-gradient(to right, #00a3cc, #00c4ff);
+    transform: scale(1.05);
+    box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.3);
 }
 
-/* Ubah latar belakang utama */
-body {
-  background-color: #000; /* Hitam */
-  color: #00d4ff; /* Neon biru untuk teks */
+/* Category Highlight (Example for "Low-End") */
+.category-highlight {
+    background: rgba(0, 234, 255, 0.1);
+    border-radius: 0.8rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    box-shadow: 0 0.4rem 1rem rgba(0, 234, 255, 0.1);
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
 }
+
+.category-highlight h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #00eaff;
+    text-shadow: 0 0 0.2rem #00eaff;
+    margin-bottom: 0.5rem;
+}
+
+.category-highlight p {
+    color: #e0e0e0;
+    font-size: 1.1rem;
+}
+
+/* Responsive Adjustments */
+@media (min-width: 768px) {
+    .neon-title {
+        font-size: 3.5rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .neon-title {
+        font-size: 4rem;
+    }
+}
+
+/* Optional: Particle Effect (Requires JavaScript Library) */
+/* This is just CSS styling; the actual particle effect requires a JavaScript library like Particles.js */
+#particle-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Behind other content */
+    pointer-events: none; /* Don't interfere with clicks */
+    opacity: 0.1; /* Very subtle */
+}
+
 </style>
