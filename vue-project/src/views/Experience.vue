@@ -1008,6 +1008,9 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
     width: 100%;
     height: 220px;
     object-fit: contain;
+    width: 100%; /* Tetap 100% width */
+    height: 250px; /* Sedikit tambah tinggi */
+    object-fit: cover; /* UBAH: Gambar akan mengisi area, mungkin ada bagian yang terpotong */
     background-color: rgba(5,10,19,0.7);
     transition: transform 0.4s ease, opacity 0.4s ease;
     opacity: 0.9;
