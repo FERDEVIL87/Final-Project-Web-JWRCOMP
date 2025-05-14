@@ -7,20 +7,25 @@
         v-for="(card, index) in cards"
         :key="index"
         class="category-button"
+        :class="{ active: selectedCategory && selectedCategory.title === card.title }"
         @click="selectCategory(card)"
       >
         {{ card.title }}
       </button>
     </div>
 
-    <!-- Filter dan Search -->
-    <div v-if="selectedCategory" class="filters">
-      <h3 class="text-center">{{ selectedCategory.title }}</h3>
+    <!-- Judul Kategori -->
+    <div v-if="selectedCategory" class="category-title">
+      <h3 class="text-center mb-4">{{ selectedCategory.title }}</h3>
+    </div>
+
+    <!-- Produk Table -->
+    <div v-if="selectedCategory" class="product-table-container">
       <div class="filter-controls">
         <input
           type="text"
           v-model="searchQuery"
-          placeholder="Search components..."
+          placeholder="Search products..."
           class="form-control"
         />
         <select v-model="selectedBrand" class="form-control">
@@ -29,28 +34,32 @@
             {{ brand }}
           </option>
         </select>
-        <input
-          type="range"
-          v-model="priceRange"
-          min="0"
-          max="60000000"
-          step="10"
-          class="form-range"
-        />
-        <span>Max Price: Rp.{{ priceRange }}</span>
       </div>
-
-      <!-- List Komponen -->
-      <ul class="component-list">
-        <li
-          v-for="component in filteredComponents"
-          :key="component.id"
-          class="component-item"
-          @click="showDetails(component)"
-        >
-          {{ component.name }} - Rp.{{ component.price }} ({{ component.brand }})
-        </li>
-      </ul>
+      <div class="table-background">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Brand</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="component in filteredComponents"
+              :key="component.id"
+            >
+              <td><img :src="component.image" alt="Product Image" class="table-thumbnail" /></td>
+              <td>{{ component.name }}</td>
+              <td>{{ formatPrice(component.price) }}</td>
+              <td>{{ component.brand }}</td>
+              <td><button class="details-button" @click="showDetails(component)">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Modal Detail Produk -->
@@ -58,7 +67,7 @@
       <div class="modal-content">
         <h3>{{ selectedProduct.name }}</h3>
         <img :src="selectedProduct.image" alt="Product Image" class="product-image" />
-        <p><strong>Price:</strong> Rp.{{ selectedProduct.price }}</p>
+        <p><strong>Price:</strong> {{ formatPrice(selectedProduct.price) }}</p>
         <p><strong>Brand:</strong> {{ selectedProduct.brand }}</p>
         <p><strong>Specifications:</strong></p>
         <ul>
@@ -77,7 +86,7 @@ export default {
   data() {
     return {
       cards: [
-        { title: "PROCESSOR Intel", link: "/PROCESSOR Intel" },
+        { title: "PROCESSOR INTEL", link: "/PROCESSOR INTEL" },
         { title: "PROCESSOR AMD", link: "/PROCESSOR AMD" },
         { title: "MAINBOARD", link: "/MAINBOARD" },
         { title: "MEMORY", link: "/MEMORY" },
@@ -93,9 +102,9 @@ export default {
         {
           id: 1,
           name: "Intel Processor Core i9-13900KF",
-          price: 8000000,
+          price: 5000,
           brand: "Intel",
-          category: "PROCESSOR Intel",
+          category: "PROCESSOR INTEL",
           image: "/src/img part/Intel Processor Core i9-13900KF.png",
           specs: ["24 Cores", "32 Threads", "5.80 GHz Base Clock"],
         },
@@ -104,7 +113,7 @@ export default {
           name: "Intel Processor Core I5 12400F (LGA 1700) - I5 12400F",
           price: 2000000,
           brand: "Intel",
-          category: "PROCESSOR Intel",
+          category: "PROCESSOR INTEL",
           image: "/src/img part/Intel Processor Core I5 12400F.png",
           specs: ["6 Cores", "12 Threads", "4.40 GHz Base Clock"],
         },
@@ -113,7 +122,7 @@ export default {
           name: "Intel Processor Core i5-6500",
           price: 500000,
           brand: "Intel",
-          category: "PROCESSOR Intel",
+          category: "PROCESSOR INTEL",
           image: "/src/img part/Intel Processor Core Core i5-6500 (2).png",
           specs: ["6 Cores", "Cache 6 MB Intel Smart Cache", " 3.20 GHz Base Clock"],
         },
@@ -122,7 +131,7 @@ export default {
           name: "INTEL CORE i7 10700KF 3.8GHZ 8C/16T LGA- 1200 CL",
           price: 4000000,
           brand: "Intel",
-          category: "PROCESSOR Intel",
+          category: "PROCESSOR INTEL",
           image: "/src/img part/INTEL CORE i7 10700KF.png",
           specs: ["8 Cores", "16Threads", "5.10 GHz Base Clock"],
         },
@@ -131,7 +140,7 @@ export default {
           name: "Intel Processor Core  i9-13900K LGA 1700",
           price: 10000000,
           brand: "Intel",
-          category: "PROCESSOR Intel",
+          category: "PROCESSOR INTEL",
           image: "/src/img part/Intel Processor Core  i9-13900K LGA 1700.png",
           specs: ["24 Cores", "32 Threads", " 5.80 GHz Base Clock"],
         },
@@ -534,7 +543,7 @@ export default {
         {
           id: 50,
           name: "Acer Predator X27",
-          price: 45000000,
+          price: 100,
           brand: "Acer",
           category: "LED MONITOR",
           image: "/src/img part/Acer Predator X27.png",
@@ -543,29 +552,36 @@ export default {
       ],
       searchQuery: "",
       selectedBrand: "",
-      priceRange:60000000,
-      brands: ["Intel", "AMD", "ASUS", "Corsair", "Acer", "Kingston", "Crucial", "Western Digital", "Samsung", "Dell", "LG"], // Daftar brand
-      selectedProduct: null, // Produk yang dipilih
+      usdToIdrRate: 15000,
+      brands: ["Intel", "AMD", "ASUS", "Corsair", "Acer", "Kingston", "Crucial", "Western Digital", "Samsung", "Dell", "LG"],
+      selectedProduct: null,
     };
   },
-  computed: {
+   computed: {
     filteredComponents() {
       return this.components.filter((component) => {
         return (
           component.category === this.selectedCategory.title &&
           component.name.toLowerCase().includes(this.searchQuery.toLowerCase()) &&
-          (this.selectedBrand === "" || component.brand === this.selectedBrand) &&
-          component.price <= this.priceRange
+          (this.selectedBrand === "" || component.brand === this.selectedBrand)
         );
       });
     },
   },
   methods: {
-    selectCategory(card) {
-      this.selectedCategory = card;
+    selectCategory(category) {
+      this.selectedCategory = category;
       this.searchQuery = "";
       this.selectedBrand = "";
-      this.priceRange = 60000000;
+    },
+    formatPrice(priceUSD) {
+      const priceIDR = priceUSD * this.usdToIdrRate;
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(priceIDR);
     },
     showDetails(component) {
       this.selectedProduct = component;
@@ -576,27 +592,16 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .neon-title {
-  font-size: 4rem; /* Ukuran font lebih besar */
+  font-size: 4rem;
   font-weight: bold;
-  color: #f5f5f5 !important; /* Warna font baru dengan prioritas tinggi */
+  color: #f5f5f5 !important;
   text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
   animation: glow 1.5s infinite alternate;
 }
 
-/* Animasi glow */
-@keyframes glow {
-  from {
-    color: #f5f5f5; /* Warna font baru */
-    text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
-  }
-  to {
-    color: #f5f5f5; /* Warna font baru */
-    text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc, 0 0 120px #00a3cc;
-  }
-}
-/* Grid untuk kategori */
 .category-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -606,82 +611,97 @@ export default {
 
 .category-button {
   padding: 1rem;
-  background: linear-gradient(145deg, #0d1b2a, #1b263b); /* Neon dark biru */
-  color: #00d4ff; /* Neon biru */
+  background: linear-gradient(145deg, #0d1b2a, #1b263b);
+  color: #00d4ff;
   border: 1px solid #1b263b;
   border-radius: 10px;
   text-align: center;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
+
+.category-button.active {
+  font-weight: bold;
+  color: #ffffff;
+  background: #00a3cc;
 }
 
 .category-button:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.5); /* Neon efek */
+  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.5);
 }
 
-/* Filter Controls */
-.filters {
-  margin-top: 2rem;
-  background: #0d1b2a; /* Neon dark biru */
-  padding: 1rem;
-  border-radius: 10px;
-  border: 1px solid #1b263b;
-  color: #00d4ff; /* Neon biru */
+.category-title h3 {
+  font-weight: bold;
+  color: #ffffff;
 }
 
 .filter-controls {
   display: flex;
-  flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1rem;
 }
 
-.filter-controls .form-control,
-.filter-controls .form-range {
-  flex: 1;
-  min-width: 150px;
-  background: #1b263b; /* Neon dark biru */
-  color: #00d4ff; /* Neon biru */
+.form-control {
+  padding: 0.5rem;
   border: 1px solid #00d4ff;
   border-radius: 5px;
-  padding: 0.5rem;
+  background: #1b263b;
+  color: #00d4ff;
 }
 
-.filter-controls .form-control::placeholder {
-  color: #00d4ff; /* Placeholder neon biru */
+.table-background {
+  background: linear-gradient(145deg, #0d1b2a, #1b263b);
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.5);
 }
 
-/* List Komponen */
-.component-list {
-  list-style: none;
-  padding: 0;
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
 }
 
-.component-item {
-  padding: 0.5rem;
-  background: #1b263b; /* Neon dark biru */
-  color: #00d4ff; /* Neon biru */
-  margin-bottom: 0.5rem;
-  border-radius: 5px;
+.product-table th,
+.product-table td {
   border: 1px solid #00d4ff;
+  padding: 0.5rem;
+  text-align: center;
+  color: #00d4ff;
+}
+
+.product-table th {
+  background: #1b263b;
+}
+
+.table-thumbnail {
+  max-width: 100px;
+  height: auto;
+  border-radius: 5px;
+}
+
+.details-button {
+  padding: 0.5rem 1rem;
+  background: #00d4ff;
+  color: #0d1b2a;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  transition: background 0.3s ease;
 }
 
-.component-item:hover {
-  background: #0d1b2a;
-  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.5); /* Neon efek */
+.details-button:hover {
+  background: #00a3cc;
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.9); /* Hitam transparan */
+  background: rgba(0, 0, 0, 0.9);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -689,8 +709,8 @@ export default {
 }
 
 .modal-content {
-  background: #0d1b2a; /* Neon dark biru */
-  color: #00d4ff; /* Neon biru */
+  background: #0d1b2a;
+  color: #00d4ff;
   padding: 2rem;
   border-radius: 10px;
   max-width: 500px;
@@ -703,13 +723,13 @@ export default {
   max-width: 100%;
   height: auto;
   margin-bottom: 1rem;
-  border: 1px solid #00d4ff; /* Neon biru */
+  border: 1px solid #00d4ff;
   border-radius: 5px;
 }
 
 .close-button {
-  background: #00d4ff; /* Neon biru */
-  color: #0d1b2a; /* Dark biru */
+  background: #00d4ff;
+  color: #0d1b2a;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 5px;
@@ -719,13 +739,7 @@ export default {
 }
 
 .close-button:hover {
-  background: #00a3cc; /* Biru lebih gelap */
+  background: #00a3cc;
   transform: scale(1.1);
-}
-
-/* Ubah latar belakang utama */
-body {
-  background-color: #000; /* Hitam */
-  color: #00d4ff; /* Neon biru untuk teks */
 }
 </style>
