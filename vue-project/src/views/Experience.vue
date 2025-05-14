@@ -8,74 +8,105 @@
         :key="index"
         class="category-button"
         @click="selectCategory(card)"
+        :class="{ 'active': selectedCategory && selectedCategory.title === card.title }"
+        :aria-pressed="selectedCategory && selectedCategory.title === card.title"
       >
         {{ card.title }}
       </button>
     </div>
 
     <div v-if="selectedCategory" class="filters">
-      <h3 class="text-center">{{ selectedCategory.title }}</h3>
+      <h3 class="text-center category-filter-title">{{ selectedCategory.title }}</h3>
       <div class="filter-controls">
         <input
           type="text"
           v-model="searchQuery"
           placeholder="Search console..."
           class="form-control"
+          aria-label="Search console in current category"
         />
-        <select v-model="selectedBrand" class="form-control">
+        <select v-model="selectedBrand" class="form-control" aria-label="Filter by brand">
           <option value="">All Brands</option>
           <option v-for="brand in brands" :key="brand" :value="brand">
             {{ brand }}
           </option>
         </select>
-        <input
-          type="range"
-          v-model="priceRangeUSD"
-          min="0"
-          max="1500"
-          step="50"
-          class="form-range"
-        />
-        <span class="price-label">Max Price: {{ formatPrice(priceRangeUSD) }}</span>
+        <div class="price-range-container">
+          <label for="priceRangeSlider" class="price-label screen-reader-only">Max Price:</label>
+          <input
+            type="range"
+            v-model="priceRangeUSD"
+            min="0"
+            :max="maxPriceInCategory"
+            step="50"
+            class="form-range"
+            aria-label="Filter by maximum price"
+            id="priceRangeSlider"
+            aria-valuetext="`Maximum price ${formatPrice(priceRangeUSD)}`"
+          />
+          <span class="price-label-display" aria-hidden="true">Max Price: {{ formatPrice(priceRangeUSD) }}</span>
+        </div>
       </div>
 
-      <div class="console-grid">
+      <div v-if="filteredConsoles.length > 0" class="console-grid">
         <div
-          v-for="console in filteredConsoles"
-          :key="console.id"
+          v-for="consoleItem in filteredConsoles"
+          :key="consoleItem.id"
           class="console-card"
-          @click="showDetails(console)"
+          @click="showDetails(consoleItem)"
+          role="button"
+          tabindex="0"
+          @keydown.enter="showDetails(consoleItem)"
+          @keydown.space="showDetails(consoleItem)"
+          :aria-label="`View details for ${consoleItem.name}`"
         >
-          <img :src="console.image" :alt="console.name" class="console-image" />
+          <img :src="consoleItem.image" :alt="`${consoleItem.name} console`" class="console-image" />
           <div class="console-info">
-            <h4 class="console-name">{{ console.name }}</h4>
-            <p class="console-brand">Brand: {{ console.brand }}</p>
-            <p class="console-price">Price: {{ formatPrice(console.price) }}</p>
+            <h4 class="console-name">{{ consoleItem.name }}</h4>
+            <p class="console-brand">Brand: {{ consoleItem.brand }}</p>
+            <p class="console-price">Price: {{ formatPrice(consoleItem.price) }}</p>
           </div>
         </div>
       </div>
-    </div>
-
-    <div v-if="selectedProduct" class="modal-overlay" @click.self="closeDetails">
-      <div class="modal-content">
-        <h3>{{ selectedProduct.name }}</h3>
-        <img :src="selectedProduct.image" alt="Console Image" class="product-image" />
-        <p><strong>Price:</strong> {{ formatPrice(selectedProduct.price) }}</p>
-        <p><strong>Brand:</strong> {{ selectedProduct.brand }}</p>
-        <p><strong>Features:</strong></p>
-        <ul>
-          <li v-for="(feature, index) in selectedProduct.specs" :key="index">
-            {{ feature }}
-          </li>
-        </ul>
-        <button class="close-button" @click="closeDetails">Close</button>
+      <div v-else class="no-results">
+        <p>No consoles match your current filters in the "{{ selectedCategory.title }}" category.</p>
       </div>
     </div>
+    <div v-else class="no-category-selected">
+        <p>✨ Please select a category above to explore our awesome consoles! ✨</p>
+    </div>
   </section>
+
+  <!-- MODAL PRODUK MENGGUNAKAN TELEPORT -->
+  <teleport to="body">
+    <div v-if="isModalVisible" class="modal-overlay" @click.self="closeDetails" role="dialog" aria-modal="true" :aria-labelledby="selectedProduct ? 'modal-title-' + selectedProduct.id : ''" @keydown.esc="closeDetails">
+      <div class="modal-content" ref="modalContent">
+        <button class="modal-close-button" @click="closeDetails" aria-label="Close product details" ref="modalCloseButton">×</button>
+        <div v-if="selectedProduct">
+          <h3 :id="'modal-title-' + selectedProduct.id" class="modal-product-title">{{ selectedProduct.name }}</h3>
+          <img :src="selectedProduct.image" :alt="`Image of ${selectedProduct.name}`" class="product-image" />
+          <div class="modal-details-grid">
+            <p><strong>Price:</strong> <span>{{ formatPrice(selectedProduct.price) }}</span></p>
+            <p><strong>Brand:</strong> <span>{{ selectedProduct.brand }}</span></p>
+          </div>
+          <div v-if="selectedProduct.specs && selectedProduct.specs.length > 0" class="features-section">
+            <p class="features-title"><strong>Features:</strong></p>
+            <ul>
+              <li v-for="(feature, index) in selectedProduct.specs" :key="index">
+                {{ feature }}
+              </li>
+            </ul>
+          </div>
+          <!-- Tombol close lama di dalam modal-content ini bisa dihapus jika sudah menggunakan modal-close-button di atas -->
+        </div>
+      </div>
+    </div>
+  </teleport>
 </template>
 
 <script>
 export default {
+  name: "GameConsolesHub",
   data() {
     return {
       cards: [
@@ -85,14 +116,15 @@ export default {
         { title: "💻 Handheld PC Heroes", link: "#" },
         { title: "✨ Explore More Consoles", link: "#" },
       ],
-
       selectedCategory: null,
       searchQuery: "",
       selectedBrand: "",
-      priceRangeUSD: 1500,
+      priceRangeUSD: 1500, // Default max price
       usdToIdrRate: 15000,
       selectedProduct: null,
+      isModalVisible: false, // Variabel untuk mengontrol visibilitas modal
       consoles: [
+        // ... (data konsol Anda tetap sama)
         {
           id: 1,
           name: "PlayStation 5",
@@ -583,31 +615,50 @@ export default {
   },
   computed: {
     brands() {
-      return [...new Set(this.consoles.map((console) => console.brand))];
+      if (!this.selectedCategory) return [];
+      const consolesInCategory = this.consoles.filter(c => c.category === this.selectedCategory.title);
+      const uniqueBrands = [...new Set(consolesInCategory.map((consoleItem) => consoleItem.brand))];
+      return uniqueBrands.sort();
     },
     filteredConsoles() {
+      if (!this.selectedCategory) return [];
+
       let filtered = this.consoles.filter(
-        (console) => console.category === this.selectedCategory.title
+        (consoleItem) => consoleItem.category === this.selectedCategory.title
       );
 
       if (this.searchQuery) {
-        filtered = filtered.filter((console) =>
-          console.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+        filtered = filtered.filter((consoleItem) =>
+          consoleItem.name.toLowerCase().includes(this.searchQuery.toLowerCase())
         );
       }
 
       if (this.selectedBrand) {
-        filtered = filtered.filter((console) => console.brand === this.selectedBrand);
+        filtered = filtered.filter((consoleItem) => consoleItem.brand === this.selectedBrand);
       }
 
-      filtered = filtered.filter((console) => console.price <= this.priceRangeUSD);
+      // Pastikan priceRangeUSD adalah angka sebelum filter
+      const currentPriceRange = Number(this.priceRangeUSD);
+      filtered = filtered.filter((consoleItem) => consoleItem.price <= currentPriceRange);
 
       return filtered;
     },
+    maxPriceInCategory() {
+        if (!this.selectedCategory) return 1500;
+        const consolesInCategory = this.consoles.filter(
+            (c) => c.category === this.selectedCategory.title
+        );
+        if (consolesInCategory.length === 0) return 1500; // Default jika tidak ada konsol di kategori
+        const maxPrice = Math.max(...consolesInCategory.map(c => c.price), 0); // Tambahkan 0 untuk kasus array kosong
+        return Math.ceil(maxPrice / 50) * 50 || 50; // Bulatkan ke atas kelipatan 50, minimal 50
+    }
   },
   methods: {
     selectCategory(category) {
       this.selectedCategory = category;
+      this.searchQuery = "";
+      this.selectedBrand = "";
+      this.priceRangeUSD = this.maxPriceInCategory; // Set ke max price dari kategori baru
     },
     formatPrice(priceUSD) {
       const priceIDR = priceUSD * this.usdToIdrRate;
@@ -618,22 +669,58 @@ export default {
         maximumFractionDigits: 0,
       }).format(priceIDR);
     },
-    showDetails(console) {
-      this.selectedProduct = console;
+    showDetails(consoleItem) {
+      this.selectedProduct = consoleItem;
+      this.isModalVisible = true; // Menggantikan this.selectedProduct untuk v-if modal
+      this.$nextTick(() => {
+        if (this.$refs.modalCloseButton) {
+          this.$refs.modalCloseButton.focus();
+        }
+      });
     },
     closeDetails() {
-      this.selectedProduct = null;
+      this.isModalVisible = false; // Menggantikan this.selectedProduct = null untuk v-if modal
+      // Fokus kembali bisa ditambahkan di sini jika perlu
+      this.selectedProduct = null; // Tetap reset selectedProduct
     },
   },
+  watch: {
+    isModalVisible(newValue) {
+      if (newValue) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        setTimeout(() => {
+            if (!this.isModalVisible) {
+                 document.body.style.overflow = '';
+            }
+        }, 350); // Sesuaikan dengan durasi animasi
+      }
+    },
+    selectedCategory() {
+        this.priceRangeUSD = this.maxPriceInCategory;
+    }
+  }
 };
 </script>
 
 <style scoped>
 /* Import Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap');
 
 /* General Styles */
-body {
+.screen-reader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+body { /* Style ini akan lebih baik di CSS global */
     background: linear-gradient(to bottom, #050a13, #171e2e);
     color: #f0f0f0;
     font-family: 'Montserrat', sans-serif;
@@ -641,339 +728,317 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    animation: background-gradient 5s ease infinite alternate;
+    animation: background-gradient 10s ease infinite alternate;
     background-size: 200% 200%;
-    scroll-behavior: smooth; /* Smooth scrolling */
+    scroll-behavior: smooth;
 }
 
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 25px;
 }
 
-/* Animated Background Gradient */
 @keyframes background-gradient {
-    0% {
-        background-position: 0% 50%;
-    }
-    100% {
-        background-position: 100% 50%;
-    }
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
 }
 
-/* Parallax Effect (Subtle - Add to specific elements) */
-.parallax {
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-/* Neon Title */
-.neon-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #f9feff !important;
-    text-shadow: 0 0 0.3125rem #00eaff, 0 0 0.625rem #00eaff, 0 0 1.25rem #00eaff, 0 0 2.5rem #00a3cc, 0 0 5rem #00a3cc;
-    animation: neon-glow 1.5s infinite alternate;
+.futuristic-title.neon-title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    color: #fff !important;
+    text-shadow: 0 0 7px #00eaff,
+                 0 0 15px #00eaff,
+                 0 0 25px #00eaff,
+                 0 0 50px #00a3cc,
+                 0 0 80px #00a3cc,
+                 0 0 100px #00a3cc,
+                 0 0 150px #00a3cc;
+    animation: neon-glow-intense 2s infinite alternate;
     text-align: center;
-    margin-bottom: 2rem;
-    letter-spacing: 0.1rem;
+    margin-bottom: 3rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
 }
 
-@keyframes neon-glow {
+@keyframes neon-glow-intense {
     from {
-        text-shadow: 0 0 0.3125rem #00eaff, 0 0 0.625rem #00eaff, 0 0 1.25rem #00eaff, 0 0 2.5rem #00a3cc, 0 0 5rem #00a3cc;
+        text-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 15px #00eaff, 0 0 20px #00a3cc, 0 0 30px #00a3cc, 0 0 40px #00a3cc, 0 0 50px #00a3cc;
     }
     to {
-        text-shadow: 0 0 0.625rem #00eaff, 0 0 1.25rem #00eaff, 0 0 2.5rem #00a3cc, 0 0 5rem #00a3cc, 0 0 7.5rem #00a3cc;
+        text-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff, 0 0 50px #00a3cc, 0 0 80px #00a3cc, 0 0 100px #00a3cc, 0 0 150px #00a3cc;
     }
 }
 
-/* Category Grid */
 .category-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.8rem;
+    margin-bottom: 3.5rem;
 }
 
 .category-button {
-    padding: 1.25rem 1.5rem;
-    background: linear-gradient(145deg, #121c33, #202b47);
+    font-family: 'Orbitron', sans-serif;
+    padding: 1.3rem 1.1rem;
+    background: linear-gradient(145deg, #101829, #1c2a45);
     color: #00eaff;
-    border: none;
-    border-radius: 0.8rem;
+    border: 2px solid rgba(0, 234, 255, 0.25);
+    border-radius: 10px;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-    margin-bottom: 0.5rem;
-    box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.3);
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.5);
     position: relative;
     overflow: hidden;
+    font-weight: 500;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.category-button.active {
+    background: linear-gradient(145deg, #00eaff, #008cbf);
+    color: #050a13;
+    box-shadow: 0 0 20px #00eaff, 0 0 35px #00a3cc, inset 0 0 10px rgba(255,255,255,0.2);
+    border-color: #00eaff;
+    transform: translateY(-3px) scale(1.03);
+}
+.category-button:not(.active):hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(0, 234, 255, 0.35);
+    background: linear-gradient(145deg, #182742, #25365c);
+    border-color: rgba(0, 234, 255, 0.6);
 }
 
-.category-button:hover {
-    transform: translateY(-0.4rem);
-    box-shadow: 0 0.5rem 1.2rem rgba(0, 234, 255, 0.4);
-    background: linear-gradient(145deg, #202b47, #121c33);
-}
-
-/* Category Button Glow Effect */
-.category-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 234, 255, 0.2);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: inherit;
-}
-
-.category-button:hover::before {
-    opacity: 1;
-    animation: glow 1s ease infinite alternate;
-}
-
-@keyframes glow {
-    0% {
-        opacity: 0.2;
-        transform: scale(0.95);
-    }
-    100% {
-        opacity: 0.8;
-        transform: scale(1.05);
-    }
-}
-
-/* Filters */
 .filters {
-    margin-top: 2rem;
-    background: rgba(13, 27, 42, 0.8);
-    backdrop-filter: blur(10px);
-    padding: 1.75rem;
-    border-radius: 0.8rem;
-    border: 1px solid rgba(0, 234, 255, 0.1);
+    margin-top: 3rem;
+    background: rgba(8, 15, 28, 0.9);
+    backdrop-filter: blur(15px);
+    padding: 2.2rem;
+    border-radius: 15px;
+    border: 1px solid rgba(0, 234, 255, 0.2);
     color: #00eaff;
-    box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.4);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
 }
 
-.filters h3 {
+.category-filter-title { /* Mengganti .filters h3 */
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
     text-align: center;
-    margin-bottom: 1.75rem;
-    font-weight: 600;
-    font-size: 1.6rem;
+    margin-bottom: 2.2rem;
+    font-size: 2rem;
+    color: #f0f0f0;
+    text-shadow: 0 0 10px #00eaff;
+    text-transform: uppercase;
 }
 
 .filter-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-    margin-bottom: 1.25rem;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.8rem;
+    margin-bottom: 1.8rem;
+    align-items: end;
 }
 
-/* Search Bar */
 .form-control {
-    flex: 1;
-    min-width: 150px;
-    padding: 0.6rem 0.8rem;
-    border: 1px solid rgba(0, 234, 255, 0.3);
-    border-radius: 0.3rem;
-    background: rgba(27, 38, 59, 0.6); /* Dark background */
+    padding: 0.85rem 1.1rem;
+    border: 1px solid rgba(0, 234, 255, 0.35);
+    border-radius: 8px;
+    background: rgba(15, 25, 45, 0.75);
     color: #00eaff;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    /* Add search icon (replace with your icon styling) */
-    background-image: url("search-icon.png"); /* Replace with your icon */
-    background-repeat: no-repeat;
-    background-position: 0.5rem center;
-    padding-left: 2.5rem; /* Adjust padding for icon */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
 }
-
-.form-control:focus {
-    border-color: #00c4ff;
-    box-shadow: 0 0 0 0.15rem rgba(0, 196, 255, 0.25);
-    outline: none;
-    animation: search-focus 0.5s ease-in-out;
-    background: rgba(27, 38, 59, 0.6); /* Keep dark background on focus */
-    color: #00eaff; /* Keep text color on focus */
-}
-
-@keyframes search-focus {
-    0% {
-        box-shadow: 0 0 0 0.15rem rgba(0, 196, 255, 0.25);
-    }
-    100% {
-        box-shadow: 0 0 0 0.25rem rgba(0, 196, 255, 0.25), 0 0 0.5rem rgba(0, 196, 255, 0.1);
-    }
-}
-
-
 .form-control::placeholder {
-    color: #00eaff;
-    opacity: 0.7;
+    color: rgba(0, 234, 255, 0.65);
+}
+.form-control:focus {
+    border-color: #00eaff;
+    box-shadow: 0 0 0 4px rgba(0, 234, 255, 0.25);
+    outline: none;
+    background: rgba(20, 30, 50, 0.85);
+}
+input.form-control[type="text"] {
+    padding-left: 1.1rem; /* Hapus padding icon jika tidak ada icon */
+    background-image: none; /* Hapus gambar jika tidak ada */
+}
+select.form-control {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2300eaff'%3E%3Cpath d='M8 11.293l-4.646-4.647a.5.5 0 0 1 .708-.708L8 9.879l4.03-4.03a.5.5 0 0 1 .707.707L8 11.293z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    background-size: 18px 18px;
+    padding-right: 2.8rem;
 }
 
+.price-range-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    grid-column: 1 / -1;
+}
 
-/* Range Input */
 .form-range {
-    flex: 1;
-    min-width: 150px;
-    background: rgba(27, 38, 59, 0.6);
-    color: #00eaff;
-    border: 1px solid rgba(0, 234, 255, 0.3);
-    border-radius: 0.35rem;
-    padding: 0.6rem;
+    width: 100%;
+    background: transparent;
     -webkit-appearance: none;
-    height: 1.2rem;
+    appearance: none;
+    height: 10px;
     cursor: pointer;
 }
-
+.form-range::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 10px;
+    background: rgba(0, 234, 255, 0.35);
+    border-radius: 5px;
+}
+.form-range::-moz-range-track {
+    width: 100%;
+    height: 10px;
+    background: rgba(0, 234, 255, 0.35);
+    border-radius: 5px;
+}
 .form-range::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 1.1rem;
-    height: 1.1rem;
-    background: #00c4ff;
-    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    background: #00eaff;
     border-radius: 50%;
-    border: 2px solid #fff;
-    box-shadow: 0 0.15rem 0.3rem rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease;
+    border: 3px solid #0a1424;
+    margin-top: -6px;
+    box-shadow: 0 0 8px #00eaff, 0 0 12px #00a3cc;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Tambahkan transisi box-shadow */
+}
+.form-range::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    background: #00eaff;
+    border-radius: 50%;
+    border: 3px solid #0a1424;
+    box-shadow: 0 0 8px #00eaff, 0 0 12px #00a3cc;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Tambahkan transisi box-shadow */
+}
+.form-range:active::-webkit-slider-thumb, .form-range:focus::-webkit-slider-thumb { /* Efek fokus/aktif lebih jelas */
+    transform: scale(1.15);
+    box-shadow: 0 0 0 5px rgba(0, 234, 255, 0.3), 0 0 10px #00eaff, 0 0 15px #00a3cc;
+}
+.form-range:active::-moz-range-thumb, .form-range:focus::-moz-range-thumb { /* Efek fokus/aktif lebih jelas */
+    transform: scale(1.15);
+    box-shadow: 0 0 0 5px rgba(0, 234, 255, 0.3), 0 0 10px #00eaff, 0 0 15px #00a3cc;
 }
 
-.form-range::-webkit-slider-thumb:hover {
-    transform: scale(1.1);
-}
-
-.price-label {
-    margin-left: 0.75rem;
+.price-label-display {
     color: #00eaff;
     font-weight: 500;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+@media (min-width: 768px) {
+    .filter-controls {
+         grid-template-columns: 1fr 1fr 2fr;
+    }
+    .price-range-container {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+    .price-label-display {
+         margin-left: 0.5rem;
+    }
 }
 
-/* Console Grid */
+
 .console-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.75rem;
-    margin-top: 1.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.2rem;
+    margin-top: 3rem;
 }
 
-/* Console Card */
 .console-card {
-    background: linear-gradient(to bottom, #18223d, #243054);
-    border-radius: 0.8rem;
+    background: linear-gradient(160deg, #18223d, #28355e 70%, #304070);
+    border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.4);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+    transition: transform 0.35s ease, box-shadow 0.4s ease, border-color 0.35s ease;
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    transform-style: preserve-3d; /* Enable 3D transforms for perspective */
-    position: relative; /* For border animation */
+    position: relative;
+    border: 1px solid transparent;
 }
-
-.console-card:hover {
-    transform: translateY(-0.5rem) perspective(600px) rotateX(5deg) rotateY(5deg); /* Perspective tilt */
-    box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.5);
+.console-card:hover, .console-card:focus-visible {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 12px 35px rgba(0, 234, 255, 0.4), 0 0 20px rgba(0, 234, 255, 0.25), inset 0 1px 0 rgba(255,255,255,0.1);
+    border-color: rgba(0, 234, 255, 0.5);
+    outline: none;
 }
 
 .console-image {
     width: 100%;
-    height: 14rem;
-    object-fit: cover;
-    opacity: 0.95;
-    transition: opacity 0.2s ease-in-out;
+    height: 220px;
+    object-fit: contain;
+    background-color: rgba(5,10,19,0.7);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    opacity: 0.9;
 }
-
 .console-card:hover .console-image {
+    transform: scale(1.08);
     opacity: 1;
 }
 
 .console-info {
-    padding: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
+    padding: 1.8rem;
     flex-grow: 1;
+    text-align: left;
 }
 
 .console-name {
+    font-family: 'Orbitron', sans-serif;
     color: #00eaff;
-    margin-bottom: 0.4rem;
-    text-align: left;
-    font-size: 1.4rem;
-    font-weight: 600;
-}
-
-select.form-control { /* Target select elements with form-control class */
-    appearance: none; /* Remove default select styling */
-    -webkit-appearance: none; /* For Safari */
-    -moz-appearance: none; /* For Firefox */
-    background-image: url("dropdown-icon.png"); /* Replace with your dropdown icon */
-    background-repeat: no-repeat;
-    background-position: right 0.5rem center;
-    padding-right: 2rem; /* Space for the icon */
-}
-
-select.form-control:focus {
-    border-color: #00c4ff;
-    box-shadow: 0 0 0 0.15rem rgba(0, 196, 255, 0.25);
-    outline: none;
-    animation: search-focus 0.5s ease-in-out;
-    background: rgba(27, 38, 59, 0.6); /* Keep dark background on focus */
-    color: #00eaff; /* Keep text color on focus */
+    margin: 0 0 0.6rem 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.3;
 }
 
 .console-brand,
 .console-price {
     color: #e0e0e0;
     margin-bottom: 0.4rem;
+    font-size: 1rem;
+}
+.console-price {
+    font-weight: bold;
+    color: #f0f0f0;
     font-size: 1.1rem;
-    transition: color 0.3s ease; /* Price animation */
 }
-
 .console-card:hover .console-price {
-    color: #fff; /* Highlight price on hover */
-    animation: price-pulse 0.5s ease-in-out;
+    color: #00eaff;
+    animation: price-pulse-strong 0.6s ease-in-out;
 }
 
-@keyframes price-pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-    }
+@keyframes price-pulse-strong {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); text-shadow: 0 0 5px #00eaff; }
 }
 
-/* Console Card Border Animation */
-.console-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 2px solid transparent;
-    border-radius: inherit;
-    transition: border-color 0.4s ease;
-    pointer-events: none; /* Don't interfere with hover */
+.no-results, .no-category-selected {
+    text-align: center;
+    color: #00eaff;
+    padding: 3rem;
+    background: rgba(8, 15, 28, 0.8);
+    border-radius: 15px;
+    margin-top: 3rem;
+    font-size: 1.3rem;
+    font-family: 'Orbitron', sans-serif;
+    border: 1px dashed rgba(0,234,255,0.3);
 }
-
-.console-card:hover::after {
-    border-color: rgba(0, 234, 255, 0.3); /* Animated border */
-}
-
 
 /* Modal Overlay */
 .modal-overlay {
@@ -982,145 +1047,218 @@ select.form-control:focus {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(5, 10, 19, 0.92);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
-    padding: 1rem;
-    backdrop-filter: blur(15px);
+    z-index: 1000; /* Pastikan di atas AOS jika AOS punya z-index tinggi */
+    padding: 20px;
+    backdrop-filter: blur(12px);
+    opacity: 0;
+    animation: fadeInModal 0.3s ease-out forwards;
+}
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Modal Content */
+/* MODAL CONTENT: Dirombak Sesuai Permintaan */
 .modal-content {
-    background: linear-gradient(to bottom, #18223d, #243054);
-    color: #00eaff;
-    padding: 1.5rem 2rem; /* Reduced padding */
-    border-radius: 0.8rem;
-    max-width: 450px; /* Significantly smaller width */
-    width: 95%;
-    text-align: center;
-    border: 1px solid rgba(0, 234, 255, 0.1);
-    animation: modalIn 0.5s ease-out forwards;
-    box-shadow: 0 0.5rem 1.5rem rgba(0, 234, 255, 0.2),
-                0 0.8rem 2.2rem rgba(0, 0, 0, 0.4);
-    overflow-y: auto;
-    max-height: 70vh; /* Potentially smaller height */
+  background: #1a1a24; /* Warna solid gelap, sesuai var --background-modal contoh */
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 234, 255, 0.25); /* Shadow warna neon dengan alpha rendah */
+  position: relative; /* Penting untuk tombol close absolut */
+  width: 100%; /* Akan dibatasi oleh max-width */
+  max-width: 650px;
+  max-height: 90vh; /* Batasi tinggi modal */
+  overflow-y: auto; /* Scrollbar jika konten > max-height */
+  border: 1px solid rgba(0, 234, 255, 0.35); /* Border warna neon */
+  color: #e0e0e0; /* Warna teks medium */
+  transform: scale(0.95); /* State awal untuk animasi */
+  animation: scaleUpModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards; /* Animasi muncul */
+  text-align: left; /* Default alignment teks */
 }
 
-/* More Dramatic Modal Entrance */
-@keyframes modalIn {
-    from {
-        opacity: 0;
-        transform: translateY(-60px) scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+@keyframes scaleUpModal {
+  0% { transform: scale(0.9) translateY(10px); opacity: 0.6; }
+  100% { transform: scale(1) translateY(0px); opacity: 1; }
+}
+/* --- Akhir dari MODAL CONTENT --- */
+
+
+.modal-close-button {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: rgba(0, 234, 255, 0.1);
+  border: 1px solid rgba(0, 234, 255, 0.3);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #00eaff;
+  cursor: pointer;
+  line-height: 38px; /* Penyesuaian line-height agar X di tengah */
+  text-align: center;
+  transition: all 0.25s ease;
+  z-index: 10; /* Pastikan di atas konten modal lain */
+}
+.modal-close-button:hover, .modal-close-button:focus {
+  background: rgba(0, 234, 255, 0.2);
+  color: #ffffff;
+  transform: scale(1.15) rotate(180deg);
+  box-shadow: 0 0 10px rgba(0,234,255,0.5);
+  outline: none;
 }
 
-.modal-content h3 {
-    font-size: 1.5rem; /* Slightly smaller title */
+.modal-product-title {
+    font-family: 'Orbitron', sans-serif;
     font-weight: 700;
-    margin-bottom: 1rem; /* Less bottom margin */
-    text-align: center; /* Explicitly center the title */
+    color: #00eaff;
+    font-size: clamp(1.6rem, 5vw, 2rem);
+    margin-top: 0;
+    margin-bottom: 1.8rem;
+    text-align: center;
+    text-shadow: 0 0 10px #00eaff, 0 0 15px #00a3cc;
+    padding-right: 40px; /* Ruang untuk tombol close jika judul panjang */
 }
 
-.modal-content p,
-.modal-content ul {
-    text-align: left; /* Align details to the left */
-    margin-bottom: 0.5rem; /* Reduced bottom margin */
-    color: #e0e0e0;
-    font-size: 0.95rem; /* Slightly smaller details text */
+.modal-details-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    margin-bottom: 1.2rem;
 }
-
-.modal-content p strong {
+.modal-details-grid p {
+    margin-bottom: 0;
+    display: contents;
+}
+.modal-details-grid p strong {
+    color: #f0f0f0;
     font-weight: 600;
-    color: #fff;
+}
+.modal-details-grid p span {
+    color: #e0e0e0;
 }
 
-.modal-content ul {
-    list-style: disc;
-    margin-left: 1.25rem;
+
+.features-section {
+    margin-top: 1.8rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgba(0, 234, 255, 0.25);
 }
+.features-title strong { /* Mengganti .features-section p strong */
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    color: #f0f0f0;
+    margin-bottom: 0.8rem;
+    display: block;
+}
+.modal-content ul {
+    list-style: none;
+    padding-left: 0;
+}
+.modal-content ul li {
+    padding-left: 1.8em;
+    text-indent: -1.8em;
+    margin-bottom: 0.6rem;
+    position: relative;
+    color: #e0e0e0;
+    font-size: 0.95rem;
+}
+.modal-content ul li::before {
+    content: "▹";
+    color: #00eaff;
+    font-size: 1.3em;
+    margin-right: 0.6em;
+    position: absolute;
+    left: 0;
+    top: -0.08em;
+}
+
 
 .product-image {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 1rem; /* Reduced bottom margin */
-    border: 2px solid rgba(0, 234, 255, 0.2);
-    border-radius: 0.4rem;
-    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
-}
-
-.close-button {
-    background: linear-gradient(to right, #00c4ff, #00a3cc);
-    color: #fff;
-    border: none;
-    padding: 0.4rem 0.8rem; /* Smaller button */
-    border-radius: 0.4rem;
-    cursor: pointer;
-    margin-top: 0.75rem; /* Reduced top margin */
-    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
-    font-size: 0.9rem; /* Smaller button text */
-}
-
-.close-button:hover {
-    background: linear-gradient(to right, #00a3cc, #00c4ff);
-    transform: scale(1.05);
-    box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.3);
-}
-
-/* Category Highlight (Example for "Low-End") */
-.category-highlight {
-    background: rgba(0, 234, 255, 0.1);
-    border-radius: 0.8rem;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    text-align: center;
-    box-shadow: 0 0.4rem 1rem rgba(0, 234, 255, 0.1);
-    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
-}
-
-.category-highlight h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #00eaff;
-    text-shadow: 0 0 0.2rem #00eaff;
-    margin-bottom: 0.5rem;
-}
-
-.category-highlight p {
-    color: #e0e0e0;
-    font-size: 1.1rem;
+    width: auto;
+    max-width: 80%;
+    max-height: 320px;
+    object-fit: contain;
+    border-radius: 10px;
+    margin: 0 auto 1.8rem auto;
+    background-color: rgba(5,10,19,0.5);
+    border: 1px solid rgba(0, 234, 255, 0.2);
+    display: block;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 /* Responsive Adjustments */
-@media (min-width: 768px) {
-    .neon-title {
-        font-size: 3.5rem;
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    .futuristic-title.neon-title {
+        margin-bottom: 2.5rem;
+        letter-spacing: 0.08em;
+    }
+    .filter-controls {
+        grid-template-columns: 1fr;
+    }
+    .price-range-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .price-label-display {
+        align-self: flex-start;
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+    .console-grid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+    }
+    .modal-content {
+        padding: 25px;
+        max-width: 90%; /* Memastikan tidak terlalu lebar di layar kecil */
+    }
+    .modal-product-title {
+        padding-right: 30px;
     }
 }
 
-@media (min-width: 1200px) {
-    .neon-title {
-        font-size: 4rem;
+@media (max-width: 480px) {
+    .futuristic-title.neon-title {
+        font-size: clamp(2rem, 7vw, 2.8rem);
     }
-}
-
-/* Optional: Particle Effect (Requires JavaScript Library) */
-/* This is just CSS styling; the actual particle effect requires a JavaScript library like Particles.js */
-#particle-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1; /* Behind other content */
-    pointer-events: none; /* Don't interfere with clicks */
-    opacity: 0.1; /* Very subtle */
+    .category-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .category-button {
+        font-size: 0.95rem;
+        padding: 1.1rem 0.8rem;
+    }
+    .console-grid {
+        grid-template-columns: 1fr;
+    }
+    .modal-content {
+        max-height: 85vh;
+        padding: 20px; /* Padding lebih kecil lagi */
+    }
+    .modal-product-title {
+        font-size: clamp(1.4rem, 4.5vw, 1.7rem);
+    }
+    .product-image {
+        max-height: 250px;
+    }
+    .modal-close-button {
+        top: 12px;
+        right: 12px;
+        width: 35px;
+        height: 35px;
+        font-size: 1.6rem;
+        line-height: 33px;
+    }
 }
 
 </style>
