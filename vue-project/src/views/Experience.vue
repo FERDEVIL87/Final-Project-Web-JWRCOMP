@@ -1,9 +1,7 @@
-<template >
+<template>
   <section class="container my-5" data-aos="fade-up">
-    <h2 class="h3 mb-4 text-primary text-center futuristic-title fw-bold">
-      🎮 Ultimate Game Consoles Hub 🚀
-    </h2>
-
+    <h2 class="h3 mb-4 text-primary text-center futuristic-title neon-title">  🎮 ULTIMATE GAME CONSOLES HUB 🚀</h2>
+    <!-- Kategori Grid -->
     <div class="category-grid">
       <button
         v-for="(card, index) in cards"
@@ -353,7 +351,7 @@ export default {
           price: 399,
           brand: "SNK",
           category: "✨ Explore More Consoles",
-          image: "https://upload.wikimedia.org/wikipedia/commons/8/8e/Neo-Geo-AES-Console-Set.png",
+          image: "https://neogeomuseum.snk-corp.co.jp/english/whats/img/p_whats02_01.jpg",
           specs: ["AES System", "Arcade Quality", "Iconic Games Library"],
         },
         {
@@ -631,92 +629,99 @@ export default {
 </script>
 
 <style scoped >
-.container {
-  max-width: 95%;
-  margin: auto;
-  padding: 0,5%;
+.neon-title {
+  font-size: 4rem; /* Ukuran font lebih besar */
+  font-weight: bold;
+  color: #f5f5f5 !important; /* Warna font baru dengan prioritas tinggi */
+  text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
+  animation: glow 1.5s infinite alternate;
 }
 
-.futuristic-title {
-  color: #333;
-  /* Dark Gray */
-  text-shadow: 0 0 5px #ccc, 0 0 10px #ccc;
-  /* Subtle Glow */
-  animation: flicker 1.5s infinite alternate;
-  /* Optional: Add a subtle flicker */
-}
-
-@keyframes flicker {
-  0%,
-  18%,
-  22%,
-  25%,
-  53%,
-  57%,
-  100% {
-    text-shadow: 0 0 5px #ccc, 0 0 10px #ccc;
+/* Animasi glow */
+@keyframes glow {
+  from {
+    color: #f5f5f5; /* Warna font baru */
+    text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
   }
-
-  20%,
-  24%,
-  55% {
-    text-shadow: none;
+  to {
+    color: #f5f5f5; /* Warna font baru */
+    text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc, 0 0 120px #00a3cc;
   }
 }
 
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
 .category-button {
-  background-color: #333;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
+  padding: 1rem;
+  background: linear-gradient(145deg, #0d1b2a, #1b263b); /* Neon dark biru */
+  color: #00d4ff; /* Neon biru */
+  border: 1px solid #303b1b;
+  border-radius: 10px;
+  text-align: center;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .category-button:hover {
-  background-color: #371cea;
-  transform: scale(1.05);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.5); /* Neon efek */
 }
 
 .filters {
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+  background: #0d1b2a; /* Neon dark biru */
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid #1b263b;
+  color: #00d4ff; /* Neon biru */
 }
 
 .filter-controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filter-controls .form-control::placeholder {
+  color: #00d4ff; /* Placeholder neon biru */
 }
 
 .form-control {
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #00d4ff; /* Tetap neon biru untuk border */
   border-radius: 4px;
+  background-color: #1b263b; /* Latar belakang neon dark biru */
+  color: #00d4ff; /* Warna teks neon biru */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Tambahkan transisi untuk efek yang lebih halus */
+}
+
+.form-control:focus {
+  background-color: #1b263b; /* Pastikan latar belakang tetap sama saat fokus */
+  color: #00d4ff; /* Pastikan warna teks tetap sama saat fokus */
+  border-color: #00a3cc; /* Anda bisa sedikit menggelapkan border saat fokus jika mau */
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.6); /* Efek glow saat fokus */
+  outline: none; /* Hilangkan outline default browser */
+}
+
+.filter-controls .form-control::placeholder {
+  color: #00d4ff; /* Placeholder neon biru */
+  opacity: 0.7; /* Buat placeholder sedikit lebih transparan */
 }
 
 .form-range {
-  -webkit-appearance: none;
-  width: 30%;
-  height: 10px;
+  flex: 1;
+  min-width: 150px;
+  background: #1b263b; /* Neon dark biru */
+  color: #00d4ff; /* Neon biru */
+  border: 1px solid #00d4ff;
   border-radius: 5px;
-  background: #d3d3d3;
-  outline: none;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
+  padding: 0.5rem;
 }
 
 .form-range::-webkit-slider-thumb {
@@ -724,14 +729,14 @@ export default {
   appearance: none;
   width: 15px;
   height: 15px;
-  background: bl;
+  background: #00d4ff; /* Warna thumb tetap neon biru */
   cursor: pointer;
   border-radius: 50%;
 }
 
 .price-label {
   margin-left: 10px;
-  color: #555;
+  color: #00d4ff;
 }
 
 .console-grid {
@@ -740,13 +745,22 @@ export default {
   gap: 20px;
 }
 
+.component-list {
+  list-style: none;
+  padding: 0;
+}
+
+
 .console-card {
-  background-color: white;
-  border-radius: 8px;
+  background-color: #1b263b;
+  border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  display: flex;       /* Menggunakan Flexbox */
+  flex-direction: column; /* Menyusun item secara vertikal */
 }
 
 .console-card:hover {
@@ -761,17 +775,20 @@ export default {
 }
 
 .console-info {
-  padding: 15px;
+ padding: 15px;
+  display: flex;
+  flex-direction: column;
 }
 
 .console-name {
-  color: #333;
-  margin-bottom: 5px;
+color: #00d4ff;
+  margin-bottom: 5px; /* Spasi lebih kecil */
+  text-align: left;   /* Rata kiri */
 }
 
 .console-brand,
 .console-price {
-  color: #777;
+  color: #f6fdff; /* Placeholder neon biru */
   margin-bottom: 5px;
 }
 
@@ -781,7 +798,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.9); /* Hitam transparan */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -789,34 +806,83 @@ export default {
 }
 
 .modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 40%;
-  max-height: 65%;
-  overflow-y: auto;
+  background: #0d1b2a; /* Neon dark biru */
+  color: #00d4ff; /* Neon biru */
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  border: 1px solid #00d4ff;
+  animation: slideIn 0.3s ease-out forwards;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.2), /* Glow tipis */
+                0 10px 30px rgba(0, 0, 0, 0.3);   /* Bayangan lebih kuat */
+ animation: modalIn 0.5s ease-out forwards; /* Animasi masuk */
+ padding: 2rem 2.5rem; /* Tambah padding */
+}
+
+.modal-content h3 {
+    font-size: 1.75rem; /* Ukuran judul lebih besar */
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+.modal-content p {
+    margin-bottom: 0.75rem;
+    line-height: 1.4; /* Spasi baris lebih baik */
+}
+
+.modal-content p strong {
+    font-weight: 600; /* Label lebih tebal */
+}
+
+.modal-content ul {
+    list-style: disc; /* Gaya daftar */
+    margin-left: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .product-image {
-  padding: auto;
-  width: 100%;
-  max-height: 300px;
-  object-fit: contain;
-  margin-bottom: 10px;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+  border: 1px solid #00d4ff; /* Neon biru */
+  border-radius: 5px;
 }
 
 .close-button {
-  background-color: #ddd;
-  color: #333;
+  background: #00d4ff; /* Neon biru */
+  color: #0d1b2a; /* Dark biru */
   border: none;
-  padding: 10px 15px;
+  padding: 0.5rem 1rem;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  margin-top: 1rem;
+  transition: background 0.3s ease, transform 0.3s ease;
+  transition: background 0.3s ease, transform 0.2s ease-in-out, opacity 0.2s ease-in-out; /* Transisi lebih banyak properti */
 }
 
 .close-button:hover {
-  background-color: #ccc;
+  background: #00a3cc; /* Biru lebih gelap */
+  transform: scale(1.1);
+  transform: scale(1.05); /* Sedikit membesar */
+  opacity: 0.8; /* Sedikit transparan */
+}
+
+/* Ubah latar belakang utama */
+body {
+  background-color: #000; /* Hitam */
+  color: #00d4ff; /* Neon biru untuk teks */
 }
 </style>
