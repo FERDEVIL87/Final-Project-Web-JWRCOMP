@@ -589,7 +589,7 @@ export default {
           price: 899,
           brand: "One-Netbook",
           category: "💻 Handheld PC Heroes",
-          image: "https://s.alicdn.com/@sc04/kf/H7e01368670d045d395dcf773163afe35S.jpg_720x720q50.jpg",
+          image: "https://static1.xdaimages.com/wordpress/wp-content/uploads/2022/11/one-xplayer-mini-pro.jpg",
           specs: ["Intel Core i7", "16GB RAM", "512GB SSD", "7-inch Display"],
         },
         {
@@ -734,7 +734,7 @@ body { /* Style ini akan lebih baik di CSS global */
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1300px;
     margin: 0 auto;
     padding: 25px;
 }
@@ -841,28 +841,33 @@ body { /* Style ini akan lebih baik di CSS global */
     align-items: end;
 }
 
+
 .form-control {
     padding: 0.85rem 1.1rem;
     border: 1px solid rgba(0, 234, 255, 0.35);
     border-radius: 8px;
     background: rgba(15, 25, 45, 0.75);
-    color: #00eaff;
+    /* UBAH WARNA TEKS MENJADI PUTIH UNTUK INPUT DAN SELECTED OPTION DI SELECT */
+    color: #ffffff !important; /* Added !important */
     font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
     transition: all 0.3s ease;
 }
 .form-control::placeholder {
-    color: rgba(0, 234, 255, 0.65);
+    /* UBAH WARNA PLACEHOLDER SUPAYA KONTRAST DENGAN LATAR BELAKANG GELAP DAN TEKS PUTIH */
+    color: rgba(255, 255, 255, 0.85); /* Slightly increased opacity for placeholder */
 }
 .form-control:focus {
     border-color: #00eaff;
     box-shadow: 0 0 0 4px rgba(0, 234, 255, 0.25);
     outline: none;
     background: rgba(20, 30, 50, 0.85);
+    color: #ffffff !important; /* Ensure text color stays white on focus */
 }
 input.form-control[type="text"] {
-    padding-left: 1.1rem; /* Hapus padding icon jika tidak ada icon */
-    background-image: none; /* Hapus gambar jika tidak ada */
+    padding-left: 1.1rem;
+    background-image: none;
+    color: #ffffff !important; /* Added !important */
 }
 select.form-control {
     appearance: none;
@@ -873,7 +878,27 @@ select.form-control {
     background-position: right 0.85rem center;
     background-size: 18px 18px;
     padding-right: 2.8rem;
+    color: #ffffff !important; /* Added !important for the selected value text */
 }
+
+/* UBAH SUPAYA WARNA LATAR BELAKANG PILIHAN BRAND MENJADI WARNA SEPERTI YANG LAINNYA */
+/* NOTE: Styling options in a select dropdown is notoriously inconsistent across browsers.
+   Applying background and color here is a best effort, but might not work everywhere.
+   The background of the dropdown list itself often mirrors the select's background or is a system default. */
+select.form-control option {
+    background-color: #1a1a24; /* Dark background color, same as modal/card background base */
+    color: #ffffff !important; /* White text color for options, added !important */
+}
+select.form-control option:checked {
+    background-color: #008cbf; /* A contrasting color when selected/highlighted */
+    color: #ffffff !important; /* White text on highlight */
+}
+
+select.form-control option:hover { /* Note: Hover on options is not consistently supported */
+     background-color: rgba(0, 234, 255, 0.3);
+     color: #ffffff !important;
+}
+
 
 .price-range-container {
     display: flex;
@@ -1088,22 +1113,17 @@ select.form-control {
 
 
 .modal-close-button {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  background: rgba(0, 234, 255, 0.1);
-  border: 1px solid rgba(0, 234, 255, 0.3);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #00eaff;
-  cursor: pointer;
-  line-height: 38px; /* Penyesuaian line-height agar X di tengah */
-  text-align: center;
-  transition: all 0.25s ease;
-  z-index: 10; /* Pastikan di atas konten modal lain */
+    position: absolute;
+    top: 1rem;
+    right: 20px;
+    background: transparent;
+    color: #aaa;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    padding: 0.5rem;
+    line-height: 1;
 }
 .modal-close-button:hover, .modal-close-button:focus {
   background: rgba(0, 234, 255, 0.2);
