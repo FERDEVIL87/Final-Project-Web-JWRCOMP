@@ -1152,7 +1152,7 @@ select.form-control {
 .features-title strong { /* Mengganti .features-section p strong */
     font-family: 'Orbitron', sans-serif;
     font-size: 1.1rem;
-    color: #f0f0f0;
+    color: #00eaff;
     margin-bottom: 0.8rem;
     display: block;
 }
