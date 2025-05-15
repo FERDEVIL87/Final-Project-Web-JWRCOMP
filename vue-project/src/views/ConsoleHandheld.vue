@@ -69,7 +69,7 @@
     <teleport to="body">
       <div v-if="isModalVisible" class="modal-overlay" @click.self="closeDetails">
         <div class="modal-content">
-          <button class="modal-close-button" @click="closeDetails">×</button>
+          <button class="modal-close-button" @click="closeDetails" aria-label="Close modal">×</button>
           <div v-if="selectedProduct">
             <h3 class="modal-product-title">{{ selectedProduct.name }}</h3>
             <img :src="selectedProduct.image" :alt="selectedProduct.name" class="product-image" />
@@ -826,22 +826,22 @@ export default {
 }
 
 .form-control::placeholder {
-  color: #bbb; /* Lighter placeholder text for visibility */
-  opacity: 1; /* Firefox */
+  color: #bbb; 
+  opacity: 1; 
 }
-.form-control:-ms-input-placeholder { /* IE 10-11 */
+.form-control:-ms-input-placeholder { 
  color: #bbb;
 }
-.form-control::-ms-input-placeholder { /* Edge */
+.form-control::-ms-input-placeholder { 
  color: #bbb;
 }
 
 .form-control:focus {
-  background-color: #18223d; /* Ensure background remains the same on focus */
-  color: #fff;             /* Ensure text color is white on focus */
-  border-color: #00eaff;    /* Highlight border on focus */
-  outline: 0;               /* Remove default browser outline */
-  box-shadow: 0 0 0 0.2rem rgba(0, 234, 255, 0.25); /* Optional: add a subtle glow */
+  background-color: #18223d; 
+  color: #fff;             
+  border-color: #00eaff;    
+  outline: 0;               
+  box-shadow: 0 0 0 0.2rem rgba(0, 234, 255, 0.25); 
 }
 
 
@@ -949,44 +949,44 @@ export default {
   padding: 22px 16px 18px 16px;
   border-radius: 10px;
   box-shadow: 0 4px 24px #00eaff33;
-  max-width: 350px;
-  width: 100%;
+  max-width: 380px; /* Slightly wider modal */
+  width: 90%;
   color: #fff;
   position: relative;
   text-align: left;
 }
 .modal-close-button {
   position: absolute;
-  top: 10px; right: 14px;
+  top: 10px; 
+  right: 10px; 
   background: transparent;
   color: #aaa;
   border: none;
-  font-size: 1.7rem;
+  font-size: 2rem; /* Made 'x' larger */
+  font-weight: bold;
   cursor: pointer;
-  border-radius: 50%;
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.2s, color 0.2s;
+  padding: 5px; 
+  line-height: 1;
+  transition: color 0.2s ease;
 }
 .modal-close-button:hover {
-  background: #00eaff33;
   color: #fff;
 }
 .modal-product-title {
   font-family: 'Orbitron', sans-serif;
   color: #fff;
-  font-size: 1.15rem;
+  font-size: 1.25rem; /* Slightly larger title */
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem; /* Increased margin */
   text-align: center;
   text-shadow: 0 0 8px #00eaff;
 }
 .product-image {
   width: 100%;
-  max-width: 220px;
-  max-height: 120px;
+  max-width: 280px; /* Increased max-width */
+  max-height: 180px; /* Increased max-height */
   object-fit: contain;
-  margin: 0 auto 1rem auto;
+  margin: 0 auto 1.5rem auto; /* Increased bottom margin */
   display: block;
   border-radius: 8px;
   background: #101829;
@@ -1021,6 +1021,13 @@ export default {
   .main-title { font-size: 1.3rem; }
   .console-grid { grid-template-columns: 1fr; }
   .console-image { height: 110px; }
-  .modal-content { max-width: 98vw; }
+  .modal-content { max-width: 95vw; } /* Adjusted for smaller screens */
+  .product-image {
+    max-width: 240px;
+    max-height: 150px;
+  }
+  .modal-product-title {
+    font-size: 1.1rem;
+  }
 }
 </style>
