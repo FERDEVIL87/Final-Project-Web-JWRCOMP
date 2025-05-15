@@ -52,6 +52,7 @@
           <div class="console-info">
             <h4 class="console-name">{{ consoleItem.name }}</h4>
             <p class="console-brand">Brand: {{ consoleItem.brand }}</p>
+            <p class="console-stock">Stock: <span :class="getStockClass(consoleItem.stock)">{{ consoleItem.stock }}</span></p>
             <p class="console-price">{{ formatPrice(consoleItem.price) }}</p>
           </div>
         </div>
@@ -75,6 +76,7 @@
             <div class="modal-details-grid">
               <p><strong>Price:</strong> <span>{{ formatPrice(selectedProduct.price) }}</span></p>
               <p><strong>Brand:</strong> <span>{{ selectedProduct.brand }}</span></p>
+              <p><strong>Stock:</strong> <span :class="getStockClass(selectedProduct.stock)">{{ selectedProduct.stock }}</span></p>
             </div>
             <div v-if="selectedProduct.specs && selectedProduct.specs.length > 0" class="features-section">
               <p class="features-title"><strong>Features:</strong></p>
@@ -117,6 +119,7 @@ export default {
           category: "🎮 PlayStation Powerhouse",
           image: "https://media.dinomarket.com/docs/imgTD/2024-02/DM_CA961EB8D9C88E81647BBFE7417EB9C0_210224140212_ll.jpg",
           specs: ["8-core AMD Zen 2", "825GB SSD", "4K Gaming"],
+          stock: "Ready",
         },
         {
           id: 2,
@@ -126,6 +129,7 @@ export default {
           category: "🟩 Xbox Universe",
           image: "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/3/31/3452a01b-0074-481c-9f97-3ae89748f356.jpg",
           specs: ["12 TFLOPS GPU", "1TB SSD", "4K Gaming"],
+          stock: "Ready",
         },
         {
           id: 3,
@@ -135,6 +139,7 @@ export default {
           category: "🍄 Nintendo Magic",
           image: "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//106/MTA-29636638/no_brand_nintendo_switch_-oled_model-_white_set_full01_h7q23tmg.jpg",
           specs: ["7-inch OLED", "Portable/TV Mode", "Joy-Con Controllers"],
+          stock: "Ready",
         },
         {
           id: 4,
@@ -144,6 +149,7 @@ export default {
           category: "💻 Handheld PC Heroes",
           image: "https://jnewsonline.com/wp-content/uploads/2021/07/Image_from_iOS.0.jpg",
           specs: ["7-inch Touchscreen", "AMD APU", "SteamOS"],
+          stock: "Ready",
         },
         {
           id: 5,
@@ -153,6 +159,7 @@ export default {
           category: "💻 Handheld PC Heroes",
           image: "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full/catalog-image/106/MTA-181590765/asus_asus_rog_ally_x_rc72la_amd_ryzen_z1_extreme_24gb_1tb_7-_ips_120hz_w11_-_z1_extreme_full02_v2s6kpyo.jpg",
           specs: ["AMD Ryzen Z1 Extreme", "120Hz Display", "Windows 11"],
+          stock: "Ready",
         },
         {
           id: 6,
@@ -162,6 +169,7 @@ export default {
           category: "🎮 PlayStation Powerhouse",
           image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Sony-PlayStation-4-PS4-wDualShock-4.jpg/330px-Sony-PlayStation-4-PS4-wDualShock-4.jpg",
           specs: ["8-core Jaguar CPU", "500GB/1TB HDD", "1080p Gaming"],
+          stock: "Ready",
         },
         {
           id: 7,
@@ -171,6 +179,7 @@ export default {
           category: "🎮 PlayStation Powerhouse",
           image: "https://img.antaranews.com/cache/1200x800/2018/08/PS4-Pro.jpg.webp",
           specs: ["4.2 TFLOPS GPU", "1TB HDD", "4K Upscaling"],
+          stock: "Ready",
         },
         {
           id: 8,
@@ -180,6 +189,7 @@ export default {
           category: "🎮 PlayStation Powerhouse",
           image: "https://akcdn.detik.net.id/community/media/visual/2024/09/12/ps5_169.webp?w=700&q=90",
           specs: ["No Disc Drive", "825GB SSD", "4K Gaming"],
+          stock: "Ready",
         },
         {
           id: 9,
@@ -189,6 +199,7 @@ export default {
           category: "🎮 PlayStation Powerhouse",
           image: "https://i0.wp.com/www.gamezone.co.id/wp-content/uploads/2017/11/ps_vita_new_slim_wi-fi-1.jpg?fit=760%2C473&ssl=1",
           specs: ["5-inch OLED", "Touchscreen", "Remote Play"],
+          stock: "Kosong",
         },
         {
           id: 10,
@@ -198,6 +209,7 @@ export default {
           category: "🎮 PlayStation Powerhouse",
           image: "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//108/MTA-38389437/no_brand_sony_playstation_portable_3000_-_psp_3000_16_gb_-_psp_16gb_____________________________________________________________________________________________full01_qmq6qc3.jpg",
           specs: ["4.3-inch LCD", "UMD Drive", "Multimedia Features"],
+          stock: "Kosong",
         },
         {
           id: 11,
@@ -206,7 +218,8 @@ export default {
           brand: "Microsoft",
           category: "🟩 Xbox Universe",
           image: "https://imageio.forbes.com/blogs-images/erikkain/files/2017/11/xbox-one-x.jpg?format=jpg&height=900&width=1600&fit=bounds",
-          specs: ["6 TFLOPS GPU", "1TB HDD", "4K UHD Blu-ray"]
+          specs: ["6 TFLOPS GPU", "1TB HDD", "4K UHD Blu-ray"],
+          stock: "Ready",
         },
         {
           id: 12,
@@ -215,7 +228,8 @@ export default {
           brand: "Microsoft",
           category: "🟩 Xbox Universe",
           image: "https://images-cdn.ubuy.co.id/66aafaba562fd2552837a847-pre-owned-microsoft-xbox-one-s-1tb.jpg",
-          specs: ["1TB HDD", "1080p Gaming", "4K UHD Blu-ray"]
+          specs: ["1TB HDD", "1080p Gaming", "4K UHD Blu-ray"],
+          stock: "Ready",
         },
         {
           id: 13,
@@ -224,7 +238,8 @@ export default {
           brand: "Microsoft",
           category: "🟩 Xbox Universe",
           image: "https://i.insider.com/5fa3eee9f7d1cb0019e39edd?width=1018&format=jpeg",
-          specs: ["4 TFLOPS GPU", "512GB SSD", "1440p Gaming"]
+          specs: ["4 TFLOPS GPU", "512GB SSD", "1440p Gaming"],
+          stock: "Ready",
         },
         {
           id: 14,
@@ -233,7 +248,8 @@ export default {
           brand: "Microsoft",
           category: "🟩 Xbox Universe",
           image: "https://images-cdn.ubuy.co.id/65e978f5455678301d52711a-pre-owned-microsoft-xbox-360-60gb-pro.jpg",
-          specs: ["512MB RAM", "20GB HDD", "720p Gaming"]
+          specs: ["512MB RAM", "20GB HDD", "720p Gaming"],
+          stock: "Kosong",
         },
         {
           id: 15,
@@ -242,7 +258,8 @@ export default {
           brand: "Microsoft",
           category: "🟩 Xbox Universe",
           image: "https://i5.walmartimages.com/seo/Restored-Xbox-360-Elite-500GB-Gaming-Console-Black-885370889277-Refurbished_865ddc6f-3ab0-4ecc-8a12-e5403bc46576.b8e1effe415660f2b34a36db0d4b21ec.jpeg",
-          specs: ["120GB HDD", "1080p Gaming", "HDMI Output"]
+          specs: ["120GB HDD", "1080p Gaming", "HDMI Output"],
+          stock: "Kosong",
         },
         {
           id: 16,
@@ -251,7 +268,8 @@ export default {
           brand: "Microsoft",
           category: "🟩 Xbox Universe",
           image: "https://images.tokopedia.net/img/cache/500-square/product-1/2018/10/1/272055672/272055672_2808661a-98bf-47c6-aa0d-da4a62d6e7b5_455_455.jpg",
-          specs: ["8-core AMD CPU", "500GB HDD", "1080p Gaming"]
+          specs: ["8-core AMD CPU", "500GB HDD", "1080p Gaming"],
+          stock: "Ready",
         },
         {
           id: 17,
@@ -260,7 +278,8 @@ export default {
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
           image: "https://down-id.img.susercontent.com/file/id-11134207-7qul6-ljy3daam9o9ufd",
-          specs: ["5.5-inch LCD", "Portable Mode", "No TV Dock"]
+          specs: ["5.5-inch LCD", "Portable Mode", "No TV Dock"],
+          stock: "Ready",
         },
         {
           id: 18,
@@ -269,7 +288,8 @@ export default {
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
           image: "https://www.psegameshop.com/wp-content/uploads/2022/06/Nintendo-Switch-Pro-Controller-Monster-Hunter-Rise-Sunbreak-Edition-1.jpg",
-          specs: ["Wireless Controller", "HD Rumble", "Motion Controls"]
+          specs: ["Wireless Controller", "HD Rumble", "Motion Controls"],
+          stock: "Ready",
         },
         {
           id: 19,
@@ -278,7 +298,8 @@ export default {
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
           image: "https://images.tokopedia.net/img/cache/700/OJWluG/2022/6/24/6986517e-9687-4a69-bb5a-440c418f2f23.jpg?ect=4g",
-          specs: ["Dual-screen gameplay", "Wii U GamePad", "HD Graphics"]
+          specs: ["Dual-screen gameplay", "Wii U GamePad", "HD Graphics"],
+          stock: "Kosong",
         },
         {
           id: 20,
@@ -287,7 +308,8 @@ export default {
           brand: "Nintendo",
           category: "🍄 Nintendo Magic",
           image: "https://down-id.img.susercontent.com/file/d2acba54d7bac4439c5b914bf9a8f991",
-          specs: ["Wireless Controller", "Ergonomic Design", "HD Rumble"]
+          specs: ["Wireless Controller", "Ergonomic Design", "HD Rumble"],
+          stock: "Ready",
         },
         {
           id: 21,
@@ -296,7 +318,8 @@ export default {
           brand: "GPD",
           category: "💻 Handheld PC Heroes",
           image: "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2021/4/24/4ef5f38a-5679-486c-9217-e7d331552ae1.jpg",
-          specs: ["Intel i5-1135G7", "8GB RAM", "512GB SSD", "5.5-inch Touchscreen"]
+          specs: ["Intel i5-1135G7", "8GB RAM", "512GB SSD", "5.5-inch Touchscreen"],
+          stock: "Ready",
         },
         {
           id: 22,
@@ -305,7 +328,8 @@ export default {
           brand: "GPD",
           category: "💻 Handheld PC Heroes",
           image: "https://nwzimg.wezhan.hk/contents/sitefiles3601/18006016/images/451210.png",
-          specs: ["Intel Core m3-7Y30", "8GB RAM", "128GB SSD", "6-inch Touchscreen"]
+          specs: ["Intel Core m3-7Y30", "8GB RAM", "128GB SSD", "6-inch Touchscreen"],
+          stock: "Kosong",
         },
         {
           id: 23,
@@ -314,7 +338,8 @@ export default {
           brand: "Ayaneo",
           category: "💻 Handheld PC Heroes",
           image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXenkCzYTH1OY_bNMRRaoh13FmdeT_BMohg0gS-rl8RQ&s&ec=72940545",
-          specs: ["AMD Ryzen 5 3500U", "16GB RAM", "512GB SSD", "7-inch Touchscreen"]
+          specs: ["AMD Ryzen 5 3500U", "16GB RAM", "512GB SSD", "7-inch Touchscreen"],
+          stock: "Ready",
         },
         {
           id: 24,
@@ -323,7 +348,8 @@ export default {
           brand: "One-Netbook",
           category: "💻 Handheld PC Heroes",
           image: "https://onexplayerstore.com/cdn/shop/files/4_4ea280a7-79dc-4f9d-ab9d-6d1ba4b168ca.png?v=1716797081",
-          specs: ["Intel Core i7-1165G7", "16GB RAM", "1TB SSD", "8.4-inch Touchscreen"]
+          specs: ["Intel Core i7-1165G7", "16GB RAM", "1TB SSD", "8.4-inch Touchscreen"],
+          stock: "Ready",
         },
         {
           id: 25,
@@ -332,7 +358,8 @@ export default {
           brand: "GPD",
           category: "💻 Handheld PC Heroes",
           image: "https://gpdstore.net/wp-content/uploads/2024/12/GPD-WIN-MAX-2-2025-INFOGRAPHIC-NEW-GENERIC-01.png",
-          specs: ["Intel i7-1165G7", "16GB RAM", "512GB SSD", "8-inch Touchscreen"]
+          specs: ["Intel i7-1165G7", "16GB RAM", "512GB SSD", "8-inch Touchscreen"],
+          stock: "Ready",
         },
         {
           id: 26,
@@ -342,6 +369,7 @@ export default {
           category: "✨ Explore More Consoles",
           image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShsvsuHl9YWwTHsuK0yWafyIW6v4WVBQza_v7CsVZogQ&s&ec=72940545",
           specs: ["2600 Games Library", "Joystick Controllers", "Woodgrain Finish"],
+          stock: "Kosong",
         },
         {
           id: 27,
@@ -351,6 +379,7 @@ export default {
           category: "✨ Explore More Consoles",
           image: "https://upload.wikimedia.org/wikipedia/commons/a/a1/Sega-Mega-Drive-JP-Mk1-Console-Set.jpg",
           specs: ["16-bit Console", "Iconic Games Library", "Classic Controllers"],
+          stock: "Kosong",
         },
         {
           id: 28,
@@ -360,6 +389,7 @@ export default {
           category: "✨ Explore More Consoles",
           image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Wikipedia_SNES_PAL.jpg/250px-Wikipedia_SNES_PAL.jpg",
           specs: ["16-bit Console", "Super Mario World", "Two Controllers"],
+          stock: "Ready",
         },
         {
           id: 29,
@@ -369,6 +399,7 @@ export default {
           category: "✨ Explore More Consoles",
           image: "https://neogeomuseum.snk-corp.co.jp/english/whats/img/p_whats02_01.jpg",
           specs: ["AES System", "Arcade Quality", "Iconic Games Library"],
+          stock: "Kosong",
         },
         {
           id: 30,
@@ -377,6 +408,7 @@ export default {
           category: "✨ Explore More Consoles",
           image: "https://upload.wikimedia.org/wikipedia/commons/8/81/Dreamcast-Console-Set.jpg",
           specs: ["128-bit System", "VGA Output", "Virtual Fighter 3"],
+          stock: "Kosong",
         },
         {
           id: 31,
@@ -386,6 +418,7 @@ export default {
           category: "🟩 Xbox Universe",
           image: "https://down-id.img.susercontent.com/file/sg-11134201-7rbmb-ln2utcc0bol1c4",
           specs: ["12 TFLOPS GPU", "1TB SSD", "4K Gaming"],
+          stock: "Ready",
         },
         {
           id: 32,
@@ -395,6 +428,7 @@ export default {
           category: "🟩 Xbox Universe",
           image: "https://xboxwire.thesourcemediaassets.com/sites/2/2020/09/XboxSeriesS_HERO.jpg",
           specs: ["4 TFLOPS GPU", "512GB SSD", "1440p Gaming"],
+          stock: "Ready",
         },
         {
           id: 33,
@@ -404,6 +438,7 @@ export default {
           category: "🎮 PlayStation Powerhouse",
           image: "https://www.cnet.com/a/img/resize/88d0ac012d8023385c3064e754cf09d2afc08c0f/hub/2014/01/30/f371d294-a5c4-11e3-a24e-d4ae52e62bcc/sony-ps-vita-slim-14.jpg?auto=webp&width=1200",
           specs: ["5-inch LCD", "Slim Design", "Wi-Fi + 3G Model"],
+          stock: "Kosong",
         },
         {
           id: 34,
@@ -413,6 +448,7 @@ export default {
           category: "💻 Handheld PC Heroes",
           image: "https://i.ebayimg.com/images/g/g18AAOSwZq5m0guO/s-l400.png",
           specs: ["Snapdragon G3X", "5G Connectivity", "6.8-inch AMOLED"],
+          stock: "Ready",
         },
         {
           id: 35,
@@ -422,6 +458,7 @@ export default {
           category: "💻 Handheld PC Heroes",
           image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrPEAFC5S8qJZ6BJlTieMxm999DST6IWnlHHS-vQOYEw&s&ec=72940545",
           specs: ["Intel Atom x7", "8GB RAM", "128GB SSD", "7-inch Display"],
+          stock: "Kosong",
         },
         {
           id: 36,
@@ -431,6 +468,7 @@ export default {
           category: "💻 Handheld PC Heroes",
           image: "https://www.cnet.com/a/img/resize/972706c237fada8f3a0f4bed22e7789858d414b7/hub/2020/01/02/ee0faff3-0d1b-45fb-8ec9-171a5c9acd2a/08-alienware-concept-ufo-gaming-device.jpg?auto=webp&fit=crop&height=900&width=1200",
           specs: ["Intel Core i7", "16GB RAM", "512GB SSD", "8-inch Display"],
+          stock: "Kosong",
         },
         {
           id: 37,
@@ -440,6 +478,7 @@ export default {
           category: "💻 Handheld PC Heroes",
           image: "https://cdn.mos.cms.futurecdn.net/bmu2ZY5FDLU4ayVe5eg5yc.jpg",
           specs: ["Snapdragon 845", "4GB RAM", "32GB Storage", "5.98-inch Display"],
+          stock: "Ready",
         },
         {
           id: 38,
@@ -449,6 +488,7 @@ export default {
           category: "💻 Handheld PC Heroes",
           image: "https://droix.net/wp-content/uploads/2023/09/AYN-ODIN-CLEAR_WHITE-DONE-LISTING-IMAGE-1.png",
           specs: ["Snapdragon 865", "8GB RAM", "128GB Storage", "6-inch Display"],
+          stock: "Ready",
         },
         {
           id: 39,
@@ -458,6 +498,7 @@ export default {
           category: "✨ Explore More Consoles",
           image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzRjN4iXeOUrtUOGX3mCJoOEYAjls96Np5gck5-5YtcA&s&ec=72940545",
           specs: ["64-bit Console", "Alien vs. Predator", "Jaguar Controller"],
+          stock: "Kosong",
         },
         {
           id: 40,
@@ -467,6 +508,7 @@ export default {
           category: "✨ Explore More Consoles",
           image: "https://images.computerhistory.org/revonline/images/102626599p-03-05.jpg?w=600",
           specs: ["8-bit Console", "Classic Games", "Expansion Modules"],
+          stock: "Kosong",
         },
         {
           id: 41,
@@ -476,6 +518,7 @@ export default {
           category: "✨ Explore More Consoles",
           image: "https://upload.wikimedia.org/wikipedia/commons/a/a2/Neo-Geo-CD-TopLoader-wController-FL.jpg",
           specs: ["CD-based Games", "128-bit Graphics", "Dual Joysticks"],
+          stock: "Kosong",
         },
         {
           id: 42,
@@ -485,6 +528,7 @@ export default {
           category: "✨ Explore More Consoles",
           image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpyuDuyR7dgwRx_R7wEBrNOHY4lngVgpkha8ahtGyoZQ&s&ec=72940545",
           specs: ["32-bit Console", "2D/3D Capabilities", "Iconic Games"],
+          stock: "Kosong",
         },
         {
           id: 43,
@@ -494,6 +538,7 @@ export default {
           category: "🎮 PlayStation Powerhouse",
           image: "https://jagatplay.com/wp-content/uploads/2018/09/playstation-classic2-600x400.jpg",
           specs: ["20 Pre-installed Games", "Mini Design", "HDMI Output"],
+          stock: "Ready",
         },
         {
           id: 44,
@@ -503,6 +548,7 @@ export default {
           category: "🍄 Nintendo Magic",
           image: "https://i.guim.co.uk/img/media/96a7a0b6779452c2e29ecb1b1d7bb8ae8b37fd88/63_0_1489_894/master/1489.jpg?width=620&dpr=2&s=none&crop=none",
           specs: ["2.9-inch Display", "Backlit Screen", "Link Cable Support"],
+          stock: "Ready",
         },
         {
           id: 45,
@@ -512,6 +558,7 @@ export default {
           category: "🍄 Nintendo Magic",
           image: "https://images-cdn.ubuy.qa/635d16472e74682cd7382b12-game-boy-color-kiwi-renewed.jpg",
           specs: ["Color Screen", "Backward Compatibility", "Link Cable Support"],
+          stock: "Kosong",
         },
         {
           id: 46,
@@ -521,6 +568,7 @@ export default {
           category: "🎮 PlayStation Powerhouse",
           image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/PlayStation-TV-BL.jpg/330px-PlayStation-TV-BL.jpg",
           specs: ["PlayStation Vita Games", "Remote Play", "HDMI Output"],
+          stock: "Kosong",
         },
         {
           id: 47,
@@ -530,6 +578,7 @@ export default {
           category: "🍄 Nintendo Magic",
           image: "https://m.media-amazon.com/images/I/71itkDwgyyL._AC_UF1000,1000_QL80_.jpg",
           specs: ["21 Pre-installed Games", "Mini Design", "HDMI Output"],
+          stock: "Ready",
         },
         {
           id: 48,
@@ -539,6 +588,7 @@ export default {
           category: "✨ Explore More Consoles",
           image: "https://sm.pcmag.com/t/pcmag_au/review/s/sega-genes/sega-genesis-mini-2_7mbp.1920.jpg",
           specs: ["42 Pre-installed Games", "Mini Design", "HDMI Output"],
+          stock: "Ready",
         },
         {
           id: 49,
@@ -548,6 +598,7 @@ export default {
           category: "🍄 Nintendo Magic",
           image: "https://m.media-amazon.com/images/I/61xoifvahFL.jpg",
           specs: ["64-bit System", "4 Controller Ports", "Iconic Games"],
+          stock: "Kosong",
         },
         {
           id: 50,
@@ -557,6 +608,7 @@ export default {
           category: "🍄 Nintendo Magic",
           image: "https://assets.nintendo.com/image/upload/q_auto:best/f_auto/dpr_2.0/ncom/en_US/products/accessories/nintendo-switch/controllers/other-controllers/n64-controller/114294-switch-nso-n64-controller-front-view-1200x675",
           specs: ["Analog Stick", "Z Button", "Iconic Design"],
+          stock: "Ready",
         },
         {
           id: 51,
@@ -566,6 +618,7 @@ export default {
           category: "💻 Handheld PC Heroes",
           image: "https://gpdstore.net/wp-content/uploads/2024/12/GPD-WIN-4-2025-LISTING-GENERIC-01.png",
           specs: ["AMD Ryzen 7 6800U", "16GB RAM", "512GB SSD", "6-inch Touchscreen"],
+          stock: "Ready",
         },
         {
           id: 52,
@@ -575,6 +628,7 @@ export default {
           category: "💻 Handheld PC Heroes",
           image: "https://static1.xdaimages.com/wordpress/wp-content/uploads/2022/11/one-xplayer-mini-pro.jpg",
           specs: ["Intel Core i7", "16GB RAM", "512GB SSD", "7-inch Display"],
+          stock: "Ready",
         },
         {
           id: 53,
@@ -584,6 +638,7 @@ export default {
           category: "💻 Handheld PC Heroes",
           image: "https://down-id.img.susercontent.com/file/id-11134207-7r98p-lo6hqyj6sp4432",
           specs: ["Snapdragon 865", "6GB RAM", "64GB Storage", "5.98-inch Display"],
+          stock: "Ready",
         },
         {
           id: 54,
@@ -593,11 +648,11 @@ export default {
           category: "✨ Explore More Consoles",
           image: "https://thepihut.com/cdn/shop/products/gpi-case-2-for-cm4-deluxe-edition-with-dock-retroflag-104830-31588494704835_grande.jpg?v=1646517796",
           specs: ["Retro Design", "Raspberry Pi Compatible", "Portable Gaming"],
+          stock: "Kosong",
         },
       ],
     };
   },
-  // ...existing mounted, computed, methods, watch...
   mounted() {
     if (this.cards && this.cards.length > 0) {
       this.selectCategory(this.cards[0]);
@@ -658,6 +713,14 @@ export default {
       this.isModalVisible = false;
       this.selectedProduct = null;
     },
+    getStockClass(stockStatus) {
+      if (stockStatus === "Ready") {
+        return 'stock-ready';
+      } else if (stockStatus === "Kosong") {
+        return 'stock-kosong';
+      }
+      return '';
+    }
   },
   watch: {
     isModalVisible(newValue) {
@@ -679,7 +742,6 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 60px 10px;
-  /* background: linear-gradient(to bottom, #050a13, #171e2e); */ /* Hapus background color */
   min-height: 100vh;
   color: #fff;
   font-family: 'Montserrat', sans-serif;
@@ -818,13 +880,29 @@ export default {
   text-shadow: 0 0 6px #00eaff, 0 0 12px #00eaff;
 }
 .console-brand,
-.console-price {
+.console-price{
   color: #fff;
   font-size: 0.97rem;
   margin-bottom: 0.2rem;
   text-shadow: 0 0 4px #00eaff;
 }
+
+.console-stock {
+  color: #fff;
+  font-size: 0.97rem;
+  margin-bottom: 0.2rem;
+}
 .console-price {
+  font-weight: bold;
+}
+
+.stock-ready {
+  color: #28a745; /* Green */
+  font-weight: bold;
+}
+
+.stock-kosong {
+  color: #dc3545; /* Red */
   font-weight: bold;
 }
 
@@ -894,6 +972,9 @@ export default {
 .modal-details-grid {
   font-size: 0.98rem;
   margin-bottom: 0.8rem;
+}
+.modal-details-grid p {
+  margin-bottom: 0.5rem;
 }
 .features-section {
   margin-top: 1rem;
