@@ -5,16 +5,16 @@ export default {
   data() {
     return {
       laptops: [
-        { id: 1, name: "Acer Aspire 3", category: "Low-End", price: 5000000, image: "src/img/Acer Aspire 3.png", description: "A reliable choice for everyday tasks, browsing, and light productivity. Offers good value for its price." },
-        { id: 2, name: "HP 14s", category: "Low-End", price: 6000000, image: "src/img/Hp 14s.png", description: "Compact and lightweight, ideal for students and users on the go. Decent performance for basic applications." },
-        { id: 3, name: "ASUS VivoBook 15", category: "Mid-Range", price: 8000000, image: "src/img/Asus Vivobook 15.png", description: "Balances performance and portability with a stylish design. Suitable for multitasking and moderate creative work." },
-        { id: 4, name: "Lenovo IdeaPad 5", category: "Mid-Range", price: 10000000, image: "src/img/Lenovo IdeaPad 5.png", description: "Offers robust performance with modern features, good for work, study, and entertainment." },
-        { id: 5, name: "Dell Inspiron 15", category: "Mid-Range", price: 12000000, image: "src/img/Dell Inspiron 15.png", description: "A versatile laptop known for its reliability and solid build quality. Handles demanding applications smoothly." },
-        { id: 6, name: "MacBook Air M1", category: "High-End", price: 15000000, image: "src/img/MacBook Air M1.png", description: "Revolutionary performance and battery life with Apple's M1 chip. Sleek, light, and powerful for professionals and creatives." },
-        { id: 7, name: "ASUS ROG Zephyrus G14", category: "High-End", price: 20000000, image: "src/img/ASUSROGZephyrusG14.png", description: "A gaming powerhouse in a compact form factor. Delivers exceptional performance for gaming and intensive tasks." },
-        { id: 8, name: "Dell XPS 13", category: "High-End", price: 25000000, image: "src/img/Dell XPS 13.png", description: "Premium ultrabook with a stunning display and exceptional build quality. Perfect for professionals needing portability and power." },
-        { id: 9, name: "MacBook Pro 16-inch", category: "High-End", price: 30000000, image: "/src/img/MacBook Pro 16-inch.png", description: "The ultimate Mac laptop for demanding creative workflows, offering incredible power, a large display, and long battery life." },
-        { id: 10, name: "Razer Blade 15", category: "High-End", price: 35000000, image: "src/img/Razer Blade 15.png", description: "Sleek gaming laptop with top-tier performance, advanced cooling, and a high-refresh-rate display for an immersive experience." },
+        { id: 1, name: "Acer Aspire 3", category: "Low-End", price: 5000000, image: "src/img/Acer Aspire 3.png", description: "AMD Ryzen 3 3250U, RAM 4GB, SSD 256GB, Layar 15.6\" FHD, Radeon Graphics" },
+        { id: 2, name: "HP 14s", category: "Low-End", price: 6000000, image: "src/img/Hp 14s.png", description: "Intel Core i3-1115G4, RAM 8GB, SSD 512GB, Layar 14\" FHD, Intel UHD Graphics" },
+        { id: 3, name: "ASUS VivoBook 15", category: "Mid-Range", price: 8000000, image: "src/img/Asus Vivobook 15.png", description: "Intel Core i5-1135G7, RAM 8GB, SSD 512GB, Layar 15.6\" FHD, Intel Iris Xe Graphics" },
+        { id: 4, name: "Lenovo IdeaPad 5", category: "Mid-Range", price: 10000000, image: "src/img/Lenovo IdeaPad 5.png", description: "AMD Ryzen 5 5500U, RAM 8GB, SSD 512GB, Layar 14\" FHD, Radeon Graphics" },
+        { id: 5, name: "Dell Inspiron 15", category: "Mid-Range", price: 12000000, image: "src/img/Dell Inspiron 15.png", description: "Intel Core i7-1165G7, RAM 16GB, SSD 512GB, Layar 15.6\" FHD, Intel Iris Xe Graphics" },
+        { id: 6, name: "MacBook Air M1", category: "High-End", price: 15000000, image: "src/img/MacBook Air M1.png", description: "Apple M1, RAM 8GB, SSD 256GB, Layar 13.3\" Retina, GPU 7-core/8-core" },
+        { id: 7, name: "ASUS ROG Zephyrus G14", category: "High-End", price: 20000000, image: "src/img/ASUSROGZephyrusG14.png", description: "AMD Ryzen 7 4800HS, RAM 16GB, SSD 512GB, Layar 14\" FHD 120Hz, NVIDIA GTX 1650/RTX 2060" },
+        { id: 8, name: "Dell XPS 13", category: "High-End", price: 25000000, image: "src/img/Dell XPS 13.png", description: "Intel Core i7-1165G7, RAM 16GB, SSD 1TB, Layar 13.4\" FHD+, Intel Iris Xe Graphics" },
+        { id: 9, name: "MacBook Pro 16-inch", category: "High-End", price: 30000000, image: "/src/img/MacBook Pro 16-inch.png", description: "Apple M1 Pro, RAM 16GB, SSD 512GB, Layar 16.2\" Liquid Retina XDR, GPU 16-core" },
+        { id: 10, name: "Razer Blade 15", category: "High-End", price: 35000000, image: "src/img/Razer Blade 15.png", description: "Intel Core i7-11800H, RAM 16GB, SSD 1TB, Layar 15.6\" FHD 144Hz, NVIDIA RTX 3060" },
       ],
       searchQuery: "",
       selectedCategoryFilter: "", // Renamed for clarity
@@ -137,18 +137,14 @@ export default {
           <h2 :id="'modal-title-' + selectedLaptopForModal.id" class="modal-laptop-title">{{ selectedLaptopForModal.name }}</h2>
           <p><strong>Kategori:</strong> {{ selectedLaptopForModal.category }}</p>
           <p><strong>Harga:</strong> {{ formatPrice(selectedLaptopForModal.price) }}</p>
-          <p><strong>Deskripsi:</strong> {{ selectedLaptopForModal.description }}</p>
-          <!-- You can add more detailed specs here if you add them to your data -->
-          <!-- 
-          <div v-if="selectedLaptopForModal.specs" class="specs-section">
+          <div class="specs-section">
             <h4>Spesifikasi Detail:</h4>
             <ul>
-              <li v-for="(value, key) in selectedLaptopForModal.specs" :key="key">
-                <strong>{{ key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()) }}:</strong> {{ value }}
+              <li v-for="spec in selectedLaptopForModal.description.split(',')" :key="spec.trim()">
+                {{ spec.trim() }}
               </li>
             </ul>
           </div>
-          -->
         </div>
       </div>
     </div>
@@ -442,8 +438,12 @@ export default {
 }
 .specs-section h4 {
   font-family: 'Orbitron', sans-serif;
-  color: var(--secondary-color);
+  color: var(--primary-color);
   margin-bottom: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 .specs-section ul {
   list-style: none;
