@@ -5,16 +5,16 @@ export default {
   data() {
     return {
       laptops: [
-        { id: 1, name: "Acer Aspire 3", category: "Low-End", price: 5000000, image: "src/img/Acer Aspire 3.png", description: "AMD Ryzen 3 3250U, RAM 4GB, SSD 256GB, Layar 15.6\" FHD, Radeon Graphics" },
-        { id: 2, name: "HP 14s", category: "Low-End", price: 6000000, image: "src/img/Hp 14s.png", description: "Intel Core i3-1115G4, RAM 8GB, SSD 512GB, Layar 14\" FHD, Intel UHD Graphics" },
-        { id: 3, name: "ASUS VivoBook 15", category: "Mid-Range", price: 8000000, image: "src/img/Asus Vivobook 15.png", description: "Intel Core i5-1135G7, RAM 8GB, SSD 512GB, Layar 15.6\" FHD, Intel Iris Xe Graphics" },
-        { id: 4, name: "Lenovo IdeaPad 5", category: "Mid-Range", price: 10000000, image: "src/img/Lenovo IdeaPad 5.png", description: "AMD Ryzen 5 5500U, RAM 8GB, SSD 512GB, Layar 14\" FHD, Radeon Graphics" },
-        { id: 5, name: "Dell Inspiron 15", category: "Mid-Range", price: 12000000, image: "src/img/Dell Inspiron 15.png", description: "Intel Core i7-1165G7, RAM 16GB, SSD 512GB, Layar 15.6\" FHD, Intel Iris Xe Graphics" },
-        { id: 6, name: "MacBook Air M1", category: "High-End", price: 15000000, image: "src/img/MacBook Air M1.png", description: "Apple M1, RAM 8GB, SSD 256GB, Layar 13.3\" Retina, GPU 7-core/8-core" },
-        { id: 7, name: "ASUS ROG Zephyrus G14", category: "High-End", price: 20000000, image: "src/img/ASUSROGZephyrusG14.png", description: "AMD Ryzen 7 4800HS, RAM 16GB, SSD 512GB, Layar 14\" FHD 120Hz, NVIDIA GTX 1650/RTX 2060" },
-        { id: 8, name: "Dell XPS 13", category: "High-End", price: 25000000, image: "src/img/Dell XPS 13.png", description: "Intel Core i7-1165G7, RAM 16GB, SSD 1TB, Layar 13.4\" FHD+, Intel Iris Xe Graphics" },
-        { id: 9, name: "MacBook Pro 16-inch", category: "High-End", price: 30000000, image: "/src/img/MacBook Pro 16-inch.png", description: "Apple M1 Pro, RAM 16GB, SSD 512GB, Layar 16.2\" Liquid Retina XDR, GPU 16-core" },
-        { id: 10, name: "Razer Blade 15", category: "High-End", price: 35000000, image: "src/img/Razer Blade 15.png", description: "Intel Core i7-11800H, RAM 16GB, SSD 1TB, Layar 15.6\" FHD 144Hz, NVIDIA RTX 3060" },
+        { id: 1, name: "Acer Aspire 3", category: "Low-End", price: 5000000, image: "src/img/Acer Aspire 3.png", description: "AMD Ryzen 3 3250U, RAM 4GB, SSD 256GB, Layar 15.6\" FHD, Radeon Graphics", stock: 12 },
+        { id: 2, name: "HP 14s", category: "Low-End", price: 6000000, image: "src/img/Hp 14s.png", description: "Intel Core i3-1115G4, RAM 8GB, SSD 512GB, Layar 14\" FHD, Intel UHD Graphics", stock: 0 },
+        { id: 3, name: "ASUS VivoBook 15", category: "Mid-Range", price: 8000000, image: "src/img/Asus Vivobook 15.png", description: "Intel Core i5-1135G7, RAM 8GB, SSD 512GB, Layar 15.6\" FHD, Intel Iris Xe Graphics", stock: 10 },
+        { id: 4, name: "Lenovo IdeaPad 5", category: "Mid-Range", price: 10000000, image: "src/img/Lenovo IdeaPad 5.png", description: "AMD Ryzen 5 5500U, RAM 8GB, SSD 512GB, Layar 14\" FHD, Radeon Graphics", stock: 0 },
+        { id: 5, name: "Dell Inspiron 15", category: "Mid-Range", price: 12000000, image: "src/img/Dell Inspiron 15.png", description: "Intel Core i7-1165G7, RAM 16GB, SSD 512GB, Layar 15.6\" FHD, Intel Iris Xe Graphics", stock: 9 },
+        { id: 6, name: "MacBook Air M1", category: "High-End", price: 15000000, image: "src/img/MacBook Air M1.png", description: "Apple M1, RAM 8GB, SSD 256GB, Layar 13.3\" Retina, GPU 7-core/8-core", stock: 0 },
+        { id: 7, name: "ASUS ROG Zephyrus G14", category: "High-End", price: 20000000, image: "src/img/ASUSROGZephyrusG14.png", description: "AMD Ryzen 7 4800HS, RAM 16GB, SSD 512GB, Layar 14\" FHD 120Hz, NVIDIA GTX 1650/RTX 2060", stock: 4 },
+        { id: 8, name: "Dell XPS 13", category: "High-End", price: 25000000, image: "src/img/Dell XPS 13.png", description: "Intel Core i7-1165G7, RAM 16GB, SSD 1TB, Layar 13.4\" FHD+, Intel Iris Xe Graphics", stock: 0 },
+        { id: 9, name: "MacBook Pro 16-inch", category: "High-End", price: 30000000, image: "/src/img/MacBook Pro 16-inch.png", description: "Apple M1 Pro, RAM 16GB, SSD 512GB, Layar 16.2\" Liquid Retina XDR, GPU 16-core", stock: 3 },
+        { id: 10, name: "Razer Blade 15", category: "High-End", price: 35000000, image: "src/img/Razer Blade 15.png", description: "Intel Core i7-11800H, RAM 16GB, SSD 1TB, Layar 15.6\" FHD 144Hz, NVIDIA RTX 3060", stock: 0 },
       ],
       searchQuery: "",
       selectedCategoryFilter: "", // Renamed for clarity
@@ -37,13 +37,10 @@ export default {
         // Get filtered laptops for this category
         const laptopsInCategory = this.filteredLaptops.filter(laptop => laptop.category === categoryName);
         
-        // Find the first image for this category from the original (unfiltered) laptop list
-        const firstLaptopOfCategory = this.laptops.find(l => l.category === categoryName);
-        
         return {
           name: categoryName,
           laptops: laptopsInCategory,
-          backgroundImage: firstLaptopOfCategory ? firstLaptopOfCategory.image : 'https://via.placeholder.com/800x200?text=No+Image',
+          backgroundImage: '', // Tidak ada gambar latar belakang
         };
       });
       // Only return categories that either have laptops after filtering or if no category filter is active
@@ -94,12 +91,6 @@ export default {
     <div v-if="filteredLaptops.length > 0" class="categories-container">
       <div v-for="categoryData in categoriesWithLaptops" :key="categoryData.name" class="category-section">
         <div class="category-header">
-          <img 
-            :src="categoryData.backgroundImage" 
-            class="category-background-image" 
-            :alt="`${categoryData.name} category background`" 
-            aria-hidden="true" 
-          />
           <h3 class="category-title">{{ categoryData.name }}</h3>
         </div>
         
@@ -137,6 +128,12 @@ export default {
           <h2 :id="'modal-title-' + selectedLaptopForModal.id" class="modal-laptop-title">{{ selectedLaptopForModal.name }}</h2>
           <p><strong>Kategori:</strong> {{ selectedLaptopForModal.category }}</p>
           <p><strong>Harga:</strong> {{ formatPrice(selectedLaptopForModal.price) }}</p>
+          <p>
+            <strong>Status Stok:</strong>
+            <span :style="{color: selectedLaptopForModal.stock > 0 ? '#00ff99' : '#ff3b3b'}">
+              {{ selectedLaptopForModal.stock > 0 ? 'Ready' : 'Kosong' }}
+            </span>
+          </p>
           <div class="specs-section">
             <h4>Spesifikasi Detail:</h4>
             <ul>
@@ -262,18 +259,6 @@ export default {
   overflow: hidden; /* Crucial for containing the absolute positioned image */
   background-color: var(--background-dark2); /* Fallback if image is broken */
   border: 1px solid rgba(var(--primary-color-rgb), 0.2);
-}
-
-.category-background-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Cover the area, might crop */
-  opacity: 0.15; /* Translucency */
-  z-index: 1; /* Behind the title */
-  pointer-events: none; /* Image itself is not interactive */
 }
 
 .category-title {
