@@ -9,7 +9,7 @@ export default {
           name: "Paket Gaming Low-End",
           category: "Gaming",
           price: 4500000,
-          image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/7/7/1b7b6b6d-7e1a-4b7c-8e2e-7e1e6e6e6e6e.jpg",
+          image: "/src/imgcomp/gaming1.png",
           description: "PC gaming hemat untuk game eSports seperti Valorant, Dota 2, dan CS:GO. Cocok untuk pelajar dan warnet.",
           specs: {
             CPU: "Intel Core i3 10100F",
@@ -25,7 +25,7 @@ export default {
           name: "Paket Gaming Mid-End",
           category: "Gaming",
           price: 8500000,
-          image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/7/7/2b7b6b6d-7e1a-4b7c-8e2e-7e1e6e6e6e6e.jpg",
+          image: "/src/imgcomp/gaming2.png",
           description: "PC gaming untuk game AAA setting medium-high, streaming ringan, dan editing video dasar.",
           specs: {
             CPU: "Intel Core i5 12400F",
@@ -41,7 +41,7 @@ export default {
           name: "Paket Gaming High-End",
           category: "Gaming",
           price: 18500000,
-          image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/7/7/3b7b6b6d-7e1a-4b7c-8e2e-7e1e6e6e6e6e.jpg",
+          image: "/src/imgcomp/gaming3.png",
           description: "PC gaming untuk game AAA ultra, VR, streaming, dan editing profesional.",
           specs: {
             CPU: "AMD Ryzen 7 5800X",
@@ -57,7 +57,7 @@ export default {
           name: "Paket Office Basic",
           category: "Office",
           price: 3500000,
-          image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/7/7/4b7b6b6d-7e1a-4b7c-8e2e-7e1e6e6e6e6e.jpg",
+          image: "/src/imgcomp/office1.png",
           description: "PC untuk kebutuhan kantor, administrasi, browsing, dan meeting online.",
           specs: {
             CPU: "Intel Pentium G6400",
@@ -73,7 +73,7 @@ export default {
           name: "Paket Office Pro",
           category: "Office",
           price: 5500000,
-          image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/7/7/5b7b6b6d-7e1a-4b7c-8e2e-7e1e6e6e6e6e.jpg",
+          image: "/src/imgcomp/office2.png",
           description: "PC office multitasking, cocok untuk desain ringan, Excel berat, dan meeting online.",
           specs: {
             CPU: "Intel Core i3 12100",
@@ -89,7 +89,7 @@ export default {
           name: "Paket Editing & Desain",
           category: "Editing",
           price: 12000000,
-          image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/7/7/6b7b6b6d-7e1a-4b7c-8e2e-7e1e6e6e6e6e.jpg",
+          image: "/src/imgcomp/edit1.png",
           description: "PC untuk editing video, desain grafis, dan rendering 3D ringan.",
           specs: {
             CPU: "AMD Ryzen 5 5600G",
@@ -105,7 +105,7 @@ export default {
           name: "Paket Streaming & Content Creator",
           category: "Streaming",
           price: 15500000,
-          image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/7/7/7b7b6b6d-7e1a-4b7c-8e2e-7e1e6e6e6e6e.jpg",
+          image: "/src/imgcomp/streaming.png",
           description: "PC untuk streaming, recording, dan editing konten YouTube/TikTok.",
           specs: {
             CPU: "Intel Core i7 12700F",
@@ -121,7 +121,7 @@ export default {
           name: "Mining Rig 6 VGA",
           category: "Mining",
           price: 35000000,
-          image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/7/7/8b7b6b6d-7e1a-4b7c-8e2e-7e1e6e6e6e6e.jpg",
+          image: "/src/imgcomp/mining.png",
           description: "Rig mining siap pakai, 6 slot VGA, cocok untuk ETH/altcoin mining.",
           specs: {
             CPU: "Intel Celeron G3930",
@@ -137,7 +137,7 @@ export default {
           name: "Paket Warnet eSports",
           category: "Warnet",
           price: 6500000,
-          image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/7/7/9b7b6b6d-7e1a-4b7c-8e2e-7e1e6e6e6e6e.jpg",
+          image: "/src/imgcomp/warnet.png",
           description: "PC untuk usaha warnet, lancar main eSports dan browsing.",
           specs: {
             CPU: "Intel Core i3 10105F",
@@ -153,7 +153,7 @@ export default {
           name: "Paket Rendering 3D Pro",
           category: "Editing",
           price: 25000000,
-          image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/7/7/10b7b6b6d-7e1a-4b7c-8e2e-7e1e6e6e6e6e.jpg",
+          image: "/src/imgcomp/edit2.png",
           description: "PC untuk rendering 3D berat, animasi, dan arsitektur.",
           specs: {
             CPU: "AMD Ryzen 9 5900X",
@@ -240,12 +240,6 @@ export default {
     <div v-if="filteredPCs.length > 0" class="categories-container">
       <div v-for="categoryData in categoriesWithPCs" :key="categoryData.name" class="category-section">
         <div class="category-header">
-          <img 
-            :src="categoryData.backgroundImage" 
-            class="category-background-image" 
-            :alt="`${categoryData.name} category background`" 
-            aria-hidden="true" 
-          />
           <h3 class="category-title">{{ categoryData.name }}</h3>
         </div>
         
@@ -407,6 +401,7 @@ export default {
   overflow: hidden; /* Crucial for containing the absolute positioned image */
   background-color: var(--background-dark2); /* Fallback if image is broken */
   border: 1px solid rgba(var(--primary-color-rgb), 0.2);
+  background-color: #1e1e1e;
 }
 
 .category-background-image {
