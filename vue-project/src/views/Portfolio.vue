@@ -26,7 +26,7 @@
           type="text"
           v-model="searchQuery"
           placeholder="Search products..."
-          class="form-control"
+          class="form-controls"
         />
         <select v-model="selectedBrand" class="form-control">
           <option value="">All Brands</option>
@@ -595,7 +595,7 @@ export default {
 
 <style scoped>
 .neon-title {
-  font-size: 4rem;
+  font-size: 3rem;
   font-weight: bold;
   color: #f5f5f5 !important;
   text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
@@ -646,7 +646,15 @@ export default {
   padding: 0.5rem;
   border: 1px solid #00d4ff;
   border-radius: 5px;
-  background: #1b263b;
+  background:   #1b263b;
+  color: #00d4ff;
+}
+
+.form-controls {
+  padding: 0.5rem;
+  border: 1px solid #00d4ff;
+  border-radius: 5px;
+  background:   #ffffff;
   color: #00d4ff;
 }
 
@@ -741,5 +749,109 @@ export default {
 .close-button:hover {
   background: #00a3cc;
   transform: scale(1.1);
+}
+
+/* Responsive Table & Card Layout */
+@media (max-width: 900px) {
+  .product-table th,
+  .product-table td {
+    font-size: 0.9rem;
+    padding: 0.3rem;
+  }
+  .table-thumbnail {
+    max-width: 60px;
+  }
+}
+
+@media (max-width: 700px) {
+  .filter-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .table-background {
+    padding: 0.4rem;
+  }
+  .product-table {
+    font-size: 0.9rem;
+  }
+}
+
+/* Tabel jadi scrollable di layar kecil */
+@media (max-width: 600px) {
+  .table-background {
+    overflow-x: auto;
+    padding: 0.1rem;
+  }
+  .product-table {
+    min-width: 300px;
+  }
+}
+
+/* Tampilkan produk sebagai card/grid di mobile */
+@media (max-width: 500px) {
+  .product-table,
+  .product-table thead,
+  .product-table tbody,
+  .product-table th,
+  .product-table tr {
+    display: block;
+    width: 100%;
+  }
+  .product-table thead {
+    display: none;
+  }
+  .product-table tr {
+    margin-bottom: 0.9rem;
+    border: 1px solid #00d4ff;
+    border-radius: 8px;
+    background: #1b263b;
+    box-shadow: 0 2px 8px rgba(0,212,255,0.08);
+    padding: 0.5rem 0.0rem;
+  }
+  .product-table td {
+    display: flex;
+    text-align: left;
+    justify-content: flex-start;
+    padding: 0.18rem 0.05rem 0.18rem 0.05rem; /* padding kiri-kanan sangat tipis */
+    border: none;
+    position: relative;
+    font-size: 0.93em;
+    background: none;
+  }
+  .product-table td:before {
+    content: attr(data-label);
+    min-width: 70px; /* lebih kecil supaya label tidak makan tempat */
+    margin-right: 0.3rem;
+    font-size: 0.9em;
+  }
+  .table-thumbnail {
+    max-width: 60px;
+    margin-bottom: 0.3rem;
+    border-radius: 4px;
+  }
+  .details-button {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.95em;
+  }
+  .table-background {
+    padding: 0.01rem;
+  }
+}
+
+/* Modal lebih kecil di hp */
+@media (max-width: 500px) {
+  .modal-content {
+    padding: 1rem;
+    max-width: 95vw;
+    font-size: 0.97em;
+  }
+  .product-image {
+    max-width: 90vw;
+    margin-bottom: 0.7rem;
+  }
+  .close-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.95em;
+  }
 }
 </style>

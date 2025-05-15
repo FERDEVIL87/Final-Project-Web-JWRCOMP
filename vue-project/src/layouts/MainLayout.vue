@@ -64,7 +64,7 @@ const toggleSidebar = () => {
 
     <!-- Footer -->
     <footer class="footer">
-      © 2025 FERDEVIL87
+      © 2025 JWR Comp. All rights reserved.
     </footer>
   </div>
 </template>
@@ -91,6 +91,18 @@ const toggleSidebar = () => {
   background: #1c1c1c;
   padding: 1rem;
   flex-wrap: wrap;
+  position: fixed;         /* Tambahkan ini */
+  top: 0;                  /* Tambahkan ini */
+  left: 0;                 /* Tambahkan ini */
+  width: 100%;             /* Tambahkan ini */
+  z-index: 1100;           /* Tambahkan ini agar di atas sidebar */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.content {
+  margin-top: 2rem; /* Tambahkan margin untuk menghindari navbar */
+  padding: 1rem;
+  flex-grow: 1;
 }
 
 .logo {
@@ -218,6 +230,7 @@ const toggleSidebar = () => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-top: 10%;
 }
 
 .sidebar .menu-item {
@@ -232,8 +245,8 @@ const toggleSidebar = () => {
   text-decoration: none;
   border: none;
   letter-spacing: 0.1rem;
-  font-size: 0.9rem;
-  padding: 1rem 1rem;
+  font-size: 0.7rem;
+  padding: 0.4rem 0.7rem;
   transition: 0.2s;
   display: inline-block;
   width: 100%;
@@ -242,7 +255,7 @@ const toggleSidebar = () => {
 
 .sidebar-btn:hover {
   letter-spacing: 0.2rem;
-  padding: 1.1rem 3.1rem;
+  padding: 0.4rem 0.7rem;
   background: var(--clr);
   color: var(--clr);
   animation: box 3s infinite;

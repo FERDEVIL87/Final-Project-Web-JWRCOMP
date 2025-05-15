@@ -42,7 +42,7 @@
             class="form-range"
             aria-label="Filter by maximum price"
             id="priceRangeSlider"
-            aria-valuetext="`Maximum price ${formatPrice(priceRangeUSD)}`"
+            :aria-valuetext="`Maximum price ${formatPrice(priceRangeUSD)}`"
           />
           <span class="price-label-display" aria-hidden="true">Max Price: {{ formatPrice(priceRangeUSD) }}</span>
         </div>
@@ -97,7 +97,6 @@
               </li>
             </ul>
           </div>
-          <!-- Tombol close lama di dalam modal-content ini bisa dihapus jika sudah menggunakan modal-close-button di atas -->
         </div>
       </div>
     </div>
@@ -116,15 +115,14 @@ export default {
         { title: "💻 Handheld PC Heroes", link: "#" },
         { title: "✨ Explore More Consoles", link: "#" },
       ],
-      selectedCategory: null,
+      selectedCategory: null, // Akan di-set di mounted()
       searchQuery: "",
       selectedBrand: "",
-      priceRangeUSD: 1500, // Default max price
+      priceRangeUSD: 1500, // Default max price, akan diupdate oleh watcher/mounted
       usdToIdrRate: 15000,
       selectedProduct: null,
-      isModalVisible: false, // Variabel untuk mengontrol visibilitas modal
+      isModalVisible: false,
       consoles: [
-        // ... (data konsol Anda tetap sama)
         {
           id: 1,
           name: "PlayStation 5",
@@ -613,6 +611,18 @@ export default {
       ],
     };
   },
+  mounted() {
+    // Pilih kategori pertama sebagai default saat komponen dimuat
+    if (this.cards && this.cards.length > 0) {
+      this.selectCategory(this.cards[0]);
+    }
+    // Jika Anda menggunakan AOS dan perlu inisialisasi setelah DOM siap:
+    // this.$nextTick(() => {
+    //   if (typeof AOS !== 'undefined') {
+    //     AOS.init(); // Atau AOS.refresh() jika elemen baru muncul
+    //   }
+    // });
+  },
   computed: {
     brands() {
       if (!this.selectedCategory) return [];
@@ -637,19 +647,18 @@ export default {
         filtered = filtered.filter((consoleItem) => consoleItem.brand === this.selectedBrand);
       }
 
-      // Pastikan priceRangeUSD adalah angka sebelum filter
       const currentPriceRange = Number(this.priceRangeUSD);
       filtered = filtered.filter((consoleItem) => consoleItem.price <= currentPriceRange);
 
       return filtered;
     },
     maxPriceInCategory() {
-        if (!this.selectedCategory) return 1500;
+        if (!this.selectedCategory) return 1500; // Default jika tidak ada kategori terpilih
         const consolesInCategory = this.consoles.filter(
             (c) => c.category === this.selectedCategory.title
         );
         if (consolesInCategory.length === 0) return 1500; // Default jika tidak ada konsol di kategori
-        const maxPrice = Math.max(...consolesInCategory.map(c => c.price), 0); // Tambahkan 0 untuk kasus array kosong
+        const maxPrice = Math.max(...consolesInCategory.map(c => c.price), 0);
         return Math.ceil(maxPrice / 50) * 50 || 50; // Bulatkan ke atas kelipatan 50, minimal 50
     }
   },
@@ -658,7 +667,8 @@ export default {
       this.selectedCategory = category;
       this.searchQuery = "";
       this.selectedBrand = "";
-      this.priceRangeUSD = this.maxPriceInCategory; // Set ke max price dari kategori baru
+      // priceRangeUSD akan diupdate oleh watcher 'selectedCategory'
+      // atau bisa juga di-set di sini: this.priceRangeUSD = this.maxPriceInCategory;
     },
     formatPrice(priceUSD) {
       const priceIDR = priceUSD * this.usdToIdrRate;
@@ -671,7 +681,7 @@ export default {
     },
     showDetails(consoleItem) {
       this.selectedProduct = consoleItem;
-      this.isModalVisible = true; // Menggantikan this.selectedProduct untuk v-if modal
+      this.isModalVisible = true;
       this.$nextTick(() => {
         if (this.$refs.modalCloseButton) {
           this.$refs.modalCloseButton.focus();
@@ -679,9 +689,8 @@ export default {
       });
     },
     closeDetails() {
-      this.isModalVisible = false; // Menggantikan this.selectedProduct = null untuk v-if modal
-      // Fokus kembali bisa ditambahkan di sini jika perlu
-      this.selectedProduct = null; // Tetap reset selectedProduct
+      this.isModalVisible = false;
+      this.selectedProduct = null;
     },
   },
   watch: {
@@ -690,14 +699,17 @@ export default {
         document.body.style.overflow = 'hidden';
       } else {
         setTimeout(() => {
-            if (!this.isModalVisible) {
+            if (!this.isModalVisible) { // Cek lagi untuk menghindari race condition
                  document.body.style.overflow = '';
             }
-        }, 350); // Sesuaikan dengan durasi animasi
+        }, 350); // Sesuaikan dengan durasi animasi modal Anda (scaleUpModal 0.3s)
       }
     },
-    selectedCategory() {
-        this.priceRangeUSD = this.maxPriceInCategory;
+    selectedCategory(newCategory, oldCategory) {
+        // Update price range slider ketika kategori berubah
+        if (newCategory !== oldCategory) {
+            this.priceRangeUSD = this.maxPriceInCategory;
+        }
     }
   }
 };
@@ -847,27 +859,25 @@ body { /* Style ini akan lebih baik di CSS global */
     border: 1px solid rgba(0, 234, 255, 0.35);
     border-radius: 8px;
     background: rgba(15, 25, 45, 0.75);
-    /* UBAH WARNA TEKS MENJADI PUTIH UNTUK INPUT DAN SELECTED OPTION DI SELECT */
-    color: #ffffff !important; /* Added !important */
+    color: #ffffff !important;
     font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
     transition: all 0.3s ease;
 }
 .form-control::placeholder {
-    /* UBAH WARNA PLACEHOLDER SUPAYA KONTRAST DENGAN LATAR BELAKANG GELAP DAN TEKS PUTIH */
-    color: rgba(255, 255, 255, 0.85); /* Slightly increased opacity for placeholder */
+    color: rgba(255, 255, 255, 0.85);
 }
 .form-control:focus {
     border-color: #00eaff;
     box-shadow: 0 0 0 4px rgba(0, 234, 255, 0.25);
     outline: none;
     background: rgba(20, 30, 50, 0.85);
-    color: #ffffff !important; /* Ensure text color stays white on focus */
+    color: #ffffff !important;
 }
 input.form-control[type="text"] {
     padding-left: 1.1rem;
     background-image: none;
-    color: #ffffff !important; /* Added !important */
+    color: #ffffff !important;
 }
 select.form-control {
     appearance: none;
@@ -878,23 +888,17 @@ select.form-control {
     background-position: right 0.85rem center;
     background-size: 18px 18px;
     padding-right: 2.8rem;
-    color: #ffffff !important; /* Added !important for the selected value text */
+    color: #ffffff !important;
 }
-
-/* UBAH SUPAYA WARNA LATAR BELAKANG PILIHAN BRAND MENJADI WARNA SEPERTI YANG LAINNYA */
-/* NOTE: Styling options in a select dropdown is notoriously inconsistent across browsers.
-   Applying background and color here is a best effort, but might not work everywhere.
-   The background of the dropdown list itself often mirrors the select's background or is a system default. */
 select.form-control option {
-    background-color: #1a1a24; /* Dark background color, same as modal/card background base */
-    color: #ffffff !important; /* White text color for options, added !important */
+    background-color: #1a1a24;
+    color: #ffffff !important;
 }
 select.form-control option:checked {
-    background-color: #008cbf; /* A contrasting color when selected/highlighted */
-    color: #ffffff !important; /* White text on highlight */
+    background-color: #008cbf;
+    color: #ffffff !important;
 }
-
-select.form-control option:hover { /* Note: Hover on options is not consistently supported */
+select.form-control option:hover {
      background-color: rgba(0, 234, 255, 0.3);
      color: #ffffff !important;
 }
@@ -904,7 +908,7 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
-    grid-column: 1 / -1;
+    grid-column: 1 / -1; /* Default untuk mobile */
 }
 
 .form-range {
@@ -937,7 +941,7 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
     border: 3px solid #0a1424;
     margin-top: -6px;
     box-shadow: 0 0 8px #00eaff, 0 0 12px #00a3cc;
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Tambahkan transisi box-shadow */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .form-range::-moz-range-thumb {
     width: 22px;
@@ -946,13 +950,13 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
     border-radius: 50%;
     border: 3px solid #0a1424;
     box-shadow: 0 0 8px #00eaff, 0 0 12px #00a3cc;
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Tambahkan transisi box-shadow */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.form-range:active::-webkit-slider-thumb, .form-range:focus::-webkit-slider-thumb { /* Efek fokus/aktif lebih jelas */
+.form-range:active::-webkit-slider-thumb, .form-range:focus::-webkit-slider-thumb {
     transform: scale(1.15);
     box-shadow: 0 0 0 5px rgba(0, 234, 255, 0.3), 0 0 10px #00eaff, 0 0 15px #00a3cc;
 }
-.form-range:active::-moz-range-thumb, .form-range:focus::-moz-range-thumb { /* Efek fokus/aktif lebih jelas */
+.form-range:active::-moz-range-thumb, .form-range:focus::-moz-range-thumb {
     transform: scale(1.15);
     box-shadow: 0 0 0 5px rgba(0, 234, 255, 0.3), 0 0 10px #00eaff, 0 0 15px #00a3cc;
 }
@@ -965,12 +969,13 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
 }
 @media (min-width: 768px) {
     .filter-controls {
-         grid-template-columns: 1fr 1fr 2fr;
+         grid-template-columns: 1fr 1fr 2fr; /* Mengatur ulang kolom untuk desktop */
     }
     .price-range-container {
         flex-direction: row;
         align-items: center;
         gap: 1rem;
+        grid-column: auto; /* Reset grid-column agar mengikuti flow grid-template-columns di atas */
     }
     .price-label-display {
          margin-left: 0.5rem;
@@ -1006,11 +1011,8 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
 
 .console-image {
     width: 100%;
-    height: 220px;
-    object-fit: contain;
-    width: 100%; /* Tetap 100% width */
-    height: 250px; /* Sedikit tambah tinggi */
-    object-fit: cover; /* UBAH: Gambar akan mengisi area, mungkin ada bagian yang terpotong */
+    height: 250px;
+    object-fit: cover;
     background-color: rgba(5,10,19,0.7);
     transition: transform 0.4s ease, opacity 0.4s ease;
     opacity: 0.9;
@@ -1079,7 +1081,7 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Pastikan di atas AOS jika AOS punya z-index tinggi */
+    z-index: 1000;
     padding: 20px;
     backdrop-filter: blur(12px);
     opacity: 0;
@@ -1090,30 +1092,27 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
   to { opacity: 1; }
 }
 
-/* MODAL CONTENT: Dirombak Sesuai Permintaan */
 .modal-content {
-  background: #1a1a24; /* Warna solid gelap, sesuai var --background-modal contoh */
+  background: #1a1a24;
   padding: 30px;
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 234, 255, 0.25); /* Shadow warna neon dengan alpha rendah */
-  position: relative; /* Penting untuk tombol close absolut */
-  width: 100%; /* Akan dibatasi oleh max-width */
+  box-shadow: 0 10px 40px rgba(0, 234, 255, 0.25);
+  position: relative;
+  width: 100%;
   max-width: 650px;
-  max-height: 90vh; /* Batasi tinggi modal */
-  overflow-y: auto; /* Scrollbar jika konten > max-height */
-  border: 1px solid rgba(0, 234, 255, 0.35); /* Border warna neon */
-  color: #e0e0e0; /* Warna teks medium */
-  transform: scale(0.95); /* State awal untuk animasi */
-  animation: scaleUpModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards; /* Animasi muncul */
-  text-align: left; /* Default alignment teks */
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid rgba(0, 234, 255, 0.35);
+  color: #e0e0e0;
+  transform: scale(0.95);
+  animation: scaleUpModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards;
+  text-align: left;
 }
 
 @keyframes scaleUpModal {
   0% { transform: scale(0.9) translateY(10px); opacity: 0.6; }
   100% { transform: scale(1) translateY(0px); opacity: 1; }
 }
-/* --- Akhir dari MODAL CONTENT --- */
-
 
 .modal-close-button {
     position: absolute;
@@ -1124,14 +1123,20 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
     border: none;
     font-size: 2rem;
     cursor: pointer;
-    transition: color 0.2s ease-in-out;
+    transition: color 0.2s ease-in-out, transform 0.3s ease, background-color 0.2s ease, box-shadow 0.2s ease;
     padding: 0.5rem;
     line-height: 1;
+    border-radius: 50%; /* agar lebih terlihat seperti tombol */
+    width: 40px; /* Sesuaikan ukuran */
+    height: 40px; /* Sesuaikan ukuran */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .modal-close-button:hover, .modal-close-button:focus {
   background: rgba(0, 234, 255, 0.2);
   color: #ffffff;
-  transform: scale(1.15) rotate(180deg);
+  transform: scale(1.1) rotate(90deg); /* Rotasi lebih halus */
   box-shadow: 0 0 10px rgba(0,234,255,0.5);
   outline: none;
 }
@@ -1145,7 +1150,7 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
     margin-bottom: 1.8rem;
     text-align: center;
     text-shadow: 0 0 10px #00eaff, 0 0 15px #00a3cc;
-    padding-right: 40px; /* Ruang untuk tombol close jika judul panjang */
+    padding-right: 40px;
 }
 
 .modal-details-grid {
@@ -1172,7 +1177,7 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
     padding-top: 1.2rem;
     border-top: 1px solid rgba(0, 234, 255, 0.25);
 }
-.features-title strong { /* Mengganti .features-section p strong */
+.features-title strong {
     font-family: 'Orbitron', sans-serif;
     font-size: 1.1rem;
     color: #00eaff;
@@ -1225,11 +1230,12 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
         letter-spacing: 0.08em;
     }
     .filter-controls {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Semua filter jadi 1 kolom di mobile */
     }
     .price-range-container {
         flex-direction: column;
         align-items: stretch;
+        grid-column: 1 / -1; /* Pastikan full width di mobile */
     }
     .price-label-display {
         align-self: flex-start;
@@ -1242,7 +1248,7 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
     }
     .modal-content {
         padding: 25px;
-        max-width: 90%; /* Memastikan tidak terlalu lebar di layar kecil */
+        max-width: 90%;
     }
     .modal-product-title {
         padding-right: 30px;
@@ -1266,7 +1272,7 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
     }
     .modal-content {
         max-height: 85vh;
-        padding: 20px; /* Padding lebih kecil lagi */
+        padding: 20px;
     }
     .modal-product-title {
         font-size: clamp(1.4rem, 4.5vw, 1.7rem);
@@ -1280,7 +1286,7 @@ select.form-control option:hover { /* Note: Hover on options is not consistently
         width: 35px;
         height: 35px;
         font-size: 1.6rem;
-        line-height: 33px;
+        /* line-height: 33px;  Tidak perlu jika menggunakan flex untuk centering */
     }
 }
 
