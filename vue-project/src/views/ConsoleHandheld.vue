@@ -946,47 +946,60 @@ export default {
 }
 .modal-content {
   background: #1a1a24;
-  padding: 22px 16px 18px 16px;
+  padding: 20px 16px 18px 16px; /* Adjusted top padding */
   border-radius: 10px;
   box-shadow: 0 4px 24px #00eaff33;
-  max-width: 380px; /* Slightly wider modal */
+  max-width: 380px; 
   width: 90%;
   color: #fff;
   position: relative;
   text-align: left;
 }
-.modal-close-button {
-  position: absolute;
-  top: 10px; 
-  right: 10px; 
-  background: transparent;
-  color: #aaa;
-  border: none;
-  font-size: 2rem; /* Made 'x' larger */
-  font-weight: bold;
-  cursor: pointer;
-  padding: 5px; 
-  line-height: 1;
-  transition: color 0.2s ease;
-}
-.modal-close-button:hover {
-  color: #fff;
-}
+
 .modal-product-title {
   font-family: 'Orbitron', sans-serif;
   color: #fff;
-  font-size: 1.25rem; /* Slightly larger title */
+  font-size: 1.25rem; 
   font-weight: 700;
-  margin-bottom: 1.2rem; /* Increased margin */
+  margin-bottom: 1.2rem; 
   text-align: center;
   text-shadow: 0 0 8px #00eaff;
+  padding-left: 20px;  /* Space for left side (balance) */
+  padding-right: 50px; /* Space for the close button on the right */
+  box-sizing: border-box; 
+  width: 100%; 
+  word-wrap: break-word;
+  overflow-wrap: break-word; 
 }
+
+.modal-close-button {
+  position: absolute;
+  top: 12px; 
+  right: 12px; 
+  background: transparent;
+  color: #aaa;
+  border: none;
+  font-family: Arial, Helvetica, sans-serif; 
+  font-size: 2.2rem;  
+  font-weight: normal; 
+  line-height: 1;     
+  cursor: pointer;
+  padding: 5px; 
+  transition: color 0.2s ease, transform 0.2s ease;
+  z-index: 1001; 
+}
+
+.modal-close-button:hover {
+  color: #fff;
+  transform: scale(1.1);
+}
+
 .product-image {
   width: 100%;
-  max-width: 280px; /* Increased max-width */
-  max-height: 180px; /* Increased max-height */
+  max-width: 280px; 
+  max-height: 180px; 
   object-fit: contain;
-  margin: 0 auto 1.5rem auto; /* Increased bottom margin */
+  margin: 0 auto 1.5rem auto; 
   display: block;
   border-radius: 8px;
   background: #101829;
@@ -1021,13 +1034,23 @@ export default {
   .main-title { font-size: 1.3rem; }
   .console-grid { grid-template-columns: 1fr; }
   .console-image { height: 110px; }
-  .modal-content { max-width: 95vw; } /* Adjusted for smaller screens */
+  .modal-content { 
+    max-width: 95vw; 
+    padding-top: 15px; /* Adjust for smaller screens */
+  } 
   .product-image {
     max-width: 240px;
     max-height: 150px;
   }
   .modal-product-title {
     font-size: 1.1rem;
+    padding-left: 15px;
+    padding-right: 45px; /* Adjust for smaller screens if needed */
+  }
+  .modal-close-button {
+    top: 8px;
+    right: 8px;
+    font-size: 2rem;
   }
 }
 </style>
