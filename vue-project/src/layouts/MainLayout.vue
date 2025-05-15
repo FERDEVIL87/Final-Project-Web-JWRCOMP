@@ -4,11 +4,11 @@ import { ref } from 'vue'
 
 const items = [
   { to: '/', name: 'Tentang', color: '#00bcd4' },
-  { to: '/education', name: 'Laptop', color: '#ffc107' },
-  { to: '/experience', name: 'Console and Handheld PC', color: '#4caf50' },
-  { to: '/portfolio', name: 'PC Parts', color: '#ff5722' },
-  { to: '/skills', name: 'Paket Rakitan PC', color: '#e91e63' },
-  { to: '/contact', name: 'Customer Service', color: '#9c27b0' }
+  { to: '/paketrakitan', name: 'Paket Rakitan PC', color: '#e91e63' },
+  { to: '/laptop', name: 'Laptop', color: '#ffc107' },
+  { to: '/consolehh', name: 'Console and Handheld PC', color: '#4caf50' },
+  { to: '/hardware', name: 'PC Parts', color: '#ff5722' },
+  { to: '/cs', name: 'Customer Service', color: '#9c27b0' }
 ]
 
 const isSidebarOpen = ref(false)

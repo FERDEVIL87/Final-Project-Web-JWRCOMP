@@ -1,38 +1,33 @@
 <template>
-  <section class="container my-5" data-aos="fade-up">
-    <h2 class="h3 mb-4 text-primary text-center futuristic-title neon-title">  🎮 ULTIMATE GAME CONSOLES HUB 🚀</h2>
-    <!-- Kategori Grid -->
+  <section class="container">
+    <h2 class="main-title">🎮 ULTIMATE GAME CONSOLES HUB 🚀</h2>
+    <!-- Kategori -->
     <div class="category-grid">
       <button
         v-for="(card, index) in cards"
         :key="index"
         class="category-button"
         @click="selectCategory(card)"
-        :class="{ 'active': selectedCategory && selectedCategory.title === card.title }"
-        :aria-pressed="selectedCategory && selectedCategory.title === card.title"
+        :class="{ active: selectedCategory && selectedCategory.title === card.title }"
       >
         {{ card.title }}
       </button>
     </div>
 
     <div v-if="selectedCategory" class="filters">
-      <h3 class="text-center category-filter-title">{{ selectedCategory.title }}</h3>
+      <h3 class="category-filter-title">{{ selectedCategory.title }}</h3>
       <div class="filter-controls">
         <input
           type="text"
           v-model="searchQuery"
           placeholder="Search console..."
           class="form-control"
-          aria-label="Search console in current category"
         />
-        <select v-model="selectedBrand" class="form-control" aria-label="Filter by brand">
+        <select v-model="selectedBrand" class="form-control">
           <option value="">All Brands</option>
-          <option v-for="brand in brands" :key="brand" :value="brand">
-            {{ brand }}
-          </option>
+          <option v-for="brand in brands" :key="brand" :value="brand">{{ brand }}</option>
         </select>
         <div class="price-range-container">
-          <label for="priceRangeSlider" class="price-label screen-reader-only">Max Price:</label>
           <input
             type="range"
             v-model="priceRangeUSD"
@@ -40,11 +35,8 @@
             :max="maxPriceInCategory"
             step="50"
             class="form-range"
-            aria-label="Filter by maximum price"
-            id="priceRangeSlider"
-            :aria-valuetext="`Maximum price ${formatPrice(priceRangeUSD)}`"
           />
-          <span class="price-label-display" aria-hidden="true">Max Price: {{ formatPrice(priceRangeUSD) }}</span>
+          <span class="price-label-display">Max: {{ formatPrice(priceRangeUSD) }}</span>
         </div>
       </div>
 
@@ -54,53 +46,47 @@
           :key="consoleItem.id"
           class="console-card"
           @click="showDetails(consoleItem)"
-          role="button"
           tabindex="0"
-          @keydown.enter="showDetails(consoleItem)"
-          @keydown.space="showDetails(consoleItem)"
-          :aria-label="`View details for ${consoleItem.name}`"
         >
-          <img :src="consoleItem.image" :alt="`${consoleItem.name} console`" class="console-image" />
+          <img :src="consoleItem.image" :alt="consoleItem.name" class="console-image" />
           <div class="console-info">
             <h4 class="console-name">{{ consoleItem.name }}</h4>
             <p class="console-brand">Brand: {{ consoleItem.brand }}</p>
-            <p class="console-price">Price: {{ formatPrice(consoleItem.price) }}</p>
+            <p class="console-price">{{ formatPrice(consoleItem.price) }}</p>
           </div>
         </div>
       </div>
       <div v-else class="no-results">
-        <p>No consoles match your current filters in the "{{ selectedCategory.title }}" category.</p>
+        <p>No consoles match your current filters.</p>
       </div>
     </div>
     <div v-else class="no-category-selected">
-        <p>✨ Please select a category above to explore our awesome consoles! ✨</p>
+      <p>✨ Please select a category above to explore our awesome consoles! ✨</p>
     </div>
-  </section>
 
-  <!-- MODAL PRODUK MENGGUNAKAN TELEPORT -->
-  <teleport to="body">
-    <div v-if="isModalVisible" class="modal-overlay" @click.self="closeDetails" role="dialog" aria-modal="true" :aria-labelledby="selectedProduct ? 'modal-title-' + selectedProduct.id : ''" @keydown.esc="closeDetails">
-      <div class="modal-content" ref="modalContent">
-        <button class="modal-close-button" @click="closeDetails" aria-label="Close product details" ref="modalCloseButton">×</button>
-        <div v-if="selectedProduct">
-          <h3 :id="'modal-title-' + selectedProduct.id" class="modal-product-title">{{ selectedProduct.name }}</h3>
-          <img :src="selectedProduct.image" :alt="`Image of ${selectedProduct.name}`" class="product-image" />
-          <div class="modal-details-grid">
-            <p><strong>Price:</strong> <span>{{ formatPrice(selectedProduct.price) }}</span></p>
-            <p><strong>Brand:</strong> <span>{{ selectedProduct.brand }}</span></p>
-          </div>
-          <div v-if="selectedProduct.specs && selectedProduct.specs.length > 0" class="features-section">
-            <p class="features-title"><strong>Features:</strong></p>
-            <ul>
-              <li v-for="(feature, index) in selectedProduct.specs" :key="index">
-                {{ feature }}
-              </li>
-            </ul>
+    <!-- MODAL -->
+    <teleport to="body">
+      <div v-if="isModalVisible" class="modal-overlay" @click.self="closeDetails">
+        <div class="modal-content">
+          <button class="modal-close-button" @click="closeDetails">×</button>
+          <div v-if="selectedProduct">
+            <h3 class="modal-product-title">{{ selectedProduct.name }}</h3>
+            <img :src="selectedProduct.image" :alt="selectedProduct.name" class="product-image" />
+            <div class="modal-details-grid">
+              <p><strong>Price:</strong> <span>{{ formatPrice(selectedProduct.price) }}</span></p>
+              <p><strong>Brand:</strong> <span>{{ selectedProduct.brand }}</span></p>
+            </div>
+            <div v-if="selectedProduct.specs && selectedProduct.specs.length > 0" class="features-section">
+              <p class="features-title"><strong>Features:</strong></p>
+              <ul>
+                <li v-for="(feature, index) in selectedProduct.specs" :key="index">{{ feature }}</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </teleport>
+    </teleport>
+  </section>
 </template>
 
 <script>
@@ -109,16 +95,16 @@ export default {
   data() {
     return {
       cards: [
-        { title: "🎮 PlayStation Powerhouse", link: "#" },
-        { title: "🟩 Xbox Universe", link: "#" },
-        { title: "🍄 Nintendo Magic", link: "#" },
-        { title: "💻 Handheld PC Heroes", link: "#" },
-        { title: "✨ Explore More Consoles", link: "#" },
+        { title: "🎮 PlayStation Powerhouse" },
+        { title: "🟩 Xbox Universe" },
+        { title: "🍄 Nintendo Magic" },
+        { title: "💻 Handheld PC Heroes" },
+        { title: "✨ Explore More Consoles" },
       ],
-      selectedCategory: null, // Akan di-set di mounted()
+      selectedCategory: null,
       searchQuery: "",
       selectedBrand: "",
-      priceRangeUSD: 1500, // Default max price, akan diupdate oleh watcher/mounted
+      priceRangeUSD: 1500,
       usdToIdrRate: 15000,
       selectedProduct: null,
       isModalVisible: false,
@@ -611,55 +597,42 @@ export default {
       ],
     };
   },
+  // ...existing mounted, computed, methods, watch...
   mounted() {
-    // Pilih kategori pertama sebagai default saat komponen dimuat
     if (this.cards && this.cards.length > 0) {
       this.selectCategory(this.cards[0]);
     }
-    // Jika Anda menggunakan AOS dan perlu inisialisasi setelah DOM siap:
-    // this.$nextTick(() => {
-    //   if (typeof AOS !== 'undefined') {
-    //     AOS.init(); // Atau AOS.refresh() jika elemen baru muncul
-    //   }
-    // });
   },
   computed: {
     brands() {
       if (!this.selectedCategory) return [];
       const consolesInCategory = this.consoles.filter(c => c.category === this.selectedCategory.title);
-      const uniqueBrands = [...new Set(consolesInCategory.map((consoleItem) => consoleItem.brand))];
-      return uniqueBrands.sort();
+      return [...new Set(consolesInCategory.map(c => c.brand))].sort();
     },
     filteredConsoles() {
       if (!this.selectedCategory) return [];
-
       let filtered = this.consoles.filter(
-        (consoleItem) => consoleItem.category === this.selectedCategory.title
+        c => c.category === this.selectedCategory.title
       );
-
       if (this.searchQuery) {
-        filtered = filtered.filter((consoleItem) =>
-          consoleItem.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+        filtered = filtered.filter(c =>
+          c.name.toLowerCase().includes(this.searchQuery.toLowerCase())
         );
       }
-
       if (this.selectedBrand) {
-        filtered = filtered.filter((consoleItem) => consoleItem.brand === this.selectedBrand);
+        filtered = filtered.filter(c => c.brand === this.selectedBrand);
       }
-
-      const currentPriceRange = Number(this.priceRangeUSD);
-      filtered = filtered.filter((consoleItem) => consoleItem.price <= currentPriceRange);
-
+      filtered = filtered.filter(c => c.price <= Number(this.priceRangeUSD));
       return filtered;
     },
     maxPriceInCategory() {
-        if (!this.selectedCategory) return 1500; // Default jika tidak ada kategori terpilih
-        const consolesInCategory = this.consoles.filter(
-            (c) => c.category === this.selectedCategory.title
-        );
-        if (consolesInCategory.length === 0) return 1500; // Default jika tidak ada konsol di kategori
-        const maxPrice = Math.max(...consolesInCategory.map(c => c.price), 0);
-        return Math.ceil(maxPrice / 50) * 50 || 50; // Bulatkan ke atas kelipatan 50, minimal 50
+      if (!this.selectedCategory) return 1500;
+      const consolesInCategory = this.consoles.filter(
+        c => c.category === this.selectedCategory.title
+      );
+      if (consolesInCategory.length === 0) return 1500;
+      const maxPrice = Math.max(...consolesInCategory.map(c => c.price), 0);
+      return Math.ceil(maxPrice / 50) * 50 || 50;
     }
   },
   methods: {
@@ -667,8 +640,6 @@ export default {
       this.selectedCategory = category;
       this.searchQuery = "";
       this.selectedBrand = "";
-      // priceRangeUSD akan diupdate oleh watcher 'selectedCategory'
-      // atau bisa juga di-set di sini: this.priceRangeUSD = this.maxPriceInCategory;
     },
     formatPrice(priceUSD) {
       const priceIDR = priceUSD * this.usdToIdrRate;
@@ -682,11 +653,6 @@ export default {
     showDetails(consoleItem) {
       this.selectedProduct = consoleItem;
       this.isModalVisible = true;
-      this.$nextTick(() => {
-        if (this.$refs.modalCloseButton) {
-          this.$refs.modalCloseButton.focus();
-        }
-      });
     },
     closeDetails() {
       this.isModalVisible = false;
@@ -695,599 +661,263 @@ export default {
   },
   watch: {
     isModalVisible(newValue) {
-      if (newValue) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        setTimeout(() => {
-            if (!this.isModalVisible) { // Cek lagi untuk menghindari race condition
-                 document.body.style.overflow = '';
-            }
-        }, 350); // Sesuaikan dengan durasi animasi modal Anda (scaleUpModal 0.3s)
-      }
+      document.body.style.overflow = newValue ? 'hidden' : '';
     },
     selectedCategory(newCategory, oldCategory) {
-        // Update price range slider ketika kategori berubah
-        if (newCategory !== oldCategory) {
-            this.priceRangeUSD = this.maxPriceInCategory;
-        }
+      if (newCategory !== oldCategory) {
+        this.priceRangeUSD = this.maxPriceInCategory;
+      }
     }
   }
 };
 </script>
 
 <style scoped>
-/* Import Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap');
-
-/* General Styles */
-.screen-reader-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-body { /* Style ini akan lebih baik di CSS global */
-    background: linear-gradient(to bottom, #050a13, #171e2e);
-    color: #f0f0f0;
-    font-family: 'Montserrat', sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    animation: background-gradient 10s ease infinite alternate;
-    background-size: 200% 200%;
-    scroll-behavior: smooth;
-}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Orbitron:wght@700&display=swap');
 
 .container {
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 25px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 10px;
+  /* background: linear-gradient(to bottom, #050a13, #171e2e); */ /* Hapus background color */
+  min-height: 100vh;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  opacity: 0;
+  animation: fadein 0.7s ease 0s forwards;
 }
 
-@keyframes background-gradient {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 100% 50%; }
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-.futuristic-title.neon-title {
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 900;
-    font-size: clamp(2.4rem, 6vw, 4rem);
-    color: #fff !important;
-    text-shadow: 0 0 7px #00eaff,
-                 0 0 15px #00eaff,
-                 0 0 25px #00eaff,
-                 0 0 50px #00a3cc,
-                 0 0 80px #00a3cc,
-                 0 0 100px #00a3cc,
-                 0 0 150px #00a3cc;
-    animation: neon-glow-intense 2s infinite alternate;
-    text-align: center;
-    margin-bottom: 3rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-}
-
-@keyframes neon-glow-intense {
-    from {
-        text-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 15px #00eaff, 0 0 20px #00a3cc, 0 0 30px #00a3cc, 0 0 40px #00a3cc, 0 0 50px #00a3cc;
-    }
-    to {
-        text-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff, 0 0 50px #00a3cc, 0 0 80px #00a3cc, 0 0 100px #00a3cc, 0 0 150px #00a3cc;
-    }
+.main-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.2rem;
+  text-align: center;
+  margin-bottom: 2.2rem;
+  color: #fff;
+  text-shadow: 0 0 8px #00eaff, 0 0 18px #00eaff;
+  letter-spacing: 0.08em;
+  font-weight: 700;
 }
 
 .category-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.8rem;
-    margin-bottom: 3.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
 }
-
 .category-button {
-    font-family: 'Orbitron', sans-serif;
-    padding: 1.3rem 1.1rem;
-    background: linear-gradient(145deg, #101829, #1c2a45);
-    color: #00eaff;
-    border: 2px solid rgba(0, 234, 255, 0.25);
-    border-radius: 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.5);
-    position: relative;
-    overflow: hidden;
-    font-weight: 500;
-    font-size: 1.05rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  font-family: 'Orbitron', sans-serif;
+  padding: 1rem 1.2rem;
+  background: #101829;
+  color: #00eaff;
+  border: 2px solid #00eaff44;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px #00eaff22;
 }
-.category-button.active {
-    background: linear-gradient(145deg, #00eaff, #008cbf);
-    color: #050a13;
-    box-shadow: 0 0 20px #00eaff, 0 0 35px #00a3cc, inset 0 0 10px rgba(255,255,255,0.2);
-    border-color: #00eaff;
-    transform: translateY(-3px) scale(1.03);
-}
-.category-button:not(.active):hover {
-    transform: translateY(-6px) scale(1.05);
-    box-shadow: 0 10px 25px rgba(0, 234, 255, 0.35);
-    background: linear-gradient(145deg, #182742, #25365c);
-    border-color: rgba(0, 234, 255, 0.6);
+.category-button.active,
+.category-button:hover {
+  background: #00eaff;
+  color: #050a13;
+  border-color: #00eaff;
+  box-shadow: 0 0 12px #00eaff88;
 }
 
 .filters {
-    margin-top: 3rem;
-    background: rgba(8, 15, 28, 0.9);
-    backdrop-filter: blur(15px);
-    padding: 2.2rem;
-    border-radius: 15px;
-    border: 1px solid rgba(0, 234, 255, 0.2);
-    color: #00eaff;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+  background: #101829cc;
+  border-radius: 10px;
+  padding: 1.5rem 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px #00eaff22;
 }
-
-.category-filter-title { /* Mengganti .filters h3 */
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 2.2rem;
-    font-size: 2rem;
-    color: #f0f0f0;
-    text-shadow: 0 0 10px #00eaff;
-    text-transform: uppercase;
+.category-filter-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  color: #fff;
+  text-shadow: 0 0 8px #00eaff;
+  text-align: center;
+  margin-bottom: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
 }
-
 .filter-controls {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.8rem;
-    margin-bottom: 1.8rem;
-    align-items: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
-
-
 .form-control {
-    padding: 0.85rem 1.1rem;
-    border: 1px solid rgba(0, 234, 255, 0.35);
-    border-radius: 8px;
-    background: rgba(15, 25, 45, 0.75);
-    color: #ffffff !important;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+  flex: 1 1 160px;
+  padding: 0.7rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #00eaff44;
+  background: #18223d;
+  color: #fff;
+  font-size: 1rem;
 }
-.form-control::placeholder {
-    color: rgba(255, 255, 255, 0.85);
-}
-.form-control:focus {
-    border-color: #00eaff;
-    box-shadow: 0 0 0 4px rgba(0, 234, 255, 0.25);
-    outline: none;
-    background: rgba(20, 30, 50, 0.85);
-    color: #ffffff !important;
-}
-input.form-control[type="text"] {
-    padding-left: 1.1rem;
-    background-image: none;
-    color: #ffffff !important;
-}
-select.form-control {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2300eaff'%3E%3Cpath d='M8 11.293l-4.646-4.647a.5.5 0 0 1 .708-.708L8 9.879l4.03-4.03a.5.5 0 0 1 .707.707L8 11.293z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.85rem center;
-    background-size: 18px 18px;
-    padding-right: 2.8rem;
-    color: #ffffff !important;
-}
-select.form-control option {
-    background-color: #1a1a24;
-    color: #ffffff !important;
-}
-select.form-control option:checked {
-    background-color: #008cbf;
-    color: #ffffff !important;
-}
-select.form-control option:hover {
-     background-color: rgba(0, 234, 255, 0.3);
-     color: #ffffff !important;
-}
-
-
 .price-range-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    grid-column: 1 / -1; /* Default untuk mobile */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
-
 .form-range {
-    width: 100%;
-    background: transparent;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 10px;
-    cursor: pointer;
+  width: 120px;
+  accent-color: #00eaff;
 }
-.form-range::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 10px;
-    background: rgba(0, 234, 255, 0.35);
-    border-radius: 5px;
-}
-.form-range::-moz-range-track {
-    width: 100%;
-    height: 10px;
-    background: rgba(0, 234, 255, 0.35);
-    border-radius: 5px;
-}
-.form-range::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 22px;
-    height: 22px;
-    background: #00eaff;
-    border-radius: 50%;
-    border: 3px solid #0a1424;
-    margin-top: -6px;
-    box-shadow: 0 0 8px #00eaff, 0 0 12px #00a3cc;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.form-range::-moz-range-thumb {
-    width: 22px;
-    height: 22px;
-    background: #00eaff;
-    border-radius: 50%;
-    border: 3px solid #0a1424;
-    box-shadow: 0 0 8px #00eaff, 0 0 12px #00a3cc;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.form-range:active::-webkit-slider-thumb, .form-range:focus::-webkit-slider-thumb {
-    transform: scale(1.15);
-    box-shadow: 0 0 0 5px rgba(0, 234, 255, 0.3), 0 0 10px #00eaff, 0 0 15px #00a3cc;
-}
-.form-range:active::-moz-range-thumb, .form-range:focus::-moz-range-thumb {
-    transform: scale(1.15);
-    box-shadow: 0 0 0 5px rgba(0, 234, 255, 0.3), 0 0 10px #00eaff, 0 0 15px #00a3cc;
-}
-
 .price-label-display {
-    color: #00eaff;
-    font-weight: 500;
-    font-size: 0.95rem;
-    white-space: nowrap;
+  color: #00eaff;
+  font-size: 0.95rem;
+  font-weight: 500;
 }
-@media (min-width: 768px) {
-    .filter-controls {
-         grid-template-columns: 1fr 1fr 2fr; /* Mengatur ulang kolom untuk desktop */
-    }
-    .price-range-container {
-        flex-direction: row;
-        align-items: center;
-        gap: 1rem;
-        grid-column: auto; /* Reset grid-column agar mengikuti flow grid-template-columns di atas */
-    }
-    .price-label-display {
-         margin-left: 0.5rem;
-    }
-}
-
 
 .console-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2.2rem;
-    margin-top: 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1.5rem;
 }
-
 .console-card {
-    background: linear-gradient(160deg, #18223d, #28355e 70%, #304070);
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
-    transition: transform 0.35s ease, box-shadow 0.4s ease, border-color 0.35s ease;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    border: 1px solid transparent;
+  background: #18223d;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px #00eaff22;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.18s, box-shadow 0.18s;
+  border: 1px solid #00eaff22;
+  display: flex;
+  flex-direction: column;
 }
-.console-card:hover, .console-card:focus-visible {
-    transform: translateY(-10px) scale(1.03);
-    box-shadow: 0 12px 35px rgba(0, 234, 255, 0.4), 0 0 20px rgba(0, 234, 255, 0.25), inset 0 1px 0 rgba(255,255,255,0.1);
-    border-color: rgba(0, 234, 255, 0.5);
-    outline: none;
+.console-card:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 6px 24px #00eaff44;
+  border-color: #00eaff;
 }
-
 .console-image {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    background-color: rgba(5,10,19,0.7);
-    transition: transform 0.4s ease, opacity 0.4s ease;
-    opacity: 0.9;
-}
-.console-card:hover .console-image {
-    transform: scale(1.08);
-    opacity: 1;
-}
-
-.console-info {
-    padding: 1.8rem;
-    flex-grow: 1;
-    text-align: left;
-}
-
-.console-name {
-    font-family: 'Orbitron', sans-serif;
-    color: #00eaff;
-    margin: 0 0 0.6rem 0;
-    font-size: 1.35rem;
-    font-weight: 700;
-    line-height: 1.3;
-}
-
-.console-brand,
-.console-price {
-    color: #e0e0e0;
-    margin-bottom: 0.4rem;
-    font-size: 1rem;
-}
-.console-price {
-    font-weight: bold;
-    color: #f0f0f0;
-    font-size: 1.1rem;
-}
-.console-card:hover .console-price {
-    color: #00eaff;
-    animation: price-pulse-strong 0.6s ease-in-out;
-}
-
-@keyframes price-pulse-strong {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.08); text-shadow: 0 0 5px #00eaff; }
-}
-
-.no-results, .no-category-selected {
-    text-align: center;
-    color: #00eaff;
-    padding: 3rem;
-    background: rgba(8, 15, 28, 0.8);
-    border-radius: 15px;
-    margin-top: 3rem;
-    font-size: 1.3rem;
-    font-family: 'Orbitron', sans-serif;
-    border: 1px dashed rgba(0,234,255,0.3);
-}
-
-/* Modal Overlay */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(5, 10, 19, 0.92);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    padding: 20px;
-    backdrop-filter: blur(12px);
-    opacity: 0;
-    animation: fadeInModal 0.3s ease-out forwards;
-}
-@keyframes fadeInModal {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.modal-content {
-  background: #1a1a24;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 234, 255, 0.25);
-  position: relative;
   width: 100%;
-  max-width: 650px;
-  max-height: 90vh;
-  overflow-y: auto;
-  border: 1px solid rgba(0, 234, 255, 0.35);
-  color: #e0e0e0;
-  transform: scale(0.95);
-  animation: scaleUpModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards;
+  height: 140px;
+  object-fit: cover;
+  background: #101829;
+}
+.console-info {
+  padding: 1rem;
   text-align: left;
 }
-
-@keyframes scaleUpModal {
-  0% { transform: scale(0.9) translateY(10px); opacity: 0.6; }
-  100% { transform: scale(1) translateY(0px); opacity: 1; }
+.console-name {
+  font-family: 'Orbitron', sans-serif;
+  color: #fff;
+  font-size: 1.08rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  text-shadow: 0 0 6px #00eaff, 0 0 12px #00eaff;
+}
+.console-brand,
+.console-price {
+  color: #fff;
+  font-size: 0.97rem;
+  margin-bottom: 0.2rem;
+  text-shadow: 0 0 4px #00eaff;
+}
+.console-price {
+  font-weight: bold;
 }
 
+.no-results,
+.no-category-selected {
+  text-align: center;
+  color: #00eaff;
+  padding: 2rem 0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(5, 10, 19, 0.93);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #1a1a24;
+  padding: 22px 16px 18px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px #00eaff33;
+  max-width: 350px;
+  width: 100%;
+  color: #fff;
+  position: relative;
+  text-align: left;
+}
 .modal-close-button {
-    position: absolute;
-    top: 1rem;
-    right: 20px;
-    background: transparent;
-    color: #aaa;
-    border: none;
-    font-size: 2rem;
-    cursor: pointer;
-    transition: color 0.2s ease-in-out, transform 0.3s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    padding: 0.5rem;
-    line-height: 1;
-    border-radius: 50%; /* agar lebih terlihat seperti tombol */
-    width: 40px; /* Sesuaikan ukuran */
-    height: 40px; /* Sesuaikan ukuran */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  top: 10px; right: 14px;
+  background: transparent;
+  color: #aaa;
+  border: none;
+  font-size: 1.7rem;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s;
 }
-.modal-close-button:hover, .modal-close-button:focus {
-  background: rgba(0, 234, 255, 0.2);
-  color: #ffffff;
-  transform: scale(1.1) rotate(90deg); /* Rotasi lebih halus */
-  box-shadow: 0 0 10px rgba(0,234,255,0.5);
-  outline: none;
+.modal-close-button:hover {
+  background: #00eaff33;
+  color: #fff;
 }
-
 .modal-product-title {
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 700;
-    color: #00eaff;
-    font-size: clamp(1.6rem, 5vw, 2rem);
-    margin-top: 0;
-    margin-bottom: 1.8rem;
-    text-align: center;
-    text-shadow: 0 0 10px #00eaff, 0 0 15px #00a3cc;
-    padding-right: 40px;
+  font-family: 'Orbitron', sans-serif;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-shadow: 0 0 8px #00eaff;
 }
-
+.product-image {
+  width: 100%;
+  max-width: 220px;
+  max-height: 120px;
+  object-fit: contain;
+  margin: 0 auto 1rem auto;
+  display: block;
+  border-radius: 8px;
+  background: #101829;
+}
 .modal-details-grid {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.5rem 1rem;
-    margin-bottom: 1.2rem;
+  font-size: 0.98rem;
+  margin-bottom: 0.8rem;
 }
-.modal-details-grid p {
-    margin-bottom: 0;
-    display: contents;
-}
-.modal-details-grid p strong {
-    color: #f0f0f0;
-    font-weight: 600;
-}
-.modal-details-grid p span {
-    color: #e0e0e0;
-}
-
-
 .features-section {
-    margin-top: 1.8rem;
-    padding-top: 1.2rem;
-    border-top: 1px solid rgba(0, 234, 255, 0.25);
+  margin-top: 1rem;
+  border-top: 1px solid #00eaff33;
+  padding-top: 0.7rem;
 }
 .features-title strong {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.1rem;
-    color: #00eaff;
-    margin-bottom: 0.8rem;
-    display: block;
+  color: #00eaff;
+  font-size: 1rem;
 }
 .modal-content ul {
-    list-style: none;
-    padding-left: 0;
+  padding-left: 1.2em;
 }
 .modal-content ul li {
-    padding-left: 1.8em;
-    text-indent: -1.8em;
-    margin-bottom: 0.6rem;
-    position: relative;
-    color: #e0e0e0;
-    font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+  color: #fff;
+  font-size: 0.95rem;
+  text-shadow: 0 0 4px #00eaff;
 }
-.modal-content ul li::before {
-    content: "▹";
-    color: #00eaff;
-    font-size: 1.3em;
-    margin-right: 0.6em;
-    position: absolute;
-    left: 0;
-    top: -0.08em;
+@media (max-width: 700px) {
+  .container { padding: 10px 2px; }
+  .main-title { font-size: 1.3rem; }
+  .console-grid { grid-template-columns: 1fr; }
+  .console-image { height: 110px; }
+  .modal-content { max-width: 98vw; }
 }
-
-
-.product-image {
-    width: auto;
-    max-width: 80%;
-    max-height: 320px;
-    object-fit: contain;
-    border-radius: 10px;
-    margin: 0 auto 1.8rem auto;
-    background-color: rgba(5,10,19,0.5);
-    border: 1px solid rgba(0, 234, 255, 0.2);
-    display: block;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .container {
-        padding: 15px;
-    }
-    .futuristic-title.neon-title {
-        margin-bottom: 2.5rem;
-        letter-spacing: 0.08em;
-    }
-    .filter-controls {
-        grid-template-columns: 1fr; /* Semua filter jadi 1 kolom di mobile */
-    }
-    .price-range-container {
-        flex-direction: column;
-        align-items: stretch;
-        grid-column: 1 / -1; /* Pastikan full width di mobile */
-    }
-    .price-label-display {
-        align-self: flex-start;
-        margin-left: 0;
-        margin-top: 0.5rem;
-    }
-    .console-grid {
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 1.5rem;
-    }
-    .modal-content {
-        padding: 25px;
-        max-width: 90%;
-    }
-    .modal-product-title {
-        padding-right: 30px;
-    }
-}
-
-@media (max-width: 480px) {
-    .futuristic-title.neon-title {
-        font-size: clamp(2rem, 7vw, 2.8rem);
-    }
-    .category-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-    .category-button {
-        font-size: 0.95rem;
-        padding: 1.1rem 0.8rem;
-    }
-    .console-grid {
-        grid-template-columns: 1fr;
-    }
-    .modal-content {
-        max-height: 85vh;
-        padding: 20px;
-    }
-    .modal-product-title {
-        font-size: clamp(1.4rem, 4.5vw, 1.7rem);
-    }
-    .product-image {
-        max-height: 250px;
-    }
-    .modal-close-button {
-        top: 12px;
-        right: 12px;
-        width: 35px;
-        height: 35px;
-        font-size: 1.6rem;
-        /* line-height: 33px;  Tidak perlu jika menggunakan flex untuk centering */
-    }
-}
-
 </style>

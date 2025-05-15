@@ -1,19 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Home       from '@/views/Home.vue'
-import Education  from '@/views/Education.vue'
-import Experience from '@/views/Experience.vue'
-import Portfolio  from '@/views/Portfolio.vue'
-import Skills     from '@/views/Skills.vue'
-import Contact    from '@/views/Contact.vue'
+import Education  from '@/views/Laptop.vue'
+import Experience from '@/views/ConsoleHandheld.vue'
+import Portfolio  from '@/views/Hardware.vue'
+import Skills     from '@/views/PaketRakitan.vue'
+import Contact    from '@/views/CustomerService.vue'
+import ConsoleHandheld from '@/views/ConsoleHandheld.vue'
+import Laptop from '@/views/Laptop.vue'
+import Hardware from '@/views/Hardware.vue'
+import PaketRakitan from '@/views/PaketRakitan.vue'
+import CS from '@/views/CustomerService.vue'
+import CustomerService from '@/views/CustomerService.vue'
 
 const routes = [
-  { path: '/',          name: 'Tentang',    component: Home },
-  { path: '/education', name: 'Pendidikan', component: Education },
-  { path: '/experience',name: 'Pengalaman', component: Experience },
-  { path: '/portfolio', name: 'Portofolio', component: Portfolio },
-  { path: '/skills',    name: 'Keahlian',   component: Skills },
-  { path: '/contact',   name: 'Kontak',     component: Contact }
+  { path: '/',          name: 'Home',    component: Home },
+  { path: '/laptop', name: 'Laptop', component: Laptop },
+  { path: '/consolehh',name: 'ConsoleHandheldpc', component: ConsoleHandheld },
+  { path: '/hardware', name: 'Hardware', component: Hardware },
+  { path: '/paketrakitan',    name: 'PaketRakitan',   component: PaketRakitan },
+  { path: '/cs',   name: 'CS',     component: CustomerService }
 ]
 
 export default createRouter({
