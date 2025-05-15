@@ -100,7 +100,7 @@ const toggleSidebar = () => {
 }
 
 .content {
-  margin-top: 2rem; /* Tambahkan margin untuk menghindari navbar */
+  margin-top: 5rem; /* Tambahkan margin untuk menghindari navbar */
   padding: 1rem;
   flex-grow: 1;
 }

@@ -43,6 +43,7 @@
               <th>Name</th>
               <th>Price</th>
               <th>Brand</th>
+              <th>Stock</th>
               <th>Details</th>
             </tr>
           </thead>
@@ -55,6 +56,7 @@
               <td>{{ component.name }}</td>
               <td>{{ formatPrice(component.price) }}</td>
               <td>{{ component.brand }}</td>
+              <td>{{ component.stock }}</td>
               <td><button class="details-button" @click="showDetails(component)">View</button></td>
             </tr>
           </tbody>
@@ -107,6 +109,7 @@ export default {
           category: "PROCESSOR INTEL",
           image: "/src/img part/Intel Processor Core i9-13900KF.png",
           specs: ["24 Cores", "32 Threads", "5.80 GHz Base Clock"],
+          stock: "Ready",
         },
         {
           id: 2,
@@ -116,6 +119,7 @@ export default {
           category: "PROCESSOR INTEL",
           image: "/src/img part/Intel Processor Core I5 12400F.png",
           specs: ["6 Cores", "12 Threads", "4.40 GHz Base Clock"],
+          stock: "Kosong",
         },
         {
           id: 3,
