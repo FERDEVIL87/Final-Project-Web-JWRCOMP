@@ -21,7 +21,10 @@ const toggleSidebar = () => {
   <div class="layout">
     <!-- Navbar -->
     <nav class="navbar">
-      <div class="logo">JWR Comp</div>
+      <div class="logo">
+        <!-- MODIFIED: Image instead of text -->
+        <img src="/logo.png" alt="JWR Comp Logo" />
+      </div>
       <button class="toggle-btn" @click="toggleSidebar">☰</button>
       <ul class="menu">
         <li v-for="i in items" :key="i.to" class="menu-item">
@@ -80,7 +83,7 @@ const toggleSidebar = () => {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #1c1c1c;
+  background: black; /* Diubah ke hitam */
 }
 
 /* Navbar */
@@ -88,28 +91,38 @@ const toggleSidebar = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #1c1c1c;
+  background: black; /* Diubah ke hitam */
   padding: 1rem;
   flex-wrap: wrap;
-  position: fixed;         /* Tambahkan ini */
-  top: 0;                  /* Tambahkan ini */
-  left: 0;                 /* Tambahkan ini */
-  width: 100%;             /* Tambahkan ini */
-  z-index: 1100;           /* Tambahkan ini agar di atas sidebar */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1100; /* Di atas sidebar */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3); /* Shadow sedikit lebih terlihat di background hitam */
 }
 
 .content {
-  margin-top: 5rem; /* Tambahkan margin untuk menghindari navbar */
+  margin-top: 5rem; /* Margin untuk menghindari navbar. Sesuaikan dengan tinggi navbar jika perlu. */
   padding: 1rem;
   flex-grow: 1;
+  color: white; /* Pastikan teks konten terlihat di background hitam */
 }
 
 .logo {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: white;
+  /* font-size: 1.4rem; */ /* No longer needed for text size */
+  /* font-weight: bold; */ /* No longer needed for text weight */
+  color: white; /* Kept for alt text if image fails */
+  display: flex; /* Helps align the image if needed */
+  align-items: center; /* Vertically align image if its container has extra space */
 }
+
+.logo img {
+  max-height: 40px; /* ADJUST THIS VALUE to fit your logo and navbar height */
+  width: auto;      /* Maintain aspect ratio */
+  display: block;   /* Ensures the image behaves like a block element */
+}
+
 
 .toggle-btn {
   background: none;
@@ -155,7 +168,7 @@ const toggleSidebar = () => {
   content: "";
   position: absolute;
   inset: 2px;
-  background: #1c1c1c;
+  background: black; /* Diubah ke hitam */
 }
 
 .animated-btn span {
@@ -175,7 +188,7 @@ const toggleSidebar = () => {
   position: absolute;
   width: 10px;
   height: 2px;
-  background: #1c1c1c;
+  background: black; /* Diubah ke hitam */
   border: 2px solid var(--clr);
   transition: 0.3s;
 }
@@ -215,11 +228,13 @@ const toggleSidebar = () => {
   left: 0;
   width: 250px;
   height: 100%;
-  background: #1c1c1c;
+  background: black; /* Diubah ke hitam */
   padding: 1rem;
+  padding-top: 5rem; /* Tambahkan padding atas agar konten sidebar tidak tertutup navbar */
   transform: translateX(-100%);
   transition: transform 0.3s ease;
   z-index: 1000;
+  box-shadow: 3px 0 10px rgba(0,0,0,0.3); /* Shadow untuk sidebar */
 }
 
 .sidebar.open {
@@ -230,7 +245,6 @@ const toggleSidebar = () => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-top: 10%;
 }
 
 .sidebar .menu-item {
@@ -265,7 +279,7 @@ const toggleSidebar = () => {
   content: "";
   position: absolute;
   inset: 2px;
-  background: #272822;
+  background: black;
 }
 
 .sidebar-btn span {
@@ -287,7 +301,7 @@ const toggleSidebar = () => {
   left: 80%;
   top: -2px;
   border: 2px solid var(--clr);
-  background: #272822;
+  background: black;
   transition: 0.2s;
 }
 
@@ -305,7 +319,7 @@ const toggleSidebar = () => {
   left: 20%;
   bottom: -2px;
   border: 2px solid var(--clr);
-  background: #272822;
+  background: black;
   transition: 0.2s;
 }
 
@@ -327,8 +341,9 @@ const toggleSidebar = () => {
   font-size: 1.4rem;
   border: none;
   cursor: pointer;
-  align-self: flex-end;
-  margin-bottom: 1rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 }
 
 /* Animations */
@@ -339,21 +354,18 @@ const toggleSidebar = () => {
 }
 
 @keyframes box {
-  0% { box-shadow: #27272c; }
+  0% { box-shadow: none; }
   50% { box-shadow: 0 0 25px var(--clr); }
-  100% { box-shadow: #27272c; }
-}
-
-.content {
-  padding: 1rem;
+  100% { box-shadow: none; }
 }
 
 .footer {
-  background: #1c1c1c;
+  background: black;
   color: white;
   text-align: center;
   padding: 1rem;
   margin-top: auto;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
 }
 
 /* Responsive */
@@ -362,8 +374,29 @@ const toggleSidebar = () => {
     display: block;
   }
 
-  .menu {
+  .navbar .menu {
     display: none;
   }
+
+  .content {
+    margin-top: 4.5rem;
+  }
+  .sidebar {
+    padding-top: 4.5rem;
+  }
+  .sidebar .close-btn {
+    top: 0.8rem;
+  }
+}
+
+/* Page Transitions */
+.fade-page-enter-active,
+.fade-page-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-page-enter-from,
+.fade-page-leave-to {
+  opacity: 0;
 }
 </style>
