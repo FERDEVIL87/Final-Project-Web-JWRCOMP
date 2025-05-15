@@ -824,6 +824,27 @@ export default {
   color: #fff;
   font-size: 1rem;
 }
+
+.form-control::placeholder {
+  color: #bbb; /* Lighter placeholder text for visibility */
+  opacity: 1; /* Firefox */
+}
+.form-control:-ms-input-placeholder { /* IE 10-11 */
+ color: #bbb;
+}
+.form-control::-ms-input-placeholder { /* Edge */
+ color: #bbb;
+}
+
+.form-control:focus {
+  background-color: #18223d; /* Ensure background remains the same on focus */
+  color: #fff;             /* Ensure text color is white on focus */
+  border-color: #00eaff;    /* Highlight border on focus */
+  outline: 0;               /* Remove default browser outline */
+  box-shadow: 0 0 0 0.2rem rgba(0, 234, 255, 0.25); /* Optional: add a subtle glow */
+}
+
+
 .price-range-container {
   display: flex;
   align-items: center;
@@ -892,6 +913,7 @@ export default {
   font-size: 0.97rem;
   margin-bottom: 0.2rem;
 }
+
 .console-price {
   font-weight: bold;
 }
