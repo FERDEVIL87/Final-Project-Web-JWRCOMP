@@ -98,7 +98,24 @@ const onSlideChange = (data) => {
 
 <template>
   <div> <!-- Main wrapper for the entire page content -->
-    <section class="product-hero-slider">
+
+    <!-- NEW Video Hero Section -->
+    <section class="video-hero-section">
+      <video autoplay muted loop playsinline class="hero-background-video" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="> <!-- Simple black poster -->
+        <source src="https://assets.corsair.com/video/upload/f_auto,ac_none/q_75/Homepage%20Assets/Hero-Banners/doom-crop.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="hero-content-overlay">
+        <div class="hero-text-container">
+          <h1>ENTER THE DARK AGES</h1>
+          <p>OFFICIAL LICENSED GAMING AND STREAMING HARDWARE</p>
+          <a href="#product-carousel-starts" class="shop-now-button">SHOP NOW</a>
+        </div>
+      </div>
+    </section>
+    <!-- END NEW Video Hero Section -->
+
+    <section class="product-hero-slider" id="product-carousel-starts">
       <Carousel
         :settings="carouselSettings"
         :breakpoints="carouselBreakpoints"
@@ -131,7 +148,7 @@ const onSlideChange = (data) => {
               <div class="product-badges-container">
                 <div v-for="badge in product.badges" :key="badge.text + badge.subtext" class="product-badge">
                   <div v-if="badge.icon === 'fan'" class="badge-icon-fan">
-                    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-3.79V8.5c0-.28.22-.5.5-.5s.5.22.5.5v7.71c2.42-.95 4-3.27 4-5.96 0-.28-.22-.5-.5-.5s-.5.22-.5.5c0 2.21-1.79 4-4 4s-4-1.79-4-4c0-.28-.22-.5-.5-.5s-.5.22-.5.5c0 2.69 1.58 5.01 4 5.96zM8.75 12.5c.28 0 .5-.22.5-.5V8c0-2.21 1.79-4 4-4s4 1.79 4 4v4c0 .28-.22.5-.5.5s-.5-.22-.5-.5V8c0-1.65-1.35-3-3-3s-3 1.35-3 3v4c0 .28-.22.5-.5.5s-.5-.22-.5-.5z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-3.79V8.5c0-.28.22-.5.5-.5s.5.22.5.5v7.71c2.42-.95 4-3.27 4-5.96 0-.28-.22-.5-.5-.5s-.5.22-.5.5c0 2.21-1.79 4-4 4s-4-1.79-4-4c0-.28-.22-.5-.5-.5s-.5.22-.5.5c0 2.69 1.58 5.01 4 5.96zM8.75 12.5c.28 0 .5-.22.5-.5V8c0-2.21 1.79-4 4-4s4 1.79 4 4v4c0 .28-.22-.5-.5-.5s-.5-.22-.5-.5V8c0-1.65-1.35-3-3-3s-3 1.35-3 3v4c0 .28-.22-.5-.5-.5s-.5-.22-.5-.5z"/></svg>
                   </div>
                   <span class="badge-main-text">{{ badge.text }}</span>
                   <span class="badge-subtext">{{ badge.subtext }}</span>
@@ -151,7 +168,7 @@ const onSlideChange = (data) => {
 
     <!-- Store Information Section STARTS HERE -->
     <section class="store-info-section">
-      <div class="container store-info-container"> <!-- Added 'store-info-container' for specific styling if needed -->
+      <div class="container store-info-container"> 
         <h2 class="section-title store-section-title">Welcome to YourTech Haven</h2>
         <p class="section-subtitle store-section-subtitle">
           Your premier destination for cutting-edge hardware, expert advice, and unparalleled gaming experiences.
@@ -195,8 +212,6 @@ const onSlideChange = (data) => {
             <div class="map-embed-placeholder">
               <span>Interactive Map (Placeholder)</span>
               <p>Find us easily in the heart of Silicon City!</p>
-              <!-- Replace with actual map embed code, e.g., Google Maps iframe -->
-              <!-- <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.071046192135!2d106.82715281534275!3d-6.17539239552035!1m2!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5d2e764b12d%3A0x3d2d12285e7b7b07!2sMonas!5e0!3m2!1sen!2sid!4v1670000000000!5m2!1sen!2sid" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> -->
             </div>
           </div>
           <div class="social-links">
@@ -216,14 +231,103 @@ const onSlideChange = (data) => {
 </template>
 
 <style scoped>
-/* Import Google Fonts (already in your original style) */
+/* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap');
 
-/* Styles for Product Hero Slider (from your original code) */
+/* Styles for NEW Video Hero Section */
+.video-hero-section {
+  position: relative;
+  height: 100vh; 
+  width: 100%;
+  overflow: hidden; 
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  justify-content: flex-end; /* Push content to the bottom */
+  align-items: center; /* Keep content horizontally centered */
+  text-align: center;
+  background-color: #05050a; 
+  padding-bottom: 12vh; /* ADJUSTED: Space from the very bottom */
+}
+
+.hero-background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  z-index: 1; 
+  filter: brightness(0.6); 
+}
+
+.hero-content-overlay {
+  position: relative; 
+  z-index: 2; 
+  padding: 20px;
+  width: 100%; /* Allow it to be centered */
+  max-width: 800px; /* Optional: constrain width of text block */
+}
+
+.hero-text-container {
+  /* margin-top: 8vh; REMOVED - positioning handled by parent flexbox */
+}
+
+.hero-text-container h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  font-weight: 900;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5); 
+}
+
+.hero-text-container p {
+  font-family: 'Roboto', sans-serif;
+  font-size: clamp(0.8rem, 2vw, 1.1rem);
+  color: #E0E0E0;
+  margin-bottom: 35px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 400;
+  max-width: 600px; 
+  margin-left: auto;
+  margin-right: auto;
+  text-shadow: 1px 1px 6px rgba(0,0,0,0.7), 0 0 5px rgba(0,0,0,0.4); 
+}
+
+.shop-now-button {
+  display: inline-block;
+  background-color: #FDE047; 
+  color: #111827; 
+  padding: 14px 35px;
+  font-family: 'Orbitron', sans-serif; 
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 4px;
+  border: none;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.shop-now-button:hover, .shop-now-button:focus {
+  background-color: #FACC15; 
+  color: #000000;
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(253, 224, 71, 0.4), 0 0 15px rgba(250, 204, 21, 0.3);
+  outline: none;
+}
+
+
+/* Styles for Product Hero Slider */
 .product-hero-slider {
   width: 100%;
-  height: 100vh; /* Full viewport height */
-  /* overflow: hidden; */ /* CRITICAL: REMOVE or COMMENT OUT this line to allow scrolling */
+  height: 100vh; 
   font-family: 'Roboto', sans-serif;
   background-color: #0a0a12;
 }
@@ -238,7 +342,7 @@ const onSlideChange = (data) => {
   position: relative;
 }
 
-.product-slide-content { /* This 'container' class is used by both sections */
+.product-slide-content { 
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   grid-template-rows: auto 1fr auto;
@@ -470,6 +574,20 @@ const onSlideChange = (data) => {
 }
 
 @media (max-width: 576px) {
+  .video-hero-section {
+    padding-bottom: 8vh; /* Adjust padding for smaller screens if needed */
+  }
+  .hero-text-container h1 {
+    font-size: clamp(2rem, 10vw, 2.8rem); 
+  }
+  .hero-text-container p {
+    font-size: clamp(0.75rem, 3vw, 0.9rem); 
+  }
+  .shop-now-button {
+    padding: 12px 25px;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
+  }
+
   .product-features li {
     font-size: 0.9rem;
   }
@@ -496,15 +614,14 @@ const onSlideChange = (data) => {
   }
 }
 
-/* Styles for Store Information Section STARTS HERE */
-/* Basic icon placeholders - replace with actual SVGs or a font icon library for better icons */
+/* Styles for Store Information Section */
 .icon-store::before { content: "🏢 "; }
 .icon-pin::before { content: "📍 "; }
 .icon-clock::before { content: "🕒 "; }
 .icon-services::before { content: "🛠️ "; }
 .icon-map::before { content: "🗺️ "; }
 .icon-connect::before { content: "🔗 "; }
-.icon-facebook::before { content: "📘 "; font-size: 1.5em; } /* Simplified social icons */
+.icon-facebook::before { content: "📘 "; font-size: 1.5em; } 
 .icon-twitter::before { content: "🐦 "; font-size: 1.5em; }
 .icon-instagram::before { content: "📸 "; font-size: 1.5em; }
 .icon-discord::before { content: "💬 "; font-size: 1.5em; }
@@ -512,30 +629,29 @@ const onSlideChange = (data) => {
 
 .store-info-section {
   padding: 80px 20px;
-  background-color: #0f172a; /* Dark blue, slightly different from carousel bg */
-  color: #e2e8f0; /* Light grey/blue text */
+  background-color: #0f172a; 
+  color: #e2e8f0; 
   font-family: 'Roboto', sans-serif;
 }
 
-/* .container is a general class, let's make one for store info if specific adjustments are needed */
 .store-info-container {
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.section-title.store-section-title { /* Specific to store info section title */
+.section-title.store-section-title { 
   text-align: center;
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(2rem, 5vw, 3rem);
-  color: #38bdf8; /* Light blue accent */
+  color: #38bdf8; 
   margin-bottom: 15px;
   font-weight: 700;
 }
 
-.section-subtitle.store-section-subtitle { /* Specific to store info section subtitle */
+.section-subtitle.store-section-subtitle { 
   text-align: center;
   font-size: clamp(1rem, 2.5vw, 1.25rem);
-  color: #94a3b8; /* Muted text color */
+  color: #94a3b8; 
   margin-bottom: 50px;
   max-width: 700px;
   margin-left: auto;
@@ -551,7 +667,7 @@ const onSlideChange = (data) => {
 }
 
 .info-block {
-  background-color: #1e293b; /* Slightly lighter card background */
+  background-color: #1e293b; 
   padding: 25px 30px;
   border-radius: 12px;
   border: 1px solid #334155;
@@ -567,13 +683,13 @@ const onSlideChange = (data) => {
 .info-block h3 {
   font-family: 'Orbitron', sans-serif;
   font-size: 1.5rem;
-  color: #7dd3fc; /* Lighter blue for headings */
+  color: #7dd3fc; 
   margin-bottom: 15px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
-.info-block h3 i { /* Style for icons within h3 */
+.info-block h3 i { 
   font-size: 1.2em;
   color: #38bdf8;
 }
@@ -581,7 +697,7 @@ const onSlideChange = (data) => {
 .info-block p, .info-block li {
   font-size: 0.95rem;
   line-height: 1.7;
-  color: #cbd5e1; /* Content text color */
+  color: #cbd5e1; 
   margin-bottom: 10px;
 }
 
@@ -612,7 +728,7 @@ const onSlideChange = (data) => {
   content: '✓';
   position: absolute;
   left: 0;
-  color: #38bdf8; /* Checkmark color */
+  color: #38bdf8; 
   font-weight: bold;
 }
 
@@ -667,7 +783,7 @@ const onSlideChange = (data) => {
     display: inline-block;
     margin-right: 15px;
     color: #94a3b8;
-    font-size: 1.8rem; /* For emoji icons */
+    font-size: 1.8rem; 
     transition: color 0.3s ease, transform 0.3s ease;
     text-decoration: none;
 }
@@ -675,20 +791,18 @@ const onSlideChange = (data) => {
     color: #38bdf8;
     transform: scale(1.1);
 }
-.social-links a i { /* If using font icons that are not emojis */
-  font-size: 1.5em; /* Example */
-  font-style: normal; /* Reset italic if using <i> for icons */
+.social-links a i { 
+  font-size: 1.5em; 
+  font-style: normal; 
 }
 
 
-/* Responsive adjustments for Store Info Section */
 @media (max-width: 992px) {
     .map-social-container {
-        grid-template-columns: 1fr; /* Stack map and social on medium screens */
+        grid-template-columns: 1fr; 
     }
-    /* Adjust product slide content padding if necessary */
     .product-slide-content.container {
-      padding: 60px 20px 40px; /* Consistent with existing responsive */
+      padding: 60px 20px 40px; 
     }
 }
 
@@ -706,5 +820,8 @@ const onSlideChange = (data) => {
     padding: 20px;
   }
 }
-/* Styles for Store Information Section ENDS HERE */
+
+html {
+  scroll-behavior: smooth;
+}
 </style>
