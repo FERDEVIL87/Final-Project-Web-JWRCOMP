@@ -1,97 +1,128 @@
 <template>
-  <section class="container">
-    <h2 class="main-title">🎮 ULTIMATE GAME CONSOLES HUB 🚀</h2>
+  <section class="container py-5">
+    <h2 class="text-center fw-bold mb-4 text-info" style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 8px #00eaff, 0 0 18px #00eaff;">
+      🎮 ULTIMATE GAME CONSOLES HUB 🚀
+    </h2>
     <!-- Kategori -->
-    <div class="category-grid">
+    <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
       <button
         v-for="(card, index) in cards"
         :key="index"
-        class="category-button"
+        class="btn btn-outline-info px-4 py-2 fw-bold"
+        :class="{ active: selectedCategory && selectedCategory.title === card.title, 'bg-info text-dark border-info': selectedCategory && selectedCategory.title === card.title }"
+        style="font-family: 'Orbitron', sans-serif; letter-spacing: 0.04em;"
         @click="selectCategory(card)"
-        :class="{ active: selectedCategory && selectedCategory.title === card.title }"
       >
         {{ card.title }}
       </button>
     </div>
 
-    <div v-if="selectedCategory" class="filters">
-      <h3 class="category-filter-title">{{ selectedCategory.title }}</h3>
-      <div class="filter-controls">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search console..."
-          class="form-control"
-        />
-        <select v-model="selectedBrand" class="form-control">
-          <option value="">All Brands</option>
-          <option v-for="brand in brands" :key="brand" :value="brand">{{ brand }}</option>
-        </select>
-        <div class="price-range-container">
+    <div v-if="selectedCategory" class="bg-dark bg-opacity-75 rounded-4 shadow p-4 mb-4">
+      <h3 class="text-center fw-bold mb-3 text-info" style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 8px #00eaff;">
+        {{ selectedCategory.title }}
+      </h3>
+      <div class="row g-2 align-items-center mb-3">
+        <div class="col-12 col-md-4">
+          <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Search console..."
+            class="form-control bg-secondary bg-opacity-25 text-light border-info"
+          />
+        </div>
+        <div class="col-12 col-md-4">
+          <select v-model="selectedBrand" class="form-select bg-secondary bg-opacity-25 text-light border-info">
+            <option value="">All Brands</option>
+            <option v-for="brand in brands" :key="brand" :value="brand">{{ brand }}</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-4 d-flex align-items-center">
           <input
             type="range"
             v-model="priceRangeUSD"
             min="0"
             :max="maxPriceInCategory"
             step="50"
-            class="form-range"
+            class="form-range me-2"
+            style="accent-color: #00eaff;"
           />
-          <span class="price-label-display">Max: {{ formatPrice(priceRangeUSD) }}</span>
+          <span class="fw-semibold text-info">Max: {{ formatPrice(priceRangeUSD) }}</span>
         </div>
       </div>
 
-      <div v-if="filteredConsoles.length > 0" class="console-grid">
+      <div v-if="filteredConsoles.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-2">
         <div
           v-for="consoleItem in filteredConsoles"
           :key="consoleItem.id"
-          class="console-card"
-          @click="showDetails(consoleItem)"
-          tabindex="0"
+          class="col"
         >
-          <img :src="consoleItem.image" :alt="consoleItem.name" class="console-image" />
-          <div class="console-info">
-            <h4 class="console-name">{{ consoleItem.name }}</h4>
-            <p class="console-brand">Brand: {{ consoleItem.brand }}</p>
-            <p class="console-stock">Stock: <span :class="getStockClass(consoleItem.stock)">{{ consoleItem.stock }}</span></p>
-            <p class="console-price">{{ formatPrice(consoleItem.price) }}</p>
+          <div
+            class="card h-100 bg-secondary bg-opacity-75 border-info shadow-sm text-light cursor-pointer"
+            @click="showDetails(consoleItem)"
+            tabindex="0"
+            style="transition: transform 0.18s, box-shadow 0.18s; cursor: pointer;"
+            @mouseover="hover = consoleItem.id"
+            @mouseleave="hover = null"
+            :style="hover === consoleItem.id ? 'transform: translateY(-4px) scale(1.03); box-shadow: 0 6px 24px #00eaff88; border-color: #00eaff;' : ''"
+          >
+            <img :src="consoleItem.image" :alt="consoleItem.name" class="card-img-top" style="height: 140px; object-fit: cover; background: #101829;" />
+            <div class="card-body">
+              <h4 class="card-title text-info fw-bold mb-1" style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 6px #00eaff, 0 0 12px #00eaff;">{{ consoleItem.name }}</h4>
+              <p class="mb-1"><span class="fw-semibold">Brand:</span> {{ consoleItem.brand }}</p>
+              <p class="mb-1">
+                <span class="fw-semibold">Stock:</span>
+                <span :class="getStockClass(consoleItem.stock)">
+                  {{ consoleItem.stock }}
+                </span>
+              </p>
+              <p class="fw-bold mb-0">{{ formatPrice(consoleItem.price) }}</p>
+            </div>
           </div>
         </div>
       </div>
-      <div v-else class="no-results">
+      <div v-else class="text-center text-info py-5" style="font-family: 'Orbitron', sans-serif;">
         <p>No consoles match your current filters.</p>
       </div>
     </div>
-    <div v-else class="no-category-selected">
+    <div v-else class="text-center text-info py-5" style="font-family: 'Orbitron', sans-serif;">
       <p>✨ Please select a category above to explore our awesome consoles! ✨</p>
     </div>
 
-    <!-- MODAL -->
-    <teleport to="body">
-      <div v-if="isModalVisible" class="modal-overlay" @click.self="closeDetails">
-        <div class="modal-content">
-          <button class="modal-close-button" @click="closeDetails" aria-label="Close modal">×</button>
-          <div v-if="selectedProduct">
-            <h3 class="modal-product-title">{{ selectedProduct.name }}</h3>
-            <img :src="selectedProduct.image" :alt="selectedProduct.name" class="product-image" />
-            <div class="modal-details-grid">
-              <p><strong>Price:</strong> <span>{{ formatPrice(selectedProduct.price) }}</span></p>
-              <p><strong>Brand:</strong> <span>{{ selectedProduct.brand }}</span></p>
-              <p><strong>Stock:</strong> <span :class="getStockClass(selectedProduct.stock)">{{ selectedProduct.stock }}</span></p>
+    <!-- MODAL Bootstrap Dikelola oleh JS -->
+    <div class="modal fade" id="consoleDetailModal" tabindex="-1" aria-labelledby="consoleDetailModalLabel" aria-hidden="true" ref="consoleModalRef">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light position-relative">
+          <!-- Tombol close Bootstrap standar akan muncul di sini jika tidak dioverride header -->
+          <div class="modal-header border-0 pb-0">
+            <h3 class="modal-title w-100 text-center text-info fw-bold" id="consoleDetailModalLabel" style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 8px #00eaff;">
+              {{ selectedProduct?.name }}
+            </h3>
+            <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="closeDetails"></button>
+          </div>
+          <div class="modal-body">
+            <img :src="selectedProduct?.image" :alt="selectedProduct?.name" class="d-block mx-auto mb-3 rounded" style="max-width: 280px; max-height: 180px; object-fit: contain; background: #101829;" />
+            <div class="mb-3">
+              <p class="mb-1"><strong>Price:</strong> <span>{{ formatPrice(selectedProduct?.price) }}</span></p>
+              <p class="mb-1"><strong>Brand:</strong> <span>{{ selectedProduct?.brand }}</span></p>
+              <p class="mb-1"><strong>Stock:</strong> <span :class="getStockClass(selectedProduct?.stock)">{{ selectedProduct?.stock }}</span></p>
             </div>
-            <div v-if="selectedProduct.specs && selectedProduct.specs.length > 0" class="features-section">
-              <p class="features-title"><strong>Features:</strong></p>
-              <ul>
+            <div v-if="selectedProduct?.specs && selectedProduct?.specs.length > 0">
+              <p class="fw-bold text-info mb-1">Features:</p>
+              <ul class="ps-3 mb-0">
                 <li v-for="(feature, index) in selectedProduct.specs" :key="index">{{ feature }}</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
-    </teleport>
+      <!-- HAPUS BACKDROP MANUAL DARI SINI -->
+    </div>
   </section>
 </template>
 
 <script>
+import { Modal } from 'bootstrap'; // Pastikan ini diimpor
+
 export default {
   name: "GameConsolesHub",
   data() {
@@ -109,8 +140,11 @@ export default {
       priceRangeUSD: 1500,
       usdToIdrRate: 15000,
       selectedProduct: null,
-      isModalVisible: false,
+      // isModalVisible: false, // TIDAK DIPERLUKAN LAGI
+      bootstrapModalInstance: null, // Untuk menyimpan instance Modal Bootstrap
+      hover: null,
       consoles: [
+        // ... (data konsol Anda yang panjang ada di sini) ...
         {
           id: 1,
           name: "PlayStation 5",
@@ -404,7 +438,8 @@ export default {
         {
           id: 30,
           name: "Dreamcast",
-          price: 299,brand: "Sega",
+          price: 299, 
+          brand: "Sega",
           category: "✨ Explore More Consoles",
           image: "https://upload.wikimedia.org/wikipedia/commons/8/81/Dreamcast-Console-Set.jpg",
           specs: ["128-bit System", "VGA Output", "Virtual Fighter 3"],
@@ -764,6 +799,23 @@ export default {
     };
   },
   mounted() {
+    // Inisialisasi Modal Bootstrap
+    const modalElement = this.$refs.consoleModalRef; // Ganti ref jika perlu
+    if (modalElement) {
+      this.bootstrapModalInstance = new Modal(modalElement);
+
+      // Listener untuk event ketika modal selesai disembunyikan
+      modalElement.addEventListener('hidden.bs.modal', () => {
+        this.selectedProduct = null; // Reset produk terpilih
+        document.body.style.overflow = ''; // Kembalikan scroll body
+      });
+
+      // Listener untuk event ketika modal selesai ditampilkan
+      modalElement.addEventListener('shown.bs.modal', () => {
+        document.body.style.overflow = 'hidden'; // Sembunyikan scroll body
+      });
+    }
+
     if (this.cards && this.cards.length > 0) {
       this.selectCategory(this.cards[0]);
     }
@@ -805,8 +857,14 @@ export default {
       this.selectedCategory = category;
       this.searchQuery = "";
       this.selectedBrand = "";
+      this.$nextTick(() => {
+        this.priceRangeUSD = this.maxPriceInCategory;
+      });
     },
     formatPrice(priceUSD) {
+      if (typeof priceUSD !== 'number' || isNaN(priceUSD)) {
+        return 'Rp 0';
+      }
       const priceIDR = priceUSD * this.usdToIdrRate;
       return new Intl.NumberFormat("id-ID", {
         style: "currency",
@@ -817,350 +875,34 @@ export default {
     },
     showDetails(consoleItem) {
       this.selectedProduct = consoleItem;
-      this.isModalVisible = true;
+      if (this.bootstrapModalInstance) {
+        this.bootstrapModalInstance.show();
+      }
+      // Pengelolaan overflow body sekarang di handle oleh event listener 'shown.bs.modal'
     },
     closeDetails() {
-      this.isModalVisible = false;
-      this.selectedProduct = null;
+      if (this.bootstrapModalInstance) {
+        this.bootstrapModalInstance.hide();
+      }
+      // Pengelolaan selectedProduct dan overflow body sekarang di handle oleh event listener 'hidden.bs.modal'
     },
     getStockClass(stockStatus) {
       if (stockStatus === "Ready") {
-        return 'stock-ready';
+        return 'text-success fw-bold';
       } else if (stockStatus === "Kosong") {
-        return 'stock-kosong';
+        return 'text-danger fw-bold';
       }
       return '';
     }
   },
   watch: {
-    isModalVisible(newValue) {
-      document.body.style.overflow = newValue ? 'hidden' : '';
-    },
     selectedCategory(newCategory, oldCategory) {
       if (newCategory !== oldCategory) {
-        this.priceRangeUSD = this.maxPriceInCategory;
+        this.$nextTick(() => {
+          this.priceRangeUSD = this.maxPriceInCategory;
+        });
       }
     }
   }
 };
 </script>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Orbitron:wght@700&display=swap');
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 60px 10px;
-  min-height: 100vh;
-  color: #fff;
-  font-family: 'Montserrat', sans-serif;
-  opacity: 0;
-  animation: fadein 0.7s ease 0s forwards;
-}
-
-@keyframes fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-.main-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 2.2rem;
-  text-align: center;
-  margin-bottom: 2.2rem;
-  color: #fff;
-  text-shadow: 0 0 8px #00eaff, 0 0 18px #00eaff;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-}
-
-.category-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.2rem;
-  justify-content: center;
-  margin-bottom: 2.5rem;
-}
-.category-button {
-  font-family: 'Orbitron', sans-serif;
-  padding: 1rem 1.2rem;
-  background: #101829;
-  color: #00eaff;
-  border: 2px solid #00eaff44;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.2s;
-  box-shadow: 0 2px 8px #00eaff22;
-}
-.category-button.active,
-.category-button:hover {
-  background: #00eaff;
-  color: #050a13;
-  border-color: #00eaff;
-  box-shadow: 0 0 12px #00eaff88;
-}
-
-.filters {
-  background: #101829cc;
-  border-radius: 10px;
-  padding: 1.5rem 1rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 12px #00eaff22;
-}
-.category-filter-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.2rem;
-  color: #fff;
-  text-shadow: 0 0 8px #00eaff;
-  text-align: center;
-  margin-bottom: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-}
-.filter-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-.form-control {
-  flex: 1 1 160px;
-  padding: 0.7rem 1rem;
-  border-radius: 6px;
-  border: 1px solid #00eaff44;
-  background: #18223d;
-  color: #fff;
-  font-size: 1rem;
-}
-
-.form-control::placeholder {
-  color: #bbb; 
-  opacity: 1; 
-}
-.form-control:-ms-input-placeholder { 
- color: #bbb;
-}
-.form-control::-ms-input-placeholder { 
- color: #bbb;
-}
-
-.form-control:focus {
-  background-color: #18223d; 
-  color: #fff;             
-  border-color: #00eaff;    
-  outline: 0;               
-  box-shadow: 0 0 0 0.2rem rgba(0, 234, 255, 0.25); 
-}
-
-
-.price-range-container {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.form-range {
-  width: 120px;
-  accent-color: #00eaff;
-}
-.price-label-display {
-  color: #00eaff;
-  font-size: 0.95rem;
-  font-weight: 500;
-}
-
-.console-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.2rem;
-  margin-top: 1.5rem;
-}
-.console-card {
-  background: #18223d;
-  border-radius: 10px;
-  box-shadow: 0 2px 12px #00eaff22;
-  cursor: pointer;
-  overflow: hidden;
-  transition: transform 0.18s, box-shadow 0.18s;
-  border: 1px solid #00eaff22;
-  display: flex;
-  flex-direction: column;
-}
-.console-card:hover {
-  transform: translateY(-4px) scale(1.03);
-  box-shadow: 0 6px 24px #00eaff44;
-  border-color: #00eaff;
-}
-.console-image {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  background: #101829;
-}
-.console-info {
-  padding: 1rem;
-  text-align: left;
-}
-.console-name {
-  font-family: 'Orbitron', sans-serif;
-  color: #fff;
-  font-size: 1.08rem;
-  font-weight: 700;
-  margin-bottom: 0.3rem;
-  text-shadow: 0 0 6px #00eaff, 0 0 12px #00eaff;
-}
-.console-brand,
-.console-price{
-  color: #fff;
-  font-size: 0.97rem;
-  margin-bottom: 0.2rem;
-  text-shadow: 0 0 4px #00eaff;
-}
-
-.console-stock {
-  color: #fff;
-  font-size: 0.97rem;
-  margin-bottom: 0.2rem;
-}
-
-.console-price {
-  font-weight: bold;
-}
-
-.stock-ready {
-  color: #28a745; /* Green */
-  font-weight: bold;
-}
-
-.stock-kosong {
-  color: #dc3545; /* Red */
-  font-weight: bold;
-}
-
-.no-results,
-.no-category-selected {
-  text-align: center;
-  color: #00eaff;
-  padding: 2rem 0;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.1rem;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(5, 10, 19, 0.93);
-  display: flex; justify-content: center; align-items: center;
-  z-index: 1000;
-}
-.modal-content {
-  background: #1a1a24;
-  padding: 20px 16px 18px 16px; /* Adjusted top padding */
-  border-radius: 10px;
-  box-shadow: 0 4px 24px #00eaff33;
-  max-width: 380px; 
-  width: 90%;
-  color: #fff;
-  position: relative;
-  text-align: left;
-}
-
-.modal-product-title {
-  font-family: 'Orbitron', sans-serif;
-  color: #fff;
-  font-size: 1.25rem; 
-  font-weight: 700;
-  margin-bottom: 1.2rem; 
-  text-align: center;
-  text-shadow: 0 0 8px #00eaff;
-  padding-left: 20px;  /* Space for left side (balance) */
-  padding-right: 50px; /* Space for the close button on the right */
-  box-sizing: border-box; 
-  width: 100%; 
-  word-wrap: break-word;
-  overflow-wrap: break-word; 
-}
-
-.modal-close-button {
-  position: absolute;
-  top: 12px; 
-  right: 12px; 
-  background: transparent;
-  color: #aaa;
-  border: none;
-  font-family: Arial, Helvetica, sans-serif; 
-  font-size: 2.2rem;  
-  font-weight: normal; 
-  line-height: 1;     
-  cursor: pointer;
-  padding: 5px; 
-  transition: color 0.2s ease, transform 0.2s ease;
-  z-index: 1001; 
-}
-
-.modal-close-button:hover {
-  color: #fff;
-  transform: scale(1.1);
-}
-
-.product-image {
-  width: 100%;
-  max-width: 280px; 
-  max-height: 180px; 
-  object-fit: contain;
-  margin: 0 auto 1.5rem auto; 
-  display: block;
-  border-radius: 8px;
-  background: #101829;
-}
-.modal-details-grid {
-  font-size: 0.98rem;
-  margin-bottom: 0.8rem;
-}
-.modal-details-grid p {
-  margin-bottom: 0.5rem;
-}
-.features-section {
-  margin-top: 1rem;
-  border-top: 1px solid #00eaff33;
-  padding-top: 0.7rem;
-}
-.features-title strong {
-  color: #00eaff;
-  font-size: 1rem;
-}
-.modal-content ul {
-  padding-left: 1.2em;
-}
-.modal-content ul li {
-  margin-bottom: 0.4rem;
-  color: #fff;
-  font-size: 0.95rem;
-  text-shadow: 0 0 4px #00eaff;
-}
-@media (max-width: 700px) {
-  .container { padding: 10px 2px; }
-  .main-title { font-size: 1.3rem; }
-  .console-grid { grid-template-columns: 1fr; }
-  .console-image { height: 110px; }
-  .modal-content { 
-    max-width: 95vw; 
-    padding-top: 15px; /* Adjust for smaller screens */
-  } 
-  .product-image {
-    max-width: 240px;
-    max-height: 150px;
-  }
-  .modal-product-title {
-    font-size: 1.1rem;
-    padding-left: 15px;
-    padding-right: 45px; /* Adjust for smaller screens if needed */
-  }
-  .modal-close-button {
-    top: 8px;
-    right: 8px;
-    font-size: 2rem;
-  }
-}
-</style>

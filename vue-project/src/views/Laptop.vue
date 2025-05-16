@@ -1,5 +1,6 @@
-<!-- LaptopListSection.vue -->
 <script>
+import { Modal } from 'bootstrap';
+
 export default {
   name: "LaptopListSection",
   data() {
@@ -13,15 +14,28 @@ export default {
         { id: 6, name: "MacBook Air M1", category: "High-End", price: 15000000, image: "src/img/MacBook Air M1.png", description: "Apple M1, RAM 8GB, SSD 256GB, Layar 13.3\" Retina, GPU 7-core/8-core", stock: 0 },
         { id: 7, name: "ASUS ROG Zephyrus G14", category: "High-End", price: 20000000, image: "src/img/ASUSROGZephyrusG14.png", description: "AMD Ryzen 7 4800HS, RAM 16GB, SSD 512GB, Layar 14\" FHD 120Hz, NVIDIA GTX 1650/RTX 2060", stock: 4 },
         { id: 8, name: "Dell XPS 13", category: "High-End", price: 25000000, image: "src/img/Dell XPS 13.png", description: "Intel Core i7-1165G7, RAM 16GB, SSD 1TB, Layar 13.4\" FHD+, Intel Iris Xe Graphics", stock: 0 },
-        { id: 9, name: "MacBook Pro 16-inch", category: "High-End", price: 30000000, image: "/src/img/MacBook Pro 16-inch.png", description: "Apple M1 Pro, RAM 16GB, SSD 512GB, Layar 16.2\" Liquid Retina XDR, GPU 16-core", stock: 3 },
+        { id: 9, name: "MacBook Pro 16-inch", category: "High-End", price: 30000000, image: "src/img/MacBook Pro 16-inch.png", description: "Apple M1 Pro, RAM 16GB, SSD 512GB, Layar 16.2\" Liquid Retina XDR, GPU 16-core", stock: 3 },
         { id: 10, name: "Razer Blade 15", category: "High-End", price: 35000000, image: "src/img/Razer Blade 15.png", description: "Intel Core i7-11800H, RAM 16GB, SSD 1TB, Layar 15.6\" FHD 144Hz, NVIDIA RTX 3060", stock: 0 },
       ],
       searchQuery: "",
-      selectedCategoryFilter: "", // Renamed for clarity
-      isModalVisible: false,
+      selectedCategoryFilter: "",
       selectedLaptopForModal: null,
-    };
-  },
+      bootstrapLaptopModal: null,
+    };
+  },
+  mounted() {
+    const modalElement = this.$refs.laptopDetailModalRef;
+    if (modalElement) {
+      this.bootstrapLaptopModal = new Modal(modalElement);
+      modalElement.addEventListener('hidden.bs.modal', () => {
+        this.selectedLaptopForModal = null;
+        document.body.style.overflow = '';
+      });
+      modalElement.addEventListener('shown.bs.modal', () => {
+        document.body.style.overflow = 'hidden';
+      });
+    }
+  },
   computed: {
     filteredLaptops() {
       return this.laptops.filter((laptop) => {
@@ -31,425 +45,518 @@ export default {
       });
     },
     categoriesWithLaptops() {
-      const uniqueCategories = ["Low-End", "Mid-Range", "High-End"]; // Define order
-      
+      const uniqueCategories = ["Low-End", "Mid-Range", "High-End"];
       const categoryData = uniqueCategories.map(categoryName => {
-        // Get filtered laptops for this category
         const laptopsInCategory = this.filteredLaptops.filter(laptop => laptop.category === categoryName);
-        
         return {
           name: categoryName,
           laptops: laptopsInCategory,
-          backgroundImage: '', // Tidak ada gambar latar belakang
         };
       });
-      // Only return categories that either have laptops after filtering or if no category filter is active
       if (this.selectedCategoryFilter) {
         return categoryData.filter(cat => cat.name === this.selectedCategoryFilter && cat.laptops.length > 0);
       }
-      return categoryData.filter(cat => cat.laptops.length > 0); // Show categories if they have matching laptops
+      return categoryData.filter(cat => cat.laptops.length > 0);
     }
   },
   methods: {
     formatPrice(value) {
-      if (typeof value !== "number") {
-        return value;
+      if (typeof value !== "number" || isNaN(value)) {
+        return 'Rp 0';
       }
       return `Rp ${new Intl.NumberFormat('id-ID').format(value)}`;
     },
     openModal(laptop) {
       this.selectedLaptopForModal = laptop;
-      this.isModalVisible = true;
+      if (this.bootstrapLaptopModal) {
+        this.bootstrapLaptopModal.show();
+      }
     },
     closeModal() {
-      this.isModalVisible = false;
-      this.selectedLaptopForModal = null;
+      if (this.bootstrapLaptopModal) {
+        this.bootstrapLaptopModal.hide();
+      }
     }
   }
 };
 </script>
 
 <template>
-  <section class="laptop-list-section">
-    <h2 class="section-title">List Laptop</h2>
-    <div class="filters">
-      <input
-        type="text"
-        v-model="searchQuery"
-        placeholder="Cari laptop..."
-        class="search-box"
-        aria-label="Cari laptop"
-      />
-      <select v-model="selectedCategoryFilter" class="filter-button" aria-label="Pilih kategori laptop">
-        <option value="">Semua Kategori</option>
-        <option value="Low-End">Low-End</option>
-        <option value="Mid-Range">Mid-Range</option>
-        <option value="High-End">High-End</option>
-      </select>
-    </div>
+  <section class="laptop-list-section-bs">
+    <div class="container py-5">
+      <h2 class="section-title-bs text-center">List Laptop</h2>
 
-    <div v-if="filteredLaptops.length > 0" class="categories-container">
-      <div v-for="categoryData in categoriesWithLaptops" :key="categoryData.name" class="category-section">
-        <div class="category-header">
-          <h3 class="category-title">{{ categoryData.name }}</h3>
+      <!-- Filter Section -->
+      <div class="row justify-content-center mb-4 mb-md-5">
+        <div class="col-lg-10 col-xl-8">
+          <div class="filters-bs p-3 rounded-3">
+            <div class="row g-3 align-items-center">
+              <div class="col-md">
+                <input
+                  type="text"
+                  v-model="searchQuery"
+                  placeholder="Cari nama laptop..."
+                  class="form-control form-control-lg search-box-bs"
+                  aria-label="Cari laptop"
+                />
+              </div>
+              <div class="col-md-auto">
+                <select v-model="selectedCategoryFilter" class="form-select form-select-lg filter-select-bs" aria-label="Pilih kategori laptop">
+                  <option value="">Semua Kategori</option>
+                  <option value="Low-End">Low-End</option>
+                  <option value="Mid-Range">Mid-Range</option>
+                  <option value="High-End">High-End</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        <div class="cards-grid">
-          <div 
-            v-for="laptop in categoryData.laptops" 
-            :key="laptop.id" 
-            class="card"
-            @click="openModal(laptop)"
-            role="button"
-            tabindex="0"
-            @keydown.enter="openModal(laptop)"
-            @keydown.space="openModal(laptop)"
-          >
-            <img :src="laptop.image" :alt="laptop.name" class="card-image" />
-            <h4 class="card-title">{{ laptop.name }}</h4> <!-- Changed to h4 for semantic structure -->
-            <p class="card-text">
-              <!-- Kategori: {{ laptop.category }}<br /> Price is primary -->
-              <strong>Harga:</strong> {{ formatPrice(laptop.price) }}
-            </p>
+      </div>
+
+      <!-- Laptop Categories and Cards -->
+      <div v-if="filteredLaptops.length > 0">
+        <div v-for="categoryData in categoriesWithLaptops" :key="categoryData.name" class="category-section-bs mb-5">
+          <div class="category-header-bs text-center">
+            <h3 class="category-title-bs d-inline-block px-sm-4 px-3 py-2">{{ categoryData.name }}</h3>
+          </div>
+
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-3 g-md-4 justify-content-center">
+            <div
+              v-for="laptop in categoryData.laptops"
+              :key="laptop.id"
+              class="col d-flex align-items-stretch"
+            >
+              <div
+                class="card h-100 card-bs"
+                @click="openModal(laptop)"
+                role="button"
+                tabindex="0"
+                @keydown.enter="openModal(laptop)"
+                @keydown.space="openModal(laptop)"
+              >
+                <div class="card-img-container-bs">
+                  <img :src="laptop.image" :alt="laptop.name" class="card-img-bs" />
+                </div>
+                <div class="card-body d-flex flex-column p-3">
+                  <h4 class="card-title card-title-bs mb-2">{{ laptop.name }}</h4>
+                  <p class="card-text card-text-price-bs mt-auto mb-0">
+                    <strong>Harga:</strong> {{ formatPrice(laptop.price) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-else class="no-results-bs text-center py-5">
+        <p>Tidak ada laptop yang cocok dengan kriteria pencarian Anda.</p>
+      </div>
+
+      <!-- Modal Bootstrap -->
+      <div class="modal fade" id="laptopDetailModalBs" tabindex="-1" aria-labelledby="laptopDetailModalLabelBs" aria-hidden="true" ref="laptopDetailModalRef">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+          <div class="modal-content modal-content-bs">
+            <div class="modal-header modal-header-bs">
+              <h5 class="modal-title w-100 text-center modal-laptop-title-bs" id="laptopDetailModalLabelBs">
+                {{ selectedLaptopForModal?.name }}
+              </h5>
+              <button type="button" class="btn-close modal-close-button-bs" @click="closeModal" aria-label="Tutup detail laptop"></button>
+            </div>
+            <div class="modal-body modal-body-bs">
+              <div v-if="selectedLaptopForModal" class="row g-3 g-md-4">
+                <div class="col-md-5 text-center">
+                  <img :src="selectedLaptopForModal.image" :alt="selectedLaptopForModal.name" class="img-fluid rounded modal-image-bs" />
+                </div>
+                <div class="col-md-7 modal-details-text">
+                  <div class="modal-info-group mb-3">
+                    <p><strong>Kategori:</strong> {{ selectedLaptopForModal.category }}</p>
+                    <p><strong>Harga:</strong> {{ formatPrice(selectedLaptopForModal.price) }}</p>
+                    <p>
+                      <strong>Status Stok:</strong>
+                      <span :class="{'text-stock-ready-bs': selectedLaptopForModal.stock > 0, 'text-stock-kosong-bs': selectedLaptopForModal.stock <= 0}">
+                        {{ selectedLaptopForModal.stock > 0 ? 'Tersedia' : 'Kosong' }} ({{selectedLaptopForModal.stock}} unit)
+                      </span>
+                    </p>
+                  </div>
+                  <div class="specs-section-bs">
+                    <h4 class="text-center text-md-start">Spesifikasi Detail:</h4>
+                    <ul>
+                      <li v-for="spec in selectedLaptopForModal.description.split(',')" :key="spec.trim()">
+                        {{ spec.trim() }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div v-else class="no-results">
-      <p>Tidak ada laptop yang cocok dengan kriteria pencarian Anda.</p>
-    </div>
-
-    <!-- Modal -->
-    <div v-if="isModalVisible" class="modal-overlay" @click.self="closeModal" role="dialog" aria-modal="true" :aria-labelledby="selectedLaptopForModal ? 'modal-title-' + selectedLaptopForModal.id : ''">
-      <div class="modal-content">
-        <button class="modal-close-button" @click="closeModal" aria-label="Tutup detail laptop">×</button>
-        <div v-if="selectedLaptopForModal">
-          <img :src="selectedLaptopForModal.image" :alt="selectedLaptopForModal.name" class="modal-image" />
-          <h2 :id="'modal-title-' + selectedLaptopForModal.id" class="modal-laptop-title">{{ selectedLaptopForModal.name }}</h2>
-          <p><strong>Kategori:</strong> {{ selectedLaptopForModal.category }}</p>
-          <p><strong>Harga:</strong> {{ formatPrice(selectedLaptopForModal.price) }}</p>
-          <p>
-            <strong>Status Stok:</strong>
-            <span :style="{color: selectedLaptopForModal.stock > 0 ? '#00ff99' : '#ff3b3b'}">
-              {{ selectedLaptopForModal.stock > 0 ? 'Ready' : 'Kosong' }}
-            </span>
-          </p>
-          <div class="specs-section">
-            <h4>Spesifikasi Detail:</h4>
-            <ul>
-              <li v-for="spec in selectedLaptopForModal.description.split(',')" :key="spec.trim()">
-                {{ spec.trim() }}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </section>
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;700&display=swap');
-
-:root {
-  --primary-color-rgb: 125, 30, 255; 
-}
-
-.laptop-list-section {
+/* Variabel Warna Lokal */
+.laptop-list-section-bs {
   --primary-color: #00d9ff;
   --secondary-color: #00c6ff;
-  --background-dark1: #12121a;
-  --background-dark2: #1a1a24;
-  --background-dark3: #23232e;
-  --text-color: #e0e0e0;
-  --text-section-title: #ffffff;
-  
+  --background-main: #0c101c; /* Lebih gelap & solid */
+  --background-section: #11192b; /* Background untuk filter & header kategori */
+  --background-card: #1a243a;   /* Background untuk kartu */
+  --background-modal: #0f1626;  /* Background untuk modal */
+  --text-light: #e0e0e0;
+  --text-dark: #1a1a24; /* Untuk teks di atas background terang jika ada */
+  --text-title: #ffffff;
+  --primary-color-rgb-val: 0, 217, 255;
+  --border-color-soft: rgba(var(--primary-color-rgb-val), 0.25);
+  --border-color-medium: rgba(var(--primary-color-rgb-val), 0.45);
+  --border-color-strong: var(--primary-color);
+
   font-family: 'Roboto', sans-serif;
   min-height: 100vh;
-  background: linear-gradient(120deg, var(--background-dark1) 0%, var(--background-dark2) 50%, var(--primary-color) 100%);
-  background-size: 200% 200%;
-  color: var(--text-color);
-  text-align: center;
-  padding: 60px 20px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background: var(--background-main);
+  color: var(--text-light);
   overflow-x: hidden;
 }
 
-.section-title {
+/* Judul Utama Section */
+.section-title-bs {
   font-family: 'Orbitron', sans-serif;
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 700;
-  color: var(--text-section-title);
-  text-shadow: 0 0 8px var(--text-section-title), 0 0 15px var(--primary-color), 0 0 20px var(--primary-color);
-  margin-bottom: 50px;
+  color: var(--text-title);
+  text-shadow: 0 0 7px var(--text-title), 0 0 12px var(--primary-color), 0 0 18px var(--primary-color);
+  margin-bottom: 2.5rem !important;
   position: relative;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  opacity: 0;
-  animation: fadeIn 0.8s ease-out 0.2s forwards;
+  letter-spacing: 1.5px;
 }
-
-.section-title::after {
+.section-title-bs::after {
   content: '';
   position: absolute;
-  bottom: -15px;
+  bottom: -12px;
   left: 50%;
   transform: translateX(-50%);
-  width: 70px;
+  width: 60px;
   height: 3px;
   background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
   border-radius: 2px;
-  box-shadow: 0 0 12px var(--primary-color), 0 0 8px var(--secondary-color);
+  box-shadow: 0 0 10px var(--primary-color), 0 0 7px var(--secondary-color);
 }
 
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 30px;
-  width: 100%;
-  max-width: 700px;
-  justify-content: center;
+/* Filter Section */
+.filters-bs {
+  background-color: var(--background-section);
+  border: 1px solid var(--border-color-soft);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.25);
 }
-
-.search-box {
-  flex: 1 1 200px;
-  padding: 12px 15px;
-  border: 1px solid #333;
-  border-radius: 5px;
-  background-color: var(--background-dark2);
+.search-box-bs, .filter-select-bs {
+  padding: 0.65rem 1rem; /* Padding lebih besar */
+  border: 1px solid var(--border-color-medium);
+  border-radius: 6px; /* Radius lebih besar */
+  background-color: var(--background-card);
+  color: var(--text-light);
+  font-size: 0.95rem; /* Font size lebih besar */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.search-box-bs::placeholder {
+  color: rgba(224, 224, 224, 0.6);
+}
+.search-box-bs:focus, .filter-select-bs:focus {
+  background-color: var(--background-section);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(var(--primary-color-rgb-val), 0.3);
   color: #fff;
-  font-size: 1rem;
 }
-
-.search-box::placeholder {
-  color: #aaa;
-}
-
-.filter-button {
-  padding: 12px 15px;
-  border: 1px solid #333;
-  border-radius: 5px;
-  background-color: var(--background-dark2);
-  color: #fff;
+.filter-select-bs {
   cursor: pointer;
-  font-size: 1rem;
-  flex: 0 1 auto;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300d9ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
-/* Styling for category sections */
-.categories-container {
-  width: 100%;
-  max-width: 1200px; /* Max width for all content */
-}
-.category-section {
-  margin-bottom: 50px; /* Space between category groups */
-  width: 100%;
-}
-
-.category-header {
+/* Category Section Styling */
+.category-header-bs {
   position: relative;
-  padding: 25px 15px; /* Padding for the title */
-  margin-bottom: 25px;
-  border-radius: 8px;
-  overflow: hidden; /* Crucial for containing the absolute positioned image */
-  background-color: var(--background-dark2); /* Fallback if image is broken */
-  border: 1px solid rgba(var(--primary-color-rgb), 0.2);
+  margin-bottom: 2rem; /* Jarak dari header ke kartu */
+  background-color: transparent; /* Header tidak perlu background sendiri */
+  border: none; /* Tidak perlu border */
 }
-
-.category-title {
+.category-title-bs {
   font-family: 'Orbitron', sans-serif;
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  font-weight: 700;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 600;
   color: var(--primary-color);
-  text-shadow: 0 0 5px rgba(0,0,0,0.7), 0 0 10px var(--primary-color); /* Ensure readability */
-  position: relative;
-  z-index: 2; /* Above the background image */
-  margin: 0;
+  text-shadow: 0 0 4px rgba(0,0,0,0.6), 0 0 8px var(--primary-color);
   text-transform: uppercase;
-}
-
-
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
+  background-color: var(--background-section);
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(var(--primary-color-rgb-val), 0.2);
+  border: 1px solid var(--border-color-soft);
+  /* Tambahan agar border panjang */
+  display: block;
   width: 100%;
-  justify-content: start;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.card {
-  background: var(--background-dark3);
+/* Card Styling */
+.card-bs {
+  background: var(--background-card);
   border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  text-align: left;
-  border: 1px solid rgba(var(--primary-color-rgb), 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer; /* Indicate it's clickable */
-}
-
-.card:hover, .card:focus-visible { /* Added focus for accessibility */
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 8px 25px rgba(var(--primary-color-rgb), 0.5);
-  outline: 2px solid var(--primary-color); /* Focus outline */
-}
-
-.card-title { /* Was h3, changed to h4 to be sub-heading of category-title (h3) */
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.3rem;
-  font-weight: 500;
-  margin-top: 0; /* Reset margin for h4 */
-  margin-bottom: 12px;
-  color: var(--primary-color);
-}
-
-.card-text {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: var(--text-color);
-}
-
-.card-text strong {
-  color: #fff;
-}
-
-.card-image {
-  width: 100%;
-  height: 180px; /* Fixed height for images in cards */
-  object-fit: contain; /* Show full image, may leave space */
-  border-radius: 8px;
-  margin-bottom: 15px; /* Increased margin */
-  background-color: #2c2c3a; /* Placeholder background for images */
-}
-
-.no-results {
-  margin-top: 30px;
-  font-size: 1.2rem;
-  color: var(--text-color);
-  width: 100%;
-  text-align: center;
-}
-
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.85); /* Darker overlay */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 20px;
-  box-sizing: border-box;
-  opacity: 0;
-  animation: fadeInModal 0.3s ease forwards;
-}
-
-.modal-content {
-  background: var(--background-dark2); /* Slightly different from card for depth */
-  padding: 30px;
-  border-radius: 12px; /* Softer radius */
-  box-shadow: 0 10px 40px rgba(var(--primary-color-rgb), 0.6);
-  position: relative;
-  width: 100%;
-  max-width: 650px; /* Slightly wider modal */
-  max-height: 90vh;
-  overflow-y: auto;
-  border: 1px solid rgba(var(--primary-color-rgb), 0.5);
-  color: var(--text-color);
-  transform: scale(0.95);
-  animation: scaleUpModal 0.3s ease 0.1s forwards;
-}
-
-.modal-close-button {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: transparent;
-  border: none;
-  font-size: 2.2rem; /* Larger close icon */
-  font-weight: bold;
-  color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color-soft);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   cursor: pointer;
-  line-height: 1;
-  padding: 5px;
-  transition: color 0.2s ease, transform 0.2s ease;
+  color: var(--text-light);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
-.modal-close-button:hover {
-  color: #fff;
-  transform: scale(1.1);
+.card-bs:hover, .card-bs:focus-visible {
+  transform: translateY(-6px) scale(1.025);
+  box-shadow: 0 8px 25px rgba(var(--primary-color-rgb-val), 0.45);
+  border-color: var(--border-color-strong);
+  outline: none;
+}
+.card-bs:focus-visible:not(:hover) {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 1px;
 }
 
-.modal-image {
+.card-img-container-bs { /* Tidak lagi digunakan, gambar langsung di card-img-top */ }
+
+.card-img-bs { /* Ganti nama dari card-image-bs */
   width: 100%;
-  max-height: 300px; /* Max height for modal image */
-  object-fit: contain; /* Display full image, best for various aspect ratios */
-  border-radius: 8px;
-  margin-bottom: 20px;
-  background-color: var(--background-dark3); /* Placeholder bg for image area */
-  border: 1px solid rgba(var(--primary-color-rgb), 0.2);
+  height: 180px;
+  object-fit: contain;
+  background-color: var(--background-section);
+  padding: 10px; /* Padding agar gambar tidak menempel ke tepi */
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.card-bs .card-body {
+  padding: 1rem;
+  text-align: center; /* Konten kartu default center */
+  flex-grow: 1;
+}
+.card-title-bs {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+  min-height: calc(1.1rem * 1.3 * 2); /* Ruang untuk 2 baris judul */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-text-price-bs {
+  font-size: 1rem; /* Harga lebih besar */
+  font-weight: bold;
+  color: #fff;
+}
+.card-text-price-bs strong {
+  color: var(--primary-color);
+  margin-right: 0.25rem;
 }
 
-.modal-laptop-title { /* Specific class for modal's H2 */
+.no-results-bs {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* Modal Styling */
+.modal-content-bs {
+  background: var(--background-modal);
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(var(--primary-color-rgb-val), 0.6);
+  border: 1px solid var(--border-color-strong);
+  color: var(--text-light);
+  animation: scaleUpModal-bs 0.3s ease 0.05s forwards;
+  opacity: 0; /* Awalnya transparan untuk animasi */
+}
+.modal-header-bs {
+  background-color: var(--background-card);
+  border-bottom: 1px solid var(--border-color-medium);
+  padding: 1rem 1.25rem;
+}
+.modal-laptop-title-bs {
   font-family: 'Orbitron', sans-serif;
   color: var(--primary-color);
-  font-size: 1.8rem;
-  margin-top: 0;
-  margin-bottom: 15px;
+  font-size: 1.3rem;
   text-shadow: 0 0 5px var(--primary-color);
 }
-
-.modal-content p {
-  margin-bottom: 12px;
-  line-height: 1.7;
-  font-size: 1rem;
+.modal-close-button-bs {
+  background: transparent !important;
+  border: none !important;
+  font-size: 1.7rem !important;
+  font-weight: bold !important;
+  color: var(--primary-color) !important;
+  opacity: 0.85 !important;
+  text-shadow: none !important;
+  padding: 0.4rem !important;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
-.modal-content p strong {
-  color: #fff; /* Highlight labels */
+.modal-close-button-bs:hover {
+  color: #fff !important;
+  transform: scale(1.1);
+  opacity: 1 !important;
 }
-
-.specs-section {
-  margin-top: 20px;
-  padding-top: 15px;
-  border-top: 1px solid rgba(var(--primary-color-rgb), 0.2);
+.modal-close-button-bs:focus {
+  box-shadow: none !important;
+  outline: 1px solid var(--primary-color);
 }
-.specs-section h4 {
+.modal-body-bs {
+  padding: 1.25rem 1.5rem; /* Padding lebih seimbang */
+}
+.modal-image-bs {
+  width: 100%;
+  max-width: 300px; /* Gambar modal bisa lebih besar */
+  max-height: 240px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 1.5rem; /* Jarak lebih */
+  background-color: var(--background-card);
+  border: 1px solid var(--border-color-medium);
+  padding: 10px;
+}
+.modal-details-text {
+  text-align: left; /* Detail teks rata kiri */
+}
+.modal-info-group p {
+  margin-bottom: 0.6rem;
+  font-size: 0.9rem;
+}
+.modal-info-group strong {
+  color: var(--primary-color);
+  min-width: 80px; /* Agar label sejajar */
+  display: inline-block;
+}
+.specs-section-bs {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color-soft);
+}
+.specs-section-bs h4 {
   font-family: 'Orbitron', sans-serif;
   color: var(--primary-color);
-  margin-bottom: 10px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+  font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
-.specs-section ul {
-  list-style: none;
-  padding: 0;
+.specs-section-bs ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin-bottom: 0;
 }
-.specs-section li {
-  margin-bottom: 8px;
+.specs-section-bs li {
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+}
+.text-stock-ready-bs {
+  color: #28f57a !important;
+  font-weight: bold;
+  text-shadow: 0 0 3px #28f57a80;
+}
+.text-stock-kosong-bs {
+  color: #ff4d4d !important;
+  font-weight: bold;
+  text-shadow: 0 0 3px #ff4d4d80;
 }
 
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes scaleUpModal-bs {
+  from { transform: scale(0.9) translateY(15px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
 }
 
-@keyframes fadeInModal {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* Responsive Adjustments */
+@media (min-width: 768px) { /* md breakpoint ke atas */
+  .card-bs .card-body {
+    text-align: left; /* Konten kartu rata kiri di layar lebih besar */
+  }
+  .card-title-bs {
+    justify-content: flex-start; /* Judul rata kiri */
+  }
 }
-@keyframes scaleUpModal {
-  from { transform: scale(0.95); opacity: 0.5; }
-  to { transform: scale(1); opacity: 1; }
+@media (max-width: 767.98px) { /* Di bawah md */
+  .filters-bs .col-md, .filters-bs .col-md-auto {
+    flex-basis: 100%; /* Filter jadi full width dan stack */
+  }
+  .filters-bs .form-select {
+    width: 100%;
+  }
+  .section-title-bs {
+    font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+    margin-bottom: 2rem !important;
+  }
+  .category-title-bs {
+    font-size: clamp(1.2rem, 3.2vw, 1.7rem);
+  }
+  .category-header-bs {
+    margin-bottom: 1.5rem;
+    padding: 0.75rem 0;
+  }
+   .modal-body-bs .row > div { /* Pastikan gambar dan teks modal stack di mobile */
+    text-align: center !important;
+  }
+  .specs-section-bs h4 {
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 575.98px) { /* sm breakpoint */
+  .laptop-list-section-bs .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .card-img-bs {
+    height: 160px;
+  }
+  .card-title-bs {
+    font-size: 0.9rem;
+    min-height: calc(0.9rem * 1.3 * 2);
+  }
+   .card-text-price-bs {
+    font-size: 0.8rem;
+  }
+  .card-bs .card-body {
+    padding: 0.75rem;
+  }
+  .section-title-bs {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+  .category-title-bs {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    padding: 0.6rem 0.8rem;
+  }
+  .filters-bs {
+    padding: 1rem;
+  }
+  .search-box-bs, .filter-select-bs {
+    font-size: 0.9rem;
+    padding: 0.55rem 0.8rem;
+    height: auto;
+  }
+  .modal-laptop-title-bs {
+    font-size: 1.1rem;
+  }
+   .modal-body-bs p, .specs-section-bs li {
+    font-size: 0.8rem;
+  }
+  .modal-image-bs {
+    max-height: 180px;
+  }
+  .specs-section-bs h4 {
+    font-size: 0.9rem;
+  }
+  .row.g-3.g-md-4 { /* Kurangi gap lebih lanjut di mobile */
+    --bs-gutter-x: 0.75rem;
+    --bs-gutter-y: 0.75rem;
+  }
 }
 </style>

@@ -49,7 +49,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(120deg, #1e1e2f, #2a2a3f, #7d1eff);
+  background: linear-gradient(120deg, #1e1e2f, #0f2572, #004cff);
   background-size: 200% 200%;
   color: #fff;
   text-align: center;
@@ -66,7 +66,7 @@ export default {
 .content h1 {
   font-size: 2.5rem;
   margin-bottom: 20px;
-  text-shadow: 0 0 10px #7d1eff, 0 0 20px #c300ff;
+  text-shadow: 0 0 10px #1f2b85, 0 0 20px #2858af;
 }
 
 .content p {
@@ -95,7 +95,7 @@ export default {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  background: linear-gradient(90deg, #7d1eff, #c300ff);
+  background: linear-gradient(90deg, #09198f, #0054b4);
   color: #fff;
   font-size: 1rem;
   cursor: pointer;
@@ -104,6 +104,6 @@ export default {
 
 .contact-form button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(125, 30, 255, 0.7);
+  box-shadow: 0 5px 15px rgba(0, 29, 191, 0.7);
 }
 </style>

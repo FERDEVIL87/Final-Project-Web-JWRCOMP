@@ -1,12 +1,13 @@
 <template>
   <section class="container my-5" data-aos="fade-up">
-    <h2 class="h3 mb-4 text-primary text-center futuristic-title neon-title">HARDWARE</h2>
+    <h2 class="h3 mb-4 text-center futuristic-title-bs neon-title-bs">HARDWARE</h2>
+
     <!-- Kategori Grid -->
-    <div class="category-grid">
+    <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
       <button
         v-for="(card, index) in cards"
         :key="index"
-        class="category-button"
+        class="btn category-button-bs"
         :class="{ active: selectedCategory && selectedCategory.title === card.title }"
         @click="selectCategory(card)"
       >
@@ -15,28 +16,33 @@
     </div>
 
     <!-- Judul Kategori -->
-    <div v-if="selectedCategory" class="category-title">
-      <h3 class="text-center mb-4">{{ selectedCategory.title }}</h3>
+    <div v-if="selectedCategory" class="text-center mb-4">
+      <h3 class="category-title-bs">{{ selectedCategory.title }}</h3>
     </div>
 
-    <!-- Produk Table -->
-    <div v-if="selectedCategory" class="product-table-container">
-      <div class="filter-controls">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search products..."
-          class="form-controls"
-        />
-        <select v-model="selectedBrand" class="form-control">
-          <option value="">All Brands</option>
-          <option v-for="brand in brands" :key="brand" :value="brand">
-            {{ brand }}
-          </option>
-        </select>
+    <!-- Kontrol Filter dan Tabel Produk -->
+    <div v-if="selectedCategory" class="product-section-bs">
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Search products..."
+            class="form-control form-control-bs"
+          />
+        </div>
+        <div class="col-md-6">
+          <select v-model="selectedBrand" class="form-select form-control-bs">
+            <option value="">All Brands</option>
+            <option v-for="brand in uniqueBrandsInCategory" :key="brand" :value="brand">
+              {{ brand }}
+            </option>
+          </select>
+        </div>
       </div>
-      <div class="table-background">
-        <table class="product-table">
+
+      <div v-if="filteredComponents.length > 0" class="table-responsive-custom table-background-bs">
+        <table class="table product-table-bs">
           <thead>
             <tr>
               <th>Image</th>
@@ -48,44 +54,67 @@
             </tr>
           </thead>
           <tbody>
-  <tr
-    v-for="component in filteredComponents"
-    :key="component.id"
-  >
-    <td><img :src="component.image" alt="Product Image" class="table-thumbnail" /></td>
-    <td>{{ component.name }}</td>
-    <td>{{ formatPrice(component.price) }}</td>
-    <td>{{ component.brand }}</td>
-    <td :class="{'text-success': component.stock === 'Ready', 'text-danger': component.stock === 'Kosong'}">
-      {{ component.stock }}
-    </td>
-    <td><button class="details-button" @click="showDetails(component)">View</button></td>
-  </tr>
-</tbody>
+            <tr v-for="component in filteredComponents" :key="component.id">
+              <td data-label="Image:"><img :src="component.image" alt="Product Image" class="table-thumbnail-bs" /></td>
+              <td data-label="Name:">{{ component.name }}</td>
+              <td data-label="Price:">{{ formatPrice(component.price) }}</td>
+              <td data-label="Brand:">{{ component.brand }}</td>
+              <td data-label="Stock:" :class="{'text-stock-ready': component.stock === 'Ready', 'text-stock-kosong': component.stock === 'Kosong'}">
+                {{ component.stock }}
+              </td>
+              <td data-label="Details:">
+                <button class="btn btn-sm details-button-bs" @click="showDetailsModal(component)">
+                  View
+                </button>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
+       <div v-else class="text-center py-4 no-results-bs">
+        <p>No products match your current filters.</p>
+      </div>
+    </div>
+    <div v-if="!selectedCategory" class="text-center py-5 select-category-prompt-bs">
+        <p>✨ Please select a category to view hardware components. ✨</p>
     </div>
 
-    <!-- Modal Detail Produk -->
-    <div v-if="selectedProduct" class="modal-overlay" @click.self="closeDetails">
-      <div class="modal-content">
-        <h3>{{ selectedProduct.name }}</h3>
-        <img :src="selectedProduct.image" alt="Product Image" class="product-image" />
-        <p><strong>Price:</strong> {{ formatPrice(selectedProduct.price) }}</p>
-        <p><strong>Brand:</strong> {{ selectedProduct.brand }}</p>
-        <p><strong>Specifications:</strong></p>
-        <ul>
-          <li v-for="(spec, index) in selectedProduct.specs" :key="index">
-            {{ spec }}
-          </li>
-        </ul>
-        <button class="close-button" @click="closeDetails">Close</button>
+
+    <!-- Modal Detail Produk Bootstrap -->
+    <div class="modal fade" id="productDetailModal" tabindex="-1" aria-labelledby="productDetailModalLabel" aria-hidden="true" ref="productModalRef">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-bs">
+          <div class="modal-header modal-header-bs">
+            <h5 class="modal-title w-100 text-center" id="productDetailModalLabel">{{ selectedProduct?.name }}</h5>
+            <button type="button" class="btn-close btn-close-custom-bs" @click="closeDetailsModal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body modal-body-bs text-center"> <!-- Tambahkan text-center di sini -->
+            <img v-if="selectedProduct?.image" :src="selectedProduct.image" alt="Product Image" class="img-fluid rounded mx-auto d-block mb-3 product-image-bs" />
+            <div class="details-text-group"> <!-- Grup untuk teks agar bisa di-styling terpisah jika perlu -->
+              <p><strong>Price:</strong> {{ formatPrice(selectedProduct?.price) }}</p>
+              <p><strong>Brand:</strong> {{ selectedProduct?.brand }}</p>
+            </div>
+            <div v-if="selectedProduct?.specs && selectedProduct.specs.length > 0" class="specs-list">
+                <p class="mb-1"><strong>Specifications:</strong></p>
+                <ul>
+                <li v-for="(spec, index) in selectedProduct.specs" :key="index">
+                    {{ spec }}
+                </li>
+                </ul>
+            </div>
+          </div>
+          <div class="modal-footer modal-footer-bs">
+            <button type="button" class="btn close-button-bs" @click="closeDetailsModal">Close</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 </template>
 
 <script>
+import { Modal } from 'bootstrap'; // Import Modal dari bootstrap
+
 export default {
   data() {
     return {
@@ -96,9 +125,10 @@ export default {
         { title: "MEMORY", link: "/MEMORY" },
         { title: "VGA", link: "/VGA" },
         { title: "HDD", link: "/HDD" },
-        { title: "SDD", link: "/SDD" },
+        { title: "SSD", link: "/SSD" }, // Typo diperbaiki
         { title: "PSU", link: "/PSU" },
         { title: "CASE", link: "/CASE" },
+        { title: "LED MONITOR", link: "/LED MONITOR" },
         { title: "MOUSE", link: "/MOUSE" },
         { title: "KEYBOARD", link: "/KEYBOARD" },
         { title: "MOUSEPAD", link: "/MOUSEPAD" },
@@ -111,6 +141,7 @@ export default {
       ],
       selectedCategory: null,
       components: [
+        // ... (DATA PRODUK LENGKAP ANDA DI SINI, PASTIKAN HARGA SUDAH BENAR) ...
         {
           id: 1,
           name: "Intel Processor Core i9-13900KF",
@@ -374,7 +405,7 @@ export default {
         {
           id: 27,
           name: "Western Digital Blue 1TB",
-          price: 40,
+          price: 750000, 
           brand: "Western Digital",
           category: "HDD",
           image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-p_F6YGp5s0wiB91yXZKs1-AN8sF9tpEKYw&s",
@@ -416,7 +447,7 @@ export default {
           name: "Kingston A2000 1TB SSD",
           price: 1000000,
           brand: "Kingston",
-          category: "SDD",
+          category: "SSD", 
           image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/11/27/0fce28a1-0f46-4058-a2f6-372b1eba830c.jpg",
           specs: ["1TB NVMe M.2", "2200 MB/s Read", "2000 MB/s Write"],
           stock: "Kosong",
@@ -426,7 +457,7 @@ export default {
           name: "Corsair MP600 2TB SSD",
           price: 2500000,
           brand: "Corsair",
-          category: "SDD",
+          category: "SSD", 
           image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2023/4/12/e3b978db-88f5-4bd0-b2cb-52eec450aec4.jpg",
           specs: ["2TB NVMe M.2", "4950 MB/s Read", "4250 MB/s Write"],
           stock: "Ready",
@@ -436,7 +467,7 @@ export default {
           name: "Samsung 970 EVO Plus 1TB SSD",
           price: 1500000,
           brand: "Samsung",
-          category: "SDD",
+          category: "SSD", 
           image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCmRvGDSBpHDJUg8sbP5lJkg2E8wgkAwllZw&s",
           specs: ["1TB NVMe M.2", "3500 MB/s Read", "3300 MB/s Write"],
           stock: "Ready",
@@ -446,7 +477,7 @@ export default {
           name: "Crucial MX500 500GB SSD",
           price: 1500000,
           brand: "Crucial",
-          category: "SDD",
+          category: "SSD", 
           image: "https://images.tokopedia.net/img/cache/700/product-1/2018/9/30/230251/230251_b069a363-42ac-40ab-94b7-e36b161d5a99_700_700.jpg",
           specs: ["500GB SATA III", "560 MB/s Read", "510 MB/s Write"],
           stock: "Ready",
@@ -456,7 +487,7 @@ export default {
           name: "Western Digital Black SN850 1TB SSD",
           price: 4000000,
           brand: "Western Digital",
-          category: "SDD",
+          category: "SSD", 
           image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/24/f818b5fa-860e-4701-a83e-8159e192cfe4.jpg",
           specs: ["1TB NVMe M.2", "7000 MB/s Read", "5300 MB/s Write"],
           stock: "Kosong",
@@ -514,7 +545,7 @@ export default {
         {
           id: 41,
           name: "Cooler Master MasterBox Q300L",
-          price: 60,
+          price: 600000, 
           brand: "Cooler Master",
           category: "CASE",
           image: "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2023/11/22/dca8903a-4514-4dc8-b186-22d233cbd952.jpg",
@@ -594,7 +625,7 @@ export default {
         {
           id: 49,
           name: "Dell Alienware AW2521H",
-          price: 78700,
+          price: 7870000, 
           brand: "Dell",
           category: "LED MONITOR",
           image: "https://down-id.img.susercontent.com/file/966fe424dcfdbb044ba295dc8ac53efc",
@@ -714,7 +745,7 @@ export default {
           {
           id: 61,
           name: "SteelSeries QcK Medium",
-          price: 2000000,
+          price: 200000, 
           brand: "SteelSeries",
           category: "MOUSEPAD",
           image: "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//93/MTA-21976221/steelseries_steelseries_qck_black_medium_full01_sy82ne0t.jpg",
@@ -724,7 +755,7 @@ export default {
           {
           id: 62,
           name: "Rexus Kvlar T10",
-          price: 2000000,
+          price: 150000, 
           brand: "Rexus",
           category: "MOUSEPAD",
           image: "https://rexus.id/cdn/shop/files/KVLAR_T10_2_6ecb76c5-2820-4aba-915e-59da7af3cded.png?v=1706094061",
@@ -734,7 +765,7 @@ export default {
           {
           id: 63,
           name: "Razer Goliathus Extended Chroma",
-          price: 2000000,
+          price: 700000, 
           brand: "Razer",
           category: "MOUSEPAD",
           image: "https://down-id.img.susercontent.com/file/5f5a3cec064cf9e5088f820bac340c4e",
@@ -744,7 +775,7 @@ export default {
           {
           id: 64,
           name: "Fantech MP80 Sakura Edition",
-          price: 2000000,
+          price: 120000, 
           brand: "Fantech",
           category: "MOUSEPAD",
           image: "https://www.radiancecomputer.com/wp-content/uploads/2021/07/FIREFLY-MPR800s-SAKURA-EDITION.png",
@@ -754,7 +785,7 @@ export default {
           {
           id: 65,
           name: "Logitech G640",
-          price: 2000000,
+          price: 400000, 
           brand: "Logitech",
           category: "MOUSEPAD",
           image: "https://down-id.img.susercontent.com/file/ff24ec78f56dfd7696e2f0fc53aaa8ea",
@@ -764,7 +795,7 @@ export default {
           {
           id: 66,
           name: "Logitech C920 HD Pro",
-          price: 2000000,
+          price: 800000, 
           brand: "Logitech",
           category: "WEBCAM",
           image: "https://images.tokopedia.net/img/cache/700/OJWluG/2022/9/21/15f7411b-c9c0-4563-b9af-2bfbae5cb7bc.jpg",
@@ -774,7 +805,7 @@ export default {
           {
           id: 67,
           name: "Rexus RCX-999",
-          price: 2000000,
+          price: 250000, 
           brand: "Rexus",
           category: "WEBCAM",
           image: "https://cdn.shopify.com/s/files/1/0601/6784/7989/files/WhatsApp-Image-2020-06-05-at-19.00.52-1-1080x630_480x480.jpg?v=1709367955",
@@ -784,7 +815,7 @@ export default {
           {
           id: 68,
           name: "AverMedia PW313 Live Streamer CAM",
-          price: 2000000,
+          price: 900000, 
           brand: "AverMedia",
           category: "WEBCAM",
           image: "https://plazakamera.com/wp-content/uploads/2019/09/Jual-AVerMedia-PW313-Live-Streamer-CAM-313-Harga-Terbaik-dan-Spesifikasi.jpg",
@@ -794,8 +825,8 @@ export default {
           {
           id: 69,
           name: "Xiaomi IMILAB 1080p Webcam W88S",
-          price: 2000000,
-          brand: "SteelSeries",
+          price: 300000, 
+          brand: "Xiaomi", 
           category: "WEBCAM",
           image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcqEHoxGUUGfZHCaBUwhIQcUS9alkvDpkBmw&s",
           specs: ["1080p @ 30 fps", "Fixed focus", "FOV: 90°"],
@@ -804,8 +835,8 @@ export default {
           {
           id: 70,
           name: "Logitech Brio 4K",
-          price: 2000000,
-          brand: "SteelSeries",
+          price: 3500000, 
+          brand: "Logitech", 
           category: "WEBCAM",
           image: "https://aputure.co.id/image/cache/Abc/Logitech/Logitech%20Brio%204k%20Ultra%20HD%20Business%20Webcam-600x600.jpg",
           specs: ["Up to 4K @ 30 fps, 1080p @ 60 fps", "Glass lens, autofocus", "FOV: 65°, 78°, atau 90° (adjustable)"],
@@ -814,7 +845,7 @@ export default {
           {
           id: 71,
           name: "UGREEN USB-C to USB-C PD 100W Cable",
-          price: 2000000,
+          price: 150000, 
           brand: "UGREEN",
           category: "CABLE",
           image: "https://down-id.img.susercontent.com/file/id-11134207-7r98z-lsfofqet913h90",
@@ -824,7 +855,7 @@ export default {
           {
           id: 72,
           name: "Vention HDMI 2.0 Cable 4K 60Hz",
-          price: 2000000,
+          price: 80000, 
           brand: "Vention",
           category: "CABLE",
           image: "https://www.vention.id/wp-content/uploads/2021/11/%E7%99%BD%E5%BA%95-9.jpg",
@@ -834,7 +865,7 @@ export default {
           {
           id: 73,
           name: "Anker PowerLine Micro USB Cable",
-          price: 2000000,
+          price: 120000, 
           brand: "Anker",
           category: "CABLE",
           image: "https://down-id.img.susercontent.com/file/57ece4f020fda8ad41210f25346323a0",
@@ -844,7 +875,7 @@ export default {
           {
           id: 74,
           name: "Orico CAT6 Ethernet LAN Cable",
-          price: 2000000,
+          price: 50000, 
           brand: "Orico",
           category: "CABLE",
           image: "https://media.dinomarket.com/docs/imgTD/2020-06/_SMine_1591166906725_030620130627_ll.jpg.jpg",
@@ -854,8 +885,8 @@ export default {
           {
           id: 75,
           name: "Baseus 3-in-1 Cable (USB-A to Micro/Type-C/Lightning)",
-          price: 2000000,
-          brand: "Baseus)",
+          price: 180000, 
+          brand: "Baseus", 
           category: "CABLE",
           image: "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2023/3/7/4669bcf7-2170-410b-aee3-1e56c6267014.jpg",
           specs: ["Multi-charging cable", "1.2 meter", "3.5A (total)"],
@@ -864,7 +895,7 @@ export default {
           {
           id: 76,
           name: "Razer BlackShark V2 X",
-          price: 2000000,
+          price: 800000, 
           brand: "Razer",
           category: "HEADSET",
           image: "https://cdnpro.eraspace.com/media/catalog/product/r/a/razer_headset_blackshark_v2_x_usb_black1.jpg",
@@ -874,7 +905,7 @@ export default {
           {
           id: 77,
           name: "Fantech HG23 Octane",
-          price: 2000000,
+          price: 350000, 
           brand: "Fantech",
           category: "HEADSET",
           image: "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//88/MTA-41624006/fantech_headset-gaming-fantech-octane-7-1-hg23-rgb_full01.jpg",
@@ -884,7 +915,7 @@ export default {
           {
           id: 78,
           name: "Logitech H390",
-          price: 2000000,
+          price: 400000, 
           brand: "Logitech",
           category: "HEADSET",
           image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/10/9/d33a7db3-0216-465a-a7f6-94cce9bd9443.jpg",
@@ -894,7 +925,7 @@ export default {
           {
           id: 79,
           name: "JBL Quantum 100",
-          price: 2000000,
+          price: 500000, 
           brand: "JBL",
           category: "HEADSET",
           image: "https://jblstore.co.id/wp-content/uploads/2024/02/JBL2520Quantum2520100_Black_mhln7ty3j.jpg",
@@ -904,7 +935,7 @@ export default {
           {
           id: 80,
           name: "Sony WH-CH520",
-          price: 2000000,
+          price: 700000, 
           brand: "Sony",
           category: "HEADSET",
           image: "https://main.mobile.doss.co.id/storage/uploads/2023/03/sony-wh-ch520-wireless-on-ear-headphones-with-microphone-beige12.webp",
@@ -914,7 +945,7 @@ export default {
           {
           id: 81,
           name: "Logitech Z313 Speaker System",
-          price: 2000000,
+          price: 500000, 
           brand: "Logitech",
           category: "SPEAKER",
           image: "https://images.tokopedia.net/img/cache/700/product-1/2018/4/25/27492617/27492617_f14a28ce-bc7c-4e1e-a47a-8e7ff400e5a8_800_800.jpeg",
@@ -924,7 +955,7 @@ export default {
           {
           id: 82,
           name: "Anker Soundcore 3",
-          price: 2000000,
+          price: 700000, 
           brand: "Anker",
           category: "SPEAKER",
           image: "https://images-cdn.ubuy.co.id/642487afecd1de5e20472ad8-soundcore-3-by-anker-bluetooth-speaker.jpg",
@@ -934,7 +965,7 @@ export default {
           {
           id: 83,
           name: "Advance M180BT",
-          price: 2000000,
+          price: 250000, 
           brand: "Advance",
           category: "SPEAKER",
           image: "https://datascripmall.id/media/webp_image/catalog/product/cache/95a5307f46190cd7a50cf0819ebeb220/m/1/m180bt_1.webp",
@@ -944,7 +975,7 @@ export default {
           {
           id: 84,
           name: "Xiaomi Mi Portable Bluetooth Speaker (16W)",
-          price: 2000000,
+          price: 600000, 
           brand: "Xiaomi",
           category: "SPEAKER",
           image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/10/81245696-4665-45e6-bddc-0ed49fc20a17.jpg",
@@ -954,7 +985,7 @@ export default {
           {
           id: 85,
           name: "Sony SRS-XB13",
-          price: 2000000,
+          price: 750000, 
           brand: "Sony",
           category: "SPEAKER",
           image: "https://www.sony.co.id/image/719c2a02e7e884e3fa1421195a8193d2?fmt=jpeg&wid=960&qlt=43",
@@ -964,7 +995,7 @@ export default {
           {
           id: 86,
           name: "SanDisk Ultra Flair USB 3.0",
-          price: 2000000,
+          price: 120000, 
           brand: "SanDisk",
           category: "USB FLASHDISK",
           image: "https://media.dinomarket.com/docs/imgTD/2019-02/CZ7364GB_110219150238_ll.jpg.jpg",
@@ -974,7 +1005,7 @@ export default {
           {
           id: 87,
           name: "Kingston DataTraveler Exodia",
-          price: 2000000,
+          price: 150000, 
           brand: "Kingston",
           category: "USB FLASHDISK",
           image: "https://media.kingston.com/kingston/product/ktc-product-usb-dtxon-128gb-3-zm-lg.jpg",
@@ -984,7 +1015,7 @@ export default {
           {
           id: 88,
           name: "Toshiba TransMemory U202",
-          price: 2000000,
+          price: 70000, 
           brand: "Toshiba",
           category: "USB FLASHDISK",
           image: "https://plazait.co.id/wp-content/uploads/2024/04/UFD-Toshiba-Hayabusa-32GB-U202-Trans-Memory-White-2.0-1-jpg.webp",
@@ -994,7 +1025,7 @@ export default {
           {
           id: 89,
           name: "VIVAN Dual OTG USB",
-          price: 2000000,
+          price: 130000, 
           brand: "VIVAN",
           category: "USB FLASHDISK",
           image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2023/8/26/cdcd2847-d0bd-4303-9397-97f8aebc0ce1.jpg",
@@ -1004,7 +1035,7 @@ export default {
           {
           id: 90,
           name: "HP x796w USB 3.1",
-          price: 2000000,
+          price: 250000, 
           brand: "HP",
           category: "USB FLASHDISK",
           image: "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/6/9/45da5336-104a-46a5-bbe5-ce21739cae8e.jpg",
@@ -1014,7 +1045,7 @@ export default {
            {
           id: 91,
           name: "Canon PIXMA G2020",
-          price: 2000000,
+          price: 1800000, 
           brand: "Canon",
           category: "PRINTER",
           image: "https://down-id.img.susercontent.com/file/3635968d44a5e4e8c622a67e9d751a50",
@@ -1024,7 +1055,7 @@ export default {
            {
           id: 92,
           name: "Epson L3250",
-          price: 2000000,
+          price: 2500000, 
           brand: "Epson",
           category: "PRINTER",
           image: "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/2/3e513464-ae91-43e6-9923-d9c1de986ae1.jpg",
@@ -1034,7 +1065,7 @@ export default {
            {
           id: 93,
           name: "HP LaserJet Pro M15w",
-          price: 2000000,
+          price: 1500000, 
           brand: "HP",
           category: "PRINTER",
           image: "https://manuals.plus/wp-content/uploads/2023/07/HP-M15w-LaserJet-Pro-Wireless-Monochrome-Printer-Featured-1-scaled.jpg",
@@ -1044,7 +1075,7 @@ export default {
            {
           id: 94,
           name: "Brother DCP-T420W",
-          price: 2000000,
+          price: 2200000, 
           brand: "Brother",
           category: "PRINTER",
           image: "https://els.id/wp-content/uploads/2023/09/Brother-DCP-T420W-3.jpg",
@@ -1054,7 +1085,7 @@ export default {
            {
           id: 95,
           name: "Canon PIXMA MG2570S",
-          price: 2000000,
+          price: 700000, 
           brand: "Canon",
           category: "PRINTER",
           image: "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2021/7/21/76b548a3-d621-4f5b-966b-b057729ade33.jpg",
@@ -1064,21 +1095,43 @@ export default {
       ],
       searchQuery: "",
       selectedBrand: "",
-      usdToIdrRate: 15000,
-      brands: ["Intel", "AMD", "ASUS", "Corsair", "Acer", "Kingston", "Crucial", "Western Digital", "Samsung", "Dell", "LG"],
       selectedProduct: null,
+      bootstrapProductModal: null, 
     };
+  },
+  mounted() {
+    const modalElement = this.$refs.productModalRef;
+    if (modalElement) {
+      this.bootstrapProductModal = new Modal(modalElement);
+      modalElement.addEventListener('hidden.bs.modal', () => {
+        this.selectedProduct = null;
+        document.body.style.overflow = '';
+      });
+      modalElement.addEventListener('shown.bs.modal', () => {
+        document.body.style.overflow = 'hidden';
+      });
+    }
+    if (this.cards.length > 0) {
+      this.selectCategory(this.cards[0]);
+    }
   },
    computed: {
     filteredComponents() {
+      if (!this.selectedCategory) return [];
       return this.components.filter((component) => {
-        return (
-          component.category === this.selectedCategory.title &&
-          component.name.toLowerCase().includes(this.searchQuery.toLowerCase()) &&
-          (this.selectedBrand === "" || component.brand === this.selectedBrand)
-        );
+        const categoryMatch = component.category === this.selectedCategory.title;
+        const searchMatch = component.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+        const brandMatch = this.selectedBrand === "" || component.brand === this.selectedBrand;
+        return categoryMatch && searchMatch && brandMatch;
       });
     },
+    uniqueBrandsInCategory() {
+      if (!this.selectedCategory) return [];
+      const componentsInCategory = this.components.filter(
+        (component) => component.category === this.selectedCategory.title
+      );
+      return [...new Set(componentsInCategory.map((component) => component.brand))].sort();
+    }
   },
   methods: {
     selectCategory(category) {
@@ -1087,6 +1140,9 @@ export default {
       this.selectedBrand = "";
     },
     formatPrice(priceIDR) {
+      if (typeof priceIDR !== 'number' || isNaN(priceIDR)) {
+        return 'Rp 0'; 
+      }
       return new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
@@ -1094,283 +1150,343 @@ export default {
         maximumFractionDigits: 0,
       }).format(priceIDR);
     },
-    showDetails(component) {
+    showDetailsModal(component) {
       this.selectedProduct = component;
+      if (this.bootstrapProductModal) {
+        this.bootstrapProductModal.show();
+      }
     },
-    closeDetails() {
-      this.selectedProduct = null;
+    closeDetailsModal() {
+      if (this.bootstrapProductModal) {
+        this.bootstrapProductModal.hide();
+      }
     },
   },
 };
 </script>
 
 <style scoped>
-.neon-title {
-  font-size: 3rem;
+/* Gaya Neon dan Futuristik (dipertahankan atau disesuaikan) */
+.futuristic-title-bs {
+  /* Mirip dengan .futuristic-title */
+}
+.neon-title-bs {
+  font-size: 2.5rem; /* Sesuaikan dengan Bootstrap h2 jika perlu */
   font-weight: bold;
-  color: #f5f5f5 !important;
+  color: #f5f5f5 !important; /* Atau #00d4ff sesuai preferensi */
   text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00a3cc, 0 0 80px #00a3cc;
   animation: glow 1.5s infinite alternate;
 }
 
-.category-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 15px #00d4ff, 0 0 20px #00a3cc, 0 0 35px #00a3cc;
+  }
+  to {
+    text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 30px #00d4ff, 0 0 50px #00a3cc, 0 0 75px #00a3cc;
+  }
 }
 
-.category-button {
-  padding: 1rem;
+.category-button-bs {
+  padding: 0.75rem 1rem; /* Bootstrap .btn padding bisa disesuaikan */
   background: linear-gradient(145deg, #0d1b2a, #1b263b);
   color: #00d4ff;
   border: 1px solid #1b263b;
-  border-radius: 10px;
+  border-radius: 10px; /* Lebih besar dari default Bootstrap */
   text-align: center;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, background 0.3s ease;
+  font-size: 0.9rem;
+  min-width: 140px; /* Agar tombol tidak terlalu kecil */
 }
 
-.category-button.active {
+.category-button-bs.active {
   font-weight: bold;
-  color: #ffffff;
+  color: #ffffff !important;
   background: #00a3cc;
+  border-color: #00a3cc;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.7);
 }
 
-.category-button:hover {
-  transform: translateY(-5px);
+.category-button-bs:hover:not(.active) {
+  transform: translateY(-3px);
   box-shadow: 0 5px 15px rgba(0, 212, 255, 0.5);
-}
-
-.category-title h3 {
-  font-weight: bold;
   color: #ffffff;
+  background: #123450; /* Warna hover yang sedikit berbeda */
 }
 
-.filter-controls {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+.category-title-bs {
+  font-weight: bold;
+  color: #ffffff; /* Atau #00d4ff */
+  text-shadow: 0 0 5px #00d4ff;
 }
 
-.form-control {
-  padding: 0.5rem;
-  border: 1px solid #00d4ff;
-  border-radius: 5px;
-  background:   #1b263b;
+.product-section-bs {
+    background-color: rgba(13, 27, 42, 0.85); /* Dark blueish, semi-transparent */
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+    border: 1px solid #00a3cc;
+}
+
+
+.form-control-bs, .form-select-bs {
+  background-color: #1b263b;
   color: #00d4ff;
-}
-
-.form-controls {
-  padding: 0.5rem;
   border: 1px solid #00d4ff;
-  border-radius: 5px;
-  background:   #ffffff;
-  color: #00d4ff;
+  border-radius: 5px; /* Sesuai style asli */
+}
+.form-control-bs::placeholder {
+  color: #00d4ff80;
+}
+.form-control-bs:focus, .form-select-bs:focus {
+  background-color: #203A55;
+  color: #ffffff;
+  border-color: #00d4ff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
+}
+.form-select-bs { /* Custom arrow for select */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300d4ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
-.table-background {
-  background: linear-gradient(145deg, #0d1b2a, #1b263b);
-  padding: 1rem;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.5);
+
+.table-background-bs {
+  /* Style dipindahkan ke .product-section-bs atau .table-responsive-custom */
 }
 
-.product-table {
-  width: 100%;
-  border-collapse: collapse;
+/* Untuk memastikan .table-responsive tidak mengganggu styling card di mobile */
+.table-responsive-custom {
+  overflow-x: auto; /* Default untuk layar besar */
+}
+
+.product-table-bs {
   margin-top: 1rem;
-}
-
-.product-table th,
-.product-table td {
-  border: 1px solid #00d4ff;
-  padding: 0.5rem;
-  text-align: center;
   color: #00d4ff;
+  background-color: transparent; /* Biarkan background dari parent (.product-section-bs) */
+  width: 100%;
 }
 
-.product-table th {
-  background: #1b263b;
+.product-table-bs th,
+.product-table-bs td {
+  border: 1px solid #00d4ff30; /* Border lebih soft */
+  padding: 0.75rem;
+  text-align: center;
+  vertical-align: middle;
+  color: #f5f5f5; /* Teks putih agar kontras dengan background gelap */
+  background-color: #12283f;
 }
 
-.table-thumbnail {
-  max-width: 100px;
+.product-table-bs thead th {
+  background-color: #1b263b;
+  color: #ffffff;
+  font-weight: bold;
+  border-color: #00d4ff; /* Border header lebih jelas */
+}
+
+.table-thumbnail-bs {
+  max-width: 70px;
   height: auto;
   border-radius: 5px;
+  background-color: #0d1b2a;
+  padding: 2px;
+  border: 1px solid #00a3cc50;
 }
 
-.details-button {
-  padding: 0.5rem 1rem;
-  background: #00d4ff;
+.details-button-bs {
+  background-color: #00d4ff;
   color: #0d1b2a;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  padding: 0.3rem 0.8rem; /* Padding lebih kecil */
+  font-size: 0.9em;
+}
+.details-button-bs:hover {
+  background-color: #00a3cc;
+  color: #ffffff;
+  transform: scale(1.05);
 }
 
-.details-button:hover {
-  background: #00a3cc;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: #0d1b2a;
+/* Modal Styles */
+.modal-content-bs {
+  background-color: #0d1b2a;
   color: #00d4ff;
-  padding: 2rem;
   border-radius: 10px;
-  max-width: 500px;
-  width: 90%;
-  text-align: center;
   border: 1px solid #00d4ff;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+.modal-header-bs {
+  border-bottom: 1px solid #00a3cc;
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+}
+.modal-header-bs .modal-title {
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 5px #00d4ff;
+    font-size: 1.25rem;
 }
 
-.product-image {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 1rem;
-  border: 1px solid #00d4ff;
-  border-radius: 5px;
+.btn-close-custom-bs {
+    filter: invert(1) grayscale(100%) brightness(200%) sepia(100%) hue-rotate(150deg) saturate(500%);
+    opacity: 0.8;
+    padding: 0.5rem; /* Sedikit padding agar mudah diklik */
+}
+.btn-close-custom-bs:hover {
+    opacity: 1;
+}
+.btn-close-custom-bs:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.3); /* Shadow lebih soft */
 }
 
-.close-button {
+
+.modal-body-bs {
+  padding: 1.5rem;
+}
+.modal-body-bs .details-text-group p {
+  margin-bottom: 0.5rem;
+  color: #f0f0f0;
+}
+.modal-body-bs .details-text-group strong {
+  color: #00d4ff;
+}
+
+.product-image-bs {
+  max-width: 200px; /* Ukuran gambar di modal */
+  max-height: 200px;
+  object-fit: contain;
+  border: 1px solid #00d4ff;
+  border-radius: 8px;
+  background-color: #1b263b;
+}
+.modal-body-bs .specs-list ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    color: #f5f5f5;
+    text-align: left; /* Spesifikasi rata kiri agar mudah dibaca */
+}
+.modal-body-bs .specs-list p {
+    color: #00d4ff; /* Judul "Specifications" */
+}
+.modal-body-bs .specs-list ul li {
+    margin-bottom: 0.25rem;
+}
+
+.modal-footer-bs {
+    border-top: 1px solid #00a3cc;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+}
+
+.close-button-bs {
   background: #00d4ff;
   color: #0d1b2a;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 1rem;
+  font-weight: bold;
+  padding: 0.5rem 1.5rem;
   transition: background 0.3s ease, transform 0.3s ease;
 }
-
-.close-button:hover {
+.close-button-bs:hover {
   background: #00a3cc;
-  transform: scale(1.1);
+  color: #ffffff;
+  transform: scale(1.05);
 }
 
-/* Responsive Table & Card Layout */
-@media (max-width: 900px) {
-  .product-table th,
-  .product-table td {
-    font-size: 0.9rem;
-    padding: 0.3rem;
-  }
-  .table-thumbnail {
-    max-width: 60px;
-  }
+.text-stock-ready {
+  color: #28a745 !important;
+  font-weight: bold;
+}
+.text-stock-kosong {
+  color: #dc3545 !important;
+  font-weight: bold;
 }
 
-@media (max-width: 700px) {
-  .filter-controls {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .table-background {
-    padding: 0.4rem;
-  }
-  .product-table {
-    font-size: 0.9rem;
-  }
+.no-results-bs, .select-category-prompt-bs {
+    color: #00d4ff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    padding: 2rem 0;
 }
 
-/* Tabel jadi scrollable di layar kecil */
-@media (max-width: 600px) {
-  .table-background {
-    overflow-x: auto;
-    padding: 0.1rem;
+/* --- RESPONSIVE TABLE TO CARD --- */
+@media (max-width: 767.98px) { /* md breakpoint */
+  .product-section-bs .row.g-3 > .col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
   }
-  .product-table {
-    min-width: 300px;
+  .product-section-bs .row.g-3 {
+    gap: 0.5rem 0;
   }
 }
 
-/* Tampilkan produk sebagai card/grid di mobile */
-@media (max-width: 500px) {
-  .product-table,
-  .product-table thead,
-  .product-table tbody,
-  .product-table th,
-  .product-table tr {
-    display: block;
-    width: 100%;
-  }
-  .product-table thead {
-    display: none;
-  }
-  .product-table tr {
-    margin-bottom: 0.9rem;
-    border: 1px solid #00d4ff;
-    border-radius: 8px;
-    background: #1b263b;
-    box-shadow: 0 2px 8px rgba(0,212,255,0.08);
-    padding: 0.5rem 0.0rem;
-  }
-  .product-table td {
-    display: flex;
-    text-align: left;
-    justify-content: flex-start;
-    padding: 0.18rem 0.05rem 0.18rem 0.05rem; /* padding kiri-kanan sangat tipis */
+@media (max-width: 575.98px) { /* sm breakpoint - tabel jadi kartu */
+  .table-responsive-custom {
+    overflow-x: visible; /* Tidak perlu scroll horizontal lagi */
     border: none;
-    position: relative;
-    font-size: 0.93em;
-    background: none;
   }
-  .product-table td:before {
-    content: attr(data-label);
-    min-width: 70px; /* lebih kecil supaya label tidak makan tempat */
-    margin-right: 0.3rem;
-    font-size: 0.9em;
+  .product-table-bs,
+  .product-table-bs thead,
+  .product-table-bs tbody,
+  .product-table-bs th,
+  .product-table-bs td,
+  .product-table-bs tr {
+    display: block;
   }
-  .table-thumbnail {
-    max-width: 60px;
-    margin-bottom: 0.3rem;
-    border-radius: 4px;
+  .product-table-bs thead {
+    display: none; /* Sembunyikan header tabel */
   }
-  .details-button {
-    padding: 0.3rem 0.7rem;
-    font-size: 0.95em;
-  }
-  .table-background {
-    padding: 0.01rem;
-  }
-}
-
-/* Modal lebih kecil di hp */
-@media (max-width: 500px) {
-  .modal-content {
+  .product-table-bs tr {
+    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    background: #122030dd; /* Background lebih gelap sedikit untuk kartu */
+    border: 1px solid #00d4ff40;
     padding: 1rem;
-    max-width: 95vw;
-    font-size: 0.97em;
+    box-shadow: 0 4px 15px rgba(0, 172, 204, 0.15);
+    display: flex; /* Untuk alignment item */
+    flex-direction: column; /* Susun item secara vertikal */
+    align-items: center; /* Pusatkan item di dalam kartu */
   }
-  .product-image {
-    max-width: 90vw;
-    margin-bottom: 0.7rem;
+  .product-table-bs td {
+    display: flex;
+    flex-direction: column; /* Label di atas, data di bawah */
+    align-items: center; /* Pusatkan label dan data */
+    text-align: center; /* Pusatkan teks */
+    padding: 0.5rem 0.25rem;
+    border: none;
+    width: 100%; /* Ambil lebar penuh kartu */
+    margin-bottom: 0.5rem; /* Jarak antar field */
+    color: #fff;
+    background-color: #12283f;
   }
-  .close-button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.95em;
+  .product-table-bs td:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Styling untuk label data-label */
+  .product-table-bs td:before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #00d4ff;
+    font-size: 0.9em;
+    margin-bottom: 0.25rem; /* Jarak antara label dan data */
+    display: block; /* Agar label ada di baris sendiri */
+    text-shadow: 0 0 2px #00d4ff80;
+  }
+
+  /* Khusus untuk sel gambar agar tidak ada label & padding disesuaikan */
+  .product-table-bs td[data-label="Image:"] {
+    padding: 0.5rem 0; /* Lebih sedikit padding vertikal */
+  }
+  .product-table-bs td[data-label="Image:"]:before {
+    display: none; /* Sembunyikan label untuk gambar */
+  }
+  .table-thumbnail-bs {
+    max-width: 100px; /* Gambar lebih besar di tampilan kartu */
+    margin: 0 auto 0.5rem auto; /* Pusatkan gambar dan beri margin bawah */
+  }
+   .details-button-bs {
+    width: auto; /* Lebar tombol sesuai konten */
+    padding: 0.4rem 1rem;
   }
 }
 
-.text-success {
-  color: green;
-}
-
-.text-danger {
-  color: red;
-}
 </style>
