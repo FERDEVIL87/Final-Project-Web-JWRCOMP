@@ -9,7 +9,9 @@ const products = ref([
     brand: "ROG RYUO IV",
     name: "SLC 360 ARGB",
     slogan: "A NEW VISION OF COOLING",
-    imageSrc: "https://dlcdnwebimgs.asus.com/files/media/d3b46fd8-035f-41c1-a995-2dca5a228e9b/v1/img/gallery/2.jpg",
+    // Ganti dengan placeholder atau path lokal jika CORS menjadi masalah
+    imageSrc: "https://dlcdnwebimgs.asus.com/files/media/d3b46fd8-035f-41c1-a995-2dca5a228e9b/v1/img/gallery/2.jpg", // Placeholder
+    // imageSrc: "/images/rog-ryuo-iv.jpg", // Contoh path lokal jika gambar ada di public/images/
     features: [
       "High-Performance Pump",
       "Extraordinary Visuals",
@@ -23,56 +25,58 @@ const products = ref([
       { text: "AMOLED", subtext: "2K 60HZ", detail: "" },
       { text: "Daisy Chainable Fan", subtext: "", icon: 'fan' },
     ],
-    backgroundColor: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
-    accentColor: "#e94560",
+    backgroundColor: "linear-gradient(135deg, #18181b 0%, #27272a 50%, #3f3f46 100%)",
+    accentColor: "#a3a3a3",
   },
   {
-  id: 2,
-  brand: "ASUS TUF Gaming",
-  name: "TUF Gaming A15 (2024)",
-  slogan: "GEARED FOR SERIOUS GAMING AND REAL-WORLD DURABILITY",
-  imageSrc: "https://dlcdnwebimgs.asus.com/gain/49bac8ff-76c9-45b5-846c-057f79c30c8b/asus-tuf-gaming-a15-fa507uv-product-photo.png",
-  features: [
-    "Latest AMD Ryzen CPU & NVIDIA GPU",
-    "Blazing-Fast NVMe SSD",
-    "Customizable RGB Keyboard",
-    "Self-Cleaning Cooling 2.0",
-    "MIL-STD-810H Durability"
-  ],
-  badges: [
-    { text: "2", subtext: "YEAR WARRANTY" },
-    { text: "NVIDIA", subtext: "RTX 4060" },
-    { text: "AMD", subtext: "Ryzen 7 8000 Series" },
-    { text: "16GB", subtext: "DDR5 RAM" },
-    { text: "1TB", subtext: "NVMe SSD" },
-    { text: "15.6\"", subtext: "FHD 144Hz" }
-  ],
-  backgroundColor: "linear-gradient(135deg, #1e272e 0%, #2c3a47 50%, #1e272e 100%)",
-  accentColor: "#FFC107"
+    id: 2,
+    brand: "ASUS TUF Gaming",
+    name: "TUF Gaming A15 (2024)",
+    slogan: "GEARED FOR SERIOUS GAMING AND REAL-WORLD DURABILITY",
+    imageSrc: "https://dlcdnwebimgs.asus.com/gain/49bac8ff-76c9-45b5-846c-057f79c30c8b/asus-tuf-gaming-a15-fa507uv-product-photo.png", // Placeholder
+    // imageSrc: "/images/tuf-gaming-a15.png", // Contoh path lokal
+    features: [
+      "Latest AMD Ryzen CPU & NVIDIA GPU",
+      "Blazing-Fast NVMe SSD",
+      "Customizable RGB Keyboard",
+      "Self-Cleaning Cooling 2.0",
+      "MIL-STD-810H Durability"
+    ],
+    badges: [
+      { text: "2", subtext: "YEAR WARRANTY" },
+      { text: "NVIDIA", subtext: "RTX 4060" },
+      { text: "AMD", subtext: "Ryzen 7 8000 Series" },
+      { text: "16GB", subtext: "DDR5 RAM" },
+      { text: "1TB", subtext: "NVMe SSD" },
+      { text: "15.6\"", subtext: "FHD 144Hz" }
+    ],
+    backgroundColor: "linear-gradient(135deg, #1f2937 0%, #374151 50%, #4b5563 100%)",
+    accentColor: "#9ca3af"
   },
   {
-  id: 3,
-  brand: "Corsair",
-  name: "K70 RGB MK.2",
-  slogan: "BUILT TO LAST. PERFORM LIKE A LEGEND.",
-  imageSrc: "https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Gaming-Keyboards/CH-9109012-NA/Gallery/K70_RGB_MK2_02.webp",
-  features: [
-    "Genuine Cherry MX Switches",
-    "Dynamic Per-Key RGB Backlighting",
-    "Aircraft-Grade Aluminum Frame",
-    "8MB Profile Storage",
-    "Dedicated Multimedia Controls"
-  ],
-  badges: [
-    { text: "2", subtext: "YEAR WARRANTY" },
-    { text: "Cherry MX", subtext: "Red Switches" },
-    { text: "iCUE", subtext: "Software Control" },
-    { text: "100%", subtext: "Anti-Ghosting" },
-    { text: "USB", subtext: "Passthrough Port" }
-  ],
-  backgroundColor: "linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #0A0A0A 100%)",
-  accentColor: "#FFD700"
-}
+    id: 3,
+    brand: "Corsair",
+    name: "K70 RGB MK.2",
+    slogan: "BUILT TO LAST. PERFORM LIKE A LEGEND.",
+    imageSrc: "https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Gaming-Keyboards/CH-9109012-NA/Gallery/K70_RGB_MK2_02.webp", // Placeholder
+    // imageSrc: "/images/corsair-k70.webp", // Contoh path lokal
+    features: [
+      "Genuine Cherry MX Switches",
+      "Dynamic Per-Key RGB Backlighting",
+      "Aircraft-Grade Aluminum Frame",
+      "8MB Profile Storage",
+      "Dedicated Multimedia Controls"
+    ],
+    badges: [
+      { text: "2", subtext: "YEAR WARRANTY" },
+      { text: "Cherry MX", subtext: "Red Switches" },
+      { text: "iCUE", subtext: "Software Control" },
+      { text: "100%", subtext: "Anti-Ghosting" },
+      { text: "USB", subtext: "Passthrough Port" }
+    ],
+    backgroundColor: "linear-gradient(135deg, #000000 0%, #1c1c1c 50%, #2d2d2d 100%)",
+    accentColor: "#d1d5db"
+  }
 ]);
 
 const carouselSettings = {
@@ -94,17 +98,19 @@ const currentSlideAccentColor = ref(products.value[0].accentColor);
 const onSlideChange = (data) => {
   currentSlideAccentColor.value = products.value[data.currentSlideIndex].accentColor;
 };
+
 </script>
 
 <template>
-  <div> <!-- Main wrapper for the entire page content -->
+  <div class="page-wrapper">
 
-    <!-- NEW Video Hero Section -->
     <section class="video-hero-section">
-      <video autoplay muted loop playsinline class="hero-background-video" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="> <!-- Simple black poster -->
+      <div class="video-overlay top-gradient"></div>
+      <video autoplay muted loop playsinline class="hero-background-video" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAABAAACwAAAAAAQABAAACAkQBADs=">
         <source src="https://assets.corsair.com/video/upload/f_auto,ac_none/q_75/Homepage%20Assets/Hero-Banners/doom-crop.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
+      <div class="video-overlay bottom-gradient"></div>
       <div class="hero-content-overlay">
         <div class="hero-text-container">
           <h1>ENTER THE DARK AGES</h1>
@@ -113,7 +119,6 @@ const onSlideChange = (data) => {
         </div>
       </div>
     </section>
-    <!-- END NEW Video Hero Section -->
 
     <section class="product-hero-slider" id="product-carousel-starts">
       <Carousel
@@ -166,9 +171,8 @@ const onSlideChange = (data) => {
       </Carousel>
     </section>
 
-    <!-- Store Information Section STARTS HERE -->
     <section class="store-info-section">
-      <div class="container store-info-container"> 
+      <div class="container store-info-container">
         <h2 class="section-title store-section-title">Welcome to YourTech Haven</h2>
         <p class="section-subtitle store-section-subtitle">
           Your premier destination for cutting-edge hardware, expert advice, and unparalleled gaming experiences.
@@ -225,152 +229,197 @@ const onSlideChange = (data) => {
 
       </div>
     </section>
-    <!-- Store Information Section ENDS HERE -->
 
   </div>
 </template>
 
 <style scoped>
-/* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap');
 
-/* Styles for NEW Video Hero Section */
+/* General Page Styles */
+.page-wrapper {
+  background-color: #000000; /* Deep black base */
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+
+/* Video Hero Section - Enhanced Gradients */
 .video-hero-section {
   position: relative;
-  height: 100vh; 
+  height: 100vh;
   width: 100%;
-  overflow: hidden; 
+  overflow: hidden;
   display: flex;
-  flex-direction: column; /* Stack children vertically */
-  justify-content: flex-end; /* Push content to the bottom */
-  align-items: center; /* Keep content horizontally centered */
+  flex-direction: column;
+  justify-content: flex-end; /* Align content to bottom */
+  align-items: center;
   text-align: center;
-  background-color: #05050a; 
-  padding-bottom: 12vh; /* ADJUSTED: Space from the very bottom */
+  background-color: #000000; /* Fallback: Pure black */
+  padding-bottom: 10vh; /* Space for content above bottom gradient */
 }
 
 .hero-background-video {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
   width: 100%;
   height: 100%;
-  object-fit: cover; 
-  z-index: 1; 
-  filter: brightness(0.6); 
+  object-fit: cover;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  filter: brightness(0.5) grayscale(0.2); /* Further darken and slightly desaturate video */
+}
+
+.video-overlay {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.video-overlay.top-gradient {
+  top: 0;
+  height: 20vh;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 70%, #000000 100%);
+}
+
+.video-overlay.bottom-gradient {
+  bottom: 0;
+  height: 30vh;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000000 90%);
 }
 
 .hero-content-overlay {
-  position: relative; 
-  z-index: 2; 
+  position: relative;
+  z-index: 3;
   padding: 20px;
-  width: 100%; /* Allow it to be centered */
-  max-width: 800px; /* Optional: constrain width of text block */
-}
-
-.hero-text-container {
-  /* margin-top: 8vh; REMOVED - positioning handled by parent flexbox */
+  width: 100%;
+  max-width: 800px; /* Max width for text content */
 }
 
 .hero-text-container h1 {
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(2.8rem, 7vw, 4.5rem);
   font-weight: 900;
-  color: #FFFFFF;
+  color: #E5E7EB;
   text-transform: uppercase;
   margin-bottom: 15px;
   letter-spacing: 2px;
-  text-shadow: 2px 2px 8px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5); 
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
 }
 
 .hero-text-container p {
   font-family: 'Roboto', sans-serif;
   font-size: clamp(0.8rem, 2vw, 1.1rem);
-  color: #E0E0E0;
+  color: #B0B0B8;
   margin-bottom: 35px;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 400;
-  max-width: 600px; 
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
-  text-shadow: 1px 1px 6px rgba(0,0,0,0.7), 0 0 5px rgba(0,0,0,0.4); 
+  text-shadow: 1px 1px 8px rgba(0,0,0,0.8), 0 0 6px rgba(0,0,0,0.6);
 }
 
 .shop-now-button {
   display: inline-block;
-  background-color: #FDE047; 
-  color: #111827; 
+  background-color: #4B5563;
+  color: #F3F4F6;
   padding: 14px 35px;
-  font-family: 'Orbitron', sans-serif; 
+  font-family: 'Orbitron', sans-serif;
   font-weight: 700;
   font-size: clamp(0.9rem, 1.8vw, 1.1rem);
   text-decoration: none;
   text-transform: uppercase;
   border-radius: 4px;
-  border: none;
+  border: 1px solid #6B7280;
   transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
   letter-spacing: 1px;
   cursor: pointer;
 }
 
 .shop-now-button:hover, .shop-now-button:focus {
-  background-color: #FACC15; 
-  color: #000000;
+  background-color: #374151;
+  color: #FFFFFF;
+  border-color: #9CA3AF;
   transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 6px 20px rgba(253, 224, 71, 0.4), 0 0 15px rgba(250, 204, 21, 0.3);
+  box-shadow: 0 6px 20px rgba(107, 114, 128, 0.3), 0 0 15px rgba(55, 65, 81, 0.2);
   outline: none;
 }
 
 
-/* Styles for Product Hero Slider */
+/* Product Hero Slider - Black/Gray Theme */
 .product-hero-slider {
   width: 100%;
-  height: 100vh; 
+  height: 100vh; /* Full viewport height */
+  min-height: 600px; /* Minimum height for smaller screens */
   font-family: 'Roboto', sans-serif;
-  background-color: #0a0a12;
+  background-color: #000000;
+  position: relative; /* For positioning navigation/pagination absolutely if needed */
+  display: flex; /* To help center carousel if it's not full height by default */
+  align-items: center; /* Vertical centering of carousel content */
 }
 
 .carousel__item {
-  min-height: 100vh;
+  min-height: 100vh; /* Ensure slides take full height */
   width: 100%;
-  color: #fff;
+  color: #D1D5DB;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
+  position: relative; /* For absolute positioning of elements within a slide if needed */
 }
 
-.product-slide-content { 
+.product-slide-content {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr 1.2fr; /* Text on left, image slightly larger on right */
+  grid-template-rows: auto 1fr auto; /* Brand/Name, Slogan/Features, Badges */
   grid-template-areas:
     "text image"
     "text image"
     "badges badges";
-  align-items: center;
-  gap: 20px;
-  padding: 40px 20px;
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
+  align-items: center; /* Vertically align content in grid areas */
+  gap: 20px 40px; /* Row gap, Column gap */
   height: 100%;
+  max-height: 90vh; /* Prevent content from touching viewport edges */
   box-sizing: border-box;
+  padding: 40px 20px; /* Add some padding around the content */
 }
 
 .product-text-info {
   grid-area: text;
   text-align: left;
-  padding-right: 30px;
+  padding-right: 30px; /* Space between text and image column */
   animation: fadeInFromLeft 0.8s ease-out forwards;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center text content vertically */
 }
 
 @keyframes fadeInFromLeft {
-  from { opacity: 0; transform: translateX(-50px); }
+  from { opacity: 0; transform: translateX(-30px); }
   to { opacity: 1; transform: translateX(0); }
 }
+@keyframes fadeInFromRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 
 .product-brand {
   font-family: 'Orbitron', sans-serif;
@@ -379,6 +428,7 @@ const onSlideChange = (data) => {
   margin-bottom: 5px;
   letter-spacing: 1px;
   text-transform: uppercase;
+  /* color is set by :style binding */
 }
 
 .product-name {
@@ -387,13 +437,13 @@ const onSlideChange = (data) => {
   font-weight: 900;
   margin-bottom: 15px;
   line-height: 1.1;
-  color: #f0f0f0;
+  color: #F3F4F6;
 }
 
 .product-slogan {
   font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   font-weight: 300;
-  color: #cccccc;
+  color: #9CA3AF;
   margin-bottom: 25px;
   max-width: 500px;
 }
@@ -409,12 +459,13 @@ const onSlideChange = (data) => {
   margin-bottom: 10px;
   display: flex;
   align-items: center;
-  color: #e0e0e0;
+  color: #D1D5DB;
 }
 
 .product-features li svg {
   margin-right: 10px;
   flex-shrink: 0;
+  /* color is set by :style binding */
 }
 
 .product-image-container {
@@ -423,19 +474,14 @@ const onSlideChange = (data) => {
   justify-content: center;
   align-items: center;
   animation: fadeInFromRight 0.8s 0.2s ease-out forwards;
-  opacity: 0;
-}
-
-@keyframes fadeInFromRight {
-  from { opacity: 0; transform: translateX(50px); }
-  to { opacity: 1; transform: translateX(0); }
+  opacity: 0; /* Start hidden for animation */
 }
 
 .product-image {
   max-width: 100%;
-  max-height: 70vh;
+  max-height: 65vh; /* Adjust based on typical image aspect ratios */
   object-fit: contain;
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 10px 25px rgba(0,0,0,0.4));
 }
 
 .product-badges-container {
@@ -445,26 +491,23 @@ const onSlideChange = (data) => {
   justify-content: center;
   gap: 15px;
   padding-top: 20px;
-  margin-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 20px; /* Space above badges */
+  border-top: 1px solid #374151;
   animation: fadeInUp 0.8s 0.4s ease-out forwards;
-  opacity: 0;
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  opacity: 0; /* Start hidden for animation */
+  width: 100%; /* Ensure it takes full width of its grid area */
 }
 
 .product-badge {
-  background-color: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(31, 41, 55, 0.5);
+  border: 1px solid #4B5563;
   border-radius: 4px;
   padding: 8px 12px;
   text-align: center;
   min-width: 100px;
-  color: #e0e0e0;
+  color: #D1D5DB;
   font-size: 0.8rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 .badge-icon-fan {
   margin-bottom: 4px;
@@ -472,7 +515,7 @@ const onSlideChange = (data) => {
 .badge-icon-fan svg {
   width: 20px;
   height: 20px;
-  fill: #e0e0e0;
+  fill: #9CA3AF;
 }
 
 .badge-main-text {
@@ -480,6 +523,7 @@ const onSlideChange = (data) => {
   font-size: 1.1rem;
   font-weight: 700;
   font-family: 'Orbitron', sans-serif;
+  color: #E5E7EB;
 }
 
 .badge-subtext {
@@ -487,171 +531,99 @@ const onSlideChange = (data) => {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #b0b0b0;
+  color: #9CA3AF;
 }
 .badge-detail {
   display: block;
   font-size: 0.7rem;
-  color: #999;
+  color: #6B7280;
 }
 
 :deep(.carousel__prev),
 :deep(.carousel__next) {
-  background-color: rgba(0, 0, 0, 0.5) !important;
+  background-color: rgba(17, 24, 39, 0.6) !important;
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  color: white !important;
+  color: #D1D5DB !important;
   transition: background-color 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 :deep(.carousel__prev:hover),
 :deep(.carousel__next:hover) {
-  background-color: rgba(0, 0, 0, 0.8) !important;
+  background-color: rgba(17, 24, 39, 0.9) !important;
 }
-:deep(.carousel__prev) {
-  left: 20px !important;
-}
-:deep(.carousel__next) {
-  right: 20px !important;
+:deep(.carousel__prev) { left: 20px !important; }
+:deep(.carousel__next) { right: 20px !important; }
+
+:deep(.carousel__pagination) {
+  position: absolute;
+  bottom: 20px; /* Position pagination at the bottom */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5; /* Ensure it's above other elements */
 }
 
 :deep(.carousel__pagination-button) {
-  background-color: rgba(255, 255, 255, 0.3) !important;
-  padding: 5px;
+  background-color: rgba(107, 114, 128, 0.4) !important;
+  padding: 5px; /* This effectively sets the size of the non-active dot */
   width: 10px;
   height: 10px;
   border-radius: 50%;
   margin: 0 4px;
   transition: background-color 0.3s ease, transform 0.3s ease;
+  border: none; /* Remove default border if any */
 }
 :deep(.carousel__pagination-button--active) {
-  background-color: var(--slide-accent-color, #fff) !important;
+  background-color: var(--slide-accent-color, #9CA3AF) !important;
   transform: scale(1.3);
 }
 
-@media (max-width: 992px) {
-  .product-slide-content {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "text"
-      "image"
-      "badges";
-    text-align: center;
-    gap: 30px;
-    padding: 60px 20px 40px;
-  }
-  .product-text-info {
-    padding-right: 0;
-    text-align: center;
-  }
-  .product-features {
-    justify-content: center;
-  }
-  .product-features li {
-    justify-content: flex-start;
-    text-align: left;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 300px;
-  }
-  .product-image {
-    max-height: 40vh;
-  }
-  .product-badges-container {
-    justify-content: center;
-    gap: 10px;
-  }
-  .product-badge {
-    min-width: 80px;
-    padding: 6px 10px;
-  }
-  .product-name {
-    font-size: clamp(2rem, 6vw, 3rem);
-  }
-  .product-slogan {
-    font-size: clamp(1rem, 3vw, 1.2rem);
-  }
-}
 
-@media (max-width: 576px) {
-  .video-hero-section {
-    padding-bottom: 8vh; /* Adjust padding for smaller screens if needed */
-  }
-  .hero-text-container h1 {
-    font-size: clamp(2rem, 10vw, 2.8rem); 
-  }
-  .hero-text-container p {
-    font-size: clamp(0.75rem, 3vw, 0.9rem); 
-  }
-  .shop-now-button {
-    padding: 12px 25px;
-    font-size: clamp(0.8rem, 2.5vw, 1rem);
-  }
-
-  .product-features li {
-    font-size: 0.9rem;
-  }
-  .product-features {
-    margin-bottom: 20px;
-  }
-  .badge-main-text {
-    font-size: 1rem;
-  }
-  :deep(.carousel__prev) {
-    left: 10px !important;
-    width: 35px;
-    height: 35px;
-  }
-  :deep(.carousel__next) {
-    right: 10px !important;
-    width: 35px;
-    height: 35px;
-  }
-  :deep(.carousel__pagination-button) {
-    padding: 4px;
-    width: 8px;
-    height: 8px;
-  }
-}
-
-/* Styles for Store Information Section */
+/* Store Information Section - Black/Gray Theme */
+/* Using text for icons, consider SVGs for better scalability and styling */
 .icon-store::before { content: "🏢 "; }
 .icon-pin::before { content: "📍 "; }
 .icon-clock::before { content: "🕒 "; }
 .icon-services::before { content: "🛠️ "; }
 .icon-map::before { content: "🗺️ "; }
 .icon-connect::before { content: "🔗 "; }
-.icon-facebook::before { content: "📘 "; font-size: 1.5em; } 
-.icon-twitter::before { content: "🐦 "; font-size: 1.5em; }
-.icon-instagram::before { content: "📸 "; font-size: 1.5em; }
-.icon-discord::before { content: "💬 "; font-size: 1.5em; }
-
+.icon-facebook::before { content: "📘 "; font-size: 1em; /* Adjusted for better alignment */ }
+.icon-twitter::before { content: "🐦 "; font-size: 1em; }
+.icon-instagram::before { content: "📸 "; font-size: 1em; }
+.icon-discord::before { content: "💬 "; font-size: 1em; }
 
 .store-info-section {
-  padding: 80px 20px;
-  background-color: #0f172a; 
-  color: #e2e8f0; 
+  padding: 80px 0;
+  background: linear-gradient(180deg, #000000 0%, #111827 100%);
+  color: #D1D5DB;
   font-family: 'Roboto', sans-serif;
 }
 
+/* .store-info-container class definition itself is not problematic.
+   Its styles come from the .container class and potentially specific overrides.
+   If it's marked red in your IDE, check for syntax errors *above* this rule in your CSS,
+   or ensure the class name in your HTML matches exactly.
+   The CSS provided is syntactically correct. */
 .store-info-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  /* This class is used in conjunction with .container: <div class="container store-info-container">
+     It can be used to add specific styles to this container if needed,
+     beyond what .container provides. Currently, it has no specific styles of its own here. */
 }
 
-.section-title.store-section-title { 
+.section-title.store-section-title {
   text-align: center;
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(2rem, 5vw, 3rem);
-  color: #38bdf8; 
+  color: #E5E7EB;
   margin-bottom: 15px;
   font-weight: 700;
 }
 
-.section-subtitle.store-section-subtitle { 
+.section-subtitle.store-section-subtitle {
   text-align: center;
   font-size: clamp(1rem, 2.5vw, 1.25rem);
-  color: #94a3b8; 
+  color: #9CA3AF;
   margin-bottom: 50px;
   max-width: 700px;
   margin-left: auto;
@@ -667,53 +639,55 @@ const onSlideChange = (data) => {
 }
 
 .info-block {
-  background-color: #1e293b; 
+  background-color: #1F2937;
   padding: 25px 30px;
   border-radius: 12px;
-  border: 1px solid #334155;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  border: 1px solid #374151;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .info-block:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(56, 189, 248, 0.3);
+    box-shadow: 0 8px 30px rgba(55, 65, 81, 0.3);
 }
 
 .info-block h3 {
   font-family: 'Orbitron', sans-serif;
   font-size: 1.5rem;
-  color: #7dd3fc; 
+  color: #D1D5DB;
   margin-bottom: 15px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
-.info-block h3 i { 
-  font-size: 1.2em;
-  color: #38bdf8;
+.info-block h3 i { /* Styles for icon pseudo-elements */
+  font-size: 1em; /* Adjust if using actual icon font/SVG */
+  color: #9CA3AF;
+  font-style: normal; /* Prevent italics if i tag is used for semantic grouping */
 }
 
 .info-block p, .info-block li {
   font-size: 0.95rem;
   line-height: 1.7;
-  color: #cbd5e1; 
+  color: #B0BCC8;
   margin-bottom: 10px;
 }
 
 .info-block p strong {
-  color: #e2e8f0;
+  color: #E5E7EB;
   font-weight: 500;
 }
 
 .info-block a {
-  color: #38bdf8;
+  color: #9CA3AF;
   text-decoration: none;
   font-weight: 500;
+  transition: color 0.3s ease;
 }
 .info-block a:hover {
   text-decoration: underline;
-  color: #7dd3fc;
+  color: #D1D5DB;
 }
 
 .info-block ul {
@@ -728,42 +702,44 @@ const onSlideChange = (data) => {
   content: '✓';
   position: absolute;
   left: 0;
-  color: #38bdf8; 
+  color: #9CA3AF;
   font-weight: bold;
 }
 
 .map-social-container {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 2fr 1fr; /* Map takes more space */
     gap: 30px;
-    align-items: flex-start;
+    align-items: flex-start; /* Align items to the top of their grid cell */
     margin-top: 40px;
 }
 
 .map-placeholder, .social-links {
-    background-color: #1e293b;
+    background-color: #1F2937;
     padding: 25px;
     border-radius: 12px;
-    border: 1px solid #334155;
+    border: 1px solid #374151;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .map-placeholder h4, .social-links h4 {
     font-family: 'Orbitron', sans-serif;
     font-size: 1.3rem;
-    color: #7dd3fc;
+    color: #D1D5DB;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 .map-placeholder h4 i, .social-links h4 i {
-    font-size: 1.1em;
-    color: #38bdf8;
+    font-size: 1em;
+    color: #9CA3AF;
+    font-style: normal;
 }
 
 .map-embed-placeholder {
-    background-color: #0f172a;
-    border: 1px dashed #334155;
+    background-color: #111827;
+    border: 1px dashed #374151;
     height: 250px;
     display: flex;
     flex-direction: column;
@@ -771,7 +747,7 @@ const onSlideChange = (data) => {
     align-items: center;
     text-align: center;
     border-radius: 8px;
-    color: #94a3b8;
+    color: #9CA3AF;
 }
 .map-embed-placeholder span {
     font-size: 1.2rem;
@@ -782,36 +758,133 @@ const onSlideChange = (data) => {
 .social-links a {
     display: inline-block;
     margin-right: 15px;
-    color: #94a3b8;
-    font-size: 1.8rem; 
+    color: #9CA3AF;
+    font-size: 1.8rem; /* Base size for the container of the icon */
     transition: color 0.3s ease, transform 0.3s ease;
     text-decoration: none;
 }
+.social-links a:last-child {
+    margin-right: 0;
+}
 .social-links a:hover {
-    color: #38bdf8;
+    color: #D1D5DB;
     transform: scale(1.1);
 }
-.social-links a i { 
-  font-size: 1.5em; 
-  font-style: normal; 
+.social-links a i { /* Styles for icon pseudo-elements if used within <a> */
+  font-size: 1em; /* Makes the icon text inherit the 1.8rem from <a> */
+  font-style: normal;
 }
 
 
+/* Responsive Adjustments */
 @media (max-width: 992px) {
-    .map-social-container {
-        grid-template-columns: 1fr; 
-    }
-    .product-slide-content.container {
-      padding: 60px 20px 40px; 
-    }
+  .product-slide-content {
+    grid-template-columns: 1fr; /* Stack text, image, badges */
+    grid-template-rows: auto auto auto; /* Adjust rows for stacked layout */
+    grid-template-areas:
+      "text"
+      "image"
+      "badges";
+    text-align: center;
+    gap: 30px; /* Consistent gap */
+    padding: 60px 20px 80px; /* Adjust padding, more bottom for pagination */
+    max-height: none; /* Allow content to flow */
+  }
+  .product-text-info {
+    padding-right: 0;
+    text-align: center;
+    align-items: center; /* Center text items like slogan if max-width is set */
+  }
+  .product-features {
+    justify-content: center; /* Center list items container if it's flex */
+    align-items: center; /* Center items if they are block */
+  }
+  .product-features li {
+    /* justify-content: flex-start; Remove if text-align:center on parent works */
+    /* text-align: left; Keep for readability if list is centered */
+    margin-left: auto; /* Center the list items block */
+    margin-right: auto;
+    max-width: 350px; /* Control width of feature text lines */
+  }
+  .product-image {
+    max-height: 40vh;
+  }
+  .product-badges-container {
+    margin-top: 10px; /* Reduce space when stacked */
+  }
+
+  .map-social-container {
+      grid-template-columns: 1fr; /* Stack map and social links */
+  }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 576px) {
+  .video-hero-section {
+    padding-bottom: 8vh;
+  }
+  .hero-text-container h1 {
+    font-size: clamp(2rem, 10vw, 2.8rem);
+  }
+  .hero-text-container p {
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
+  }
+  .shop-now-button {
+    padding: 12px 25px;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
+  }
+
+  .product-slide-content {
+    padding: 40px 15px 70px; /* Further adjust padding for small screens */
+    gap: 20px;
+  }
+  .product-name {
+    font-size: clamp(2rem, 6vw, 2.8rem);
+  }
+  .product-slogan {
+    font-size: clamp(1rem, 3vw, 1.2rem);
+  }
+  .product-features li {
+    font-size: 0.9rem;
+    max-width: 90%;
+  }
+  .product-features {
+    margin-bottom: 20px;
+  }
+  .product-image {
+    max-height: 35vh;
+  }
+
+  .badge-main-text {
+    font-size: 1rem;
+  }
+  .badge-subtext, .badge-detail {
+    font-size: 0.7rem;
+  }
+
+  :deep(.carousel__prev) {
+    left: 10px !important;
+    width: 35px;
+    height: 35px;
+  }
+  :deep(.carousel__next) {
+    right: 10px !important;
+    width: 35px;
+    height: 35px;
+  }
+  :deep(.carousel__pagination) {
+    bottom: 15px; /* Adjust pagination position */
+  }
+  :deep(.carousel__pagination-button) {
+    padding: 4px;
+    width: 8px;
+    height: 8px;
+  }
+
   .section-title.store-section-title {
-    font-size: 1.8rem;
+    font-size: clamp(1.8rem, 6vw, 2.2rem);
   }
   .section-subtitle.store-section-subtitle {
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
   }
   .info-block h3 {
     font-size: 1.3rem;
@@ -819,9 +892,30 @@ const onSlideChange = (data) => {
   .info-block {
     padding: 20px;
   }
+  .info-block p, .info-block li {
+    font-size: 0.9rem;
+  }
+  .social-links a {
+    font-size: 1.6rem; /* Slightly smaller social icons */
+    margin-right: 10px;
+  }
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Animation keyframes (ensure they are defined if not already) */
+@keyframes fadeInFromLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInFromRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
