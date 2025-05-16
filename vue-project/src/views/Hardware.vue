@@ -110,7 +110,6 @@
       </div>
     </div>
   </section>
-
 </template>
 
 <script>
@@ -1164,8 +1163,6 @@ export default {
     },
   },
 };
-
-
 </script>
 
 <style scoped>
@@ -1491,47 +1488,5 @@ export default {
     padding: 0.4rem 1rem;
   }
 }
-
-.modal {
-  position: fixed;
-  z-index: 1050;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: auto;
-}
-
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 1040;
-}
-
-.modal-dialog {
-  position: relative;
-  margin: 10% auto;
-  width: 400px;
-  z-index: 1060;
-}
-
-.modal-content {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  z-index: 1060;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.close-btn {
-  float: right;
-  font-size: 20px;
-  cursor: pointer;
-}
-
 
 </style>
