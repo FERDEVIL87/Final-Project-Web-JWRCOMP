@@ -440,10 +440,6 @@ export default {
                   <span class="pc-star star1"></span>
                   <span class="pc-star star2"></span>
                   <span class="pc-star star3"></span>
-                  <!-- Efek animasi lingkaran berputar -->
-                  <span class="pc-orbit"></span>
-                  <!-- Efek glow pulse -->
-                  <span class="pc-glow"></span>
                   <img :src="pc.image" :alt="pc.name" class="card-img-top card-img-bs" />
                 </div>
                 <div class="card-body d-flex flex-column p-3">
@@ -809,40 +805,68 @@ export default {
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid var(--border-color-soft);
-  transition: background 0.2s;
+  transition: background 0.2s, box-shadow 0.3s;
+  position: relative;
+  /* Neon border effect */
+  box-shadow: 0 0 0 0 #00ffe7, 0 0 0 0 #8f5cff;
 }
 .card-bs:hover .card-img-wrapper-bs {
   background: linear-gradient(120deg, #11192b 40%, #00ffe7 100%);
+  /* Neon glow on hover */
+  box-shadow:
+    0 0 18px 4px #00ffe7,
+    0 0 24px 8px #8f5cff,
+    0 4px 18px #00eaff44;
+  animation: neon-glow-img 1.2s alternate infinite;
 }
+@keyframes neon-glow-img {
+  0% {
+    box-shadow:
+      0 0 0 0 #00ffe7,
+      0 0 0 0 #8f5cff,
+      0 4px 18px #00eaff44;
+  }
+  100% {
+    box-shadow:
+      0 0 18px 8px #00ffe7,
+      0 0 32px 16px #8f5cff,
+      0 8px 32px #00eaff88;
+  }
+}
+/* Neon border for image */
 .card-img-bs {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   border-radius: 7px;
-  box-shadow: 0 2px 12px #00eaff22;
-  transition: transform 0.18s cubic-bezier(.4,2,.6,1);
+  box-shadow:
+    0 0 0 0 #00ffe7,
+    0 2px 12px #00eaff22;
+  transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.3s;
+  border: 1.5px solid transparent;
 }
 .card-bs:hover .card-img-bs {
   transform: scale(1.06) rotate(-2deg);
-  box-shadow: 0 4px 18px #00eaff44;
+  box-shadow:
+    0 0 16px 4px #00ffe7,
+    0 0 24px 8px #8f5cff,
+    0 4px 18px #00eaff44;
+  border: 1.5px solid #00ffe7;
+  filter: brightness(1.08) saturate(1.15);
 }
-/* Responsive: grid gap dan bunga */
-@media (max-width: 575.98px) {
-  .card-bs .card-body {
-    min-height: 160px;
-    padding: 0.8rem 0.7rem 1rem 0.7rem;
+/* Neon flicker effect for image border */
+@media (prefers-reduced-motion: no-preference) {
+  .card-bs:hover .card-img-bs {
+    animation: neon-flicker 1.7s infinite alternate;
   }
-  .card-title-bs {
-    font-size: 0.95rem;
-    min-height: calc(0.95rem * 1.35 * 2);
-  }
-  .card-text-desc-bs {
-    font-size: 0.75rem;
-    min-height: calc(0.75rem * 1.5 * 2);
-  }
-  .card-text-price-bs {
-    font-size: 0.92rem;
-  }
+}
+@keyframes neon-flicker {
+  0% { border-color: #00ffe7; }
+  20% { border-color: #8f5cff; }
+  40% { border-color: #00ffe7; }
+  60% { border-color: #00ffe7; }
+  80% { border-color: #8f5cff; }
+  100% { border-color: #00ffe7; }
 }
 
 .no-results-bs {
@@ -1041,100 +1065,5 @@ export default {
     --bs-gutter-x: 0.8rem;
     --bs-gutter-y: 0.8rem;
   }
-}
-
-/* Tambahan efek animasi dan dekorasi */
-.pc-bg-wrapper {
-  position: relative;
-  z-index: 1;
-}
-.pc-bg-decor {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  border-radius: 12px;
-  background: radial-gradient(circle at 60% 40%, #00ffe7 0%, #8f5cff 40%, transparent 80%);
-  opacity: 0.18;
-  filter: blur(6px) saturate(1.2);
-  transition: opacity 0.25s;
-}
-.card-bs:hover .pc-bg-decor {
-  opacity: 0.28;
-  filter: blur(10px) saturate(1.3);
-}
-/* SVG garis melengkung */
-.pc-curve-decor {
-  position: absolute;
-  left: 50%;
-  bottom: 8px;
-  transform: translateX(-50%);
-  z-index: 2;
-  pointer-events: none;
-  animation: curve-fade 3s infinite alternate;
-}
-@keyframes curve-fade {
-  0% { opacity: 0.18; }
-  100% { opacity: 0.32; }
-}
-/* Hiasan bintang */
-.pc-star {
-  position: absolute;
-  display: block;
-  width: 13px;
-  height: 13px;
-  background: radial-gradient(circle, #fff 60%, #00ffe7 100%, transparent 100%);
-  border-radius: 50%;
-  opacity: 0.22;
-  filter: blur(0.5px);
-  pointer-events: none;
-  z-index: 3;
-  animation: star-twinkle 2.5s infinite alternate;
-}
-.pc-star.star1 { left: 18px; top: 18px; width: 10px; height: 10px; animation-delay: 0s;}
-.pc-star.star2 { right: 22px; top: 28px; width: 8px; height: 8px; animation-delay: 1.2s;}
-.pc-star.star3 { left: 40px; bottom: 18px; width: 7px; height: 7px; animation-delay: 2.1s;}
-@keyframes star-twinkle {
-  0% { opacity: 0.18; transform: scale(1);}
-  100% { opacity: 0.32; transform: scale(1.18);}
-}
-/* Efek orbit lingkaran berputar */
-.pc-orbit {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 80px; height: 80px;
-  transform: translate(-50%, -50%);
-  border: 1.5px dashed #00ffe7;
-  border-radius: 50%;
-  opacity: 0.13;
-  pointer-events: none;
-  z-index: 2;
-  animation: orbit-spin 7s linear infinite;
-}
-@keyframes orbit-spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg);}
-  100% { transform: translate(-50%, -50%) rotate(360deg);}
-}
-/* Efek glow pulse di tengah */
-.pc-glow {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 38px; height: 38px;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, #00ffe7 0%, #8f5cff 60%, transparent 100%);
-  border-radius: 50%;
-  opacity: 0.18;
-  pointer-events: none;
-  z-index: 2;
-  animation: glow-pulse 2.2s infinite alternate;
-}
-@keyframes glow-pulse {
-  0% { opacity: 0.13; transform: translate(-50%, -50%) scale(1);}
-  100% { opacity: 0.28; transform: translate(-50%, -50%) scale(1.18);}
-}
-/* Pastikan gambar di atas dekorasi */
-.card-img-bs {
-  position: relative;
-  z-index: 4;
 }
 </style>
