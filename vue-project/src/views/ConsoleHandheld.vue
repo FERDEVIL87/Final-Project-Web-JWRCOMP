@@ -1,6 +1,9 @@
 <template>
   <section class="container py-5">
-    <h2 class="text-center fw-bold mb-4 text-info" style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 8px #00eaff, 0 0 18px #00eaff;">
+  <h2
+      class="text-center fw-bold mb-4"
+      style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 8px #00eaff, 0 0 18px #00eaff; color: #fff;"
+    >
       🎮 ULTIMATE GAME CONSOLES HUB 🚀
     </h2>
     <!-- Kategori -->
@@ -18,14 +21,21 @@
     </div>
 
     <div v-if="selectedCategory" class="bg-dark bg-opacity-75 rounded-4 shadow p-4 mb-4">
-      <h3 class="text-center fw-bold mb-3 text-info" style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 8px #00eaff;">
+      <h3
+        class="text-center fw-bold mb-3"
+        :style="{
+          fontFamily: '\'Orbitron\', sans-serif',
+          textShadow: '0 0 8px #00eaff',
+          color: '#fff'
+        }"
+      >
         {{ selectedCategory.title }}
       </h3>
       <div class="row g-2 align-items-center mb-3">
         <div class="col-12 col-md-4">
           <input
             type="text"
-            v-model="searchQuery"
+            v-model ="searchQuery"
             placeholder="Search console..."
             class="form-control bg-secondary bg-opacity-25 text-light border-info"
           />
@@ -67,7 +77,14 @@
           >
             <img :src="consoleItem.image" :alt="consoleItem.name" class="card-img-top" style="height: 140px; object-fit: cover; background: #101829;" />
             <div class="card-body">
-              <h4 class="card-title text-info fw-bold mb-1" style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 6px #00eaff, 0 0 12px #00eaff;">{{ consoleItem.name }}</h4>
+              <h4
+                class="card-title fw-bold mb-1"
+                :style="{
+                  fontFamily: '\'Orbitron\', sans-serif',
+                  textShadow: '0 0 6px #00eaff, 0 0 12px #00eaff',
+                  color: '#fff'
+                }"
+              >{{ consoleItem.name }}</h4>
               <p class="mb-1"><span class="fw-semibold">Brand:</span> {{ consoleItem.brand }}</p>
               <p class="mb-1">
                 <span class="fw-semibold">Stock:</span>
@@ -94,7 +111,11 @@
         <div class="modal-content bg-dark text-light position-relative">
           <!-- Tombol close Bootstrap standar akan muncul di sini jika tidak dioverride header -->
           <div class="modal-header border-0 pb-0">
-            <h3 class="modal-title w-100 text-center text-info fw-bold" id="consoleDetailModalLabel" style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 8px #00eaff;">
+            <h3
+              class="modal-title w-100 text-center fw-bold"
+              id="consoleDetailModalLabel"
+              style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 8px #00eaff; color: #fff;"
+            >
               {{ selectedProduct?.name }}
             </h3>
             <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="closeDetails"></button>
