@@ -644,64 +644,128 @@ export default {
   justify-content: center !important;
 }
 .card-bs {
-  background: var(--background-card);
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--border-color-medium);
-  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, border-color 0.25s ease-out;
+  background: linear-gradient(135deg, #1a243a 70%, #232e4d 100%);
+  border-radius: 16px;
+  box-shadow: 0 6px 22px 0 rgba(0, 217, 255, 0.10), 0 1.5px 8px 0 rgba(143, 92, 255, 0.10);
+  border: 1.5px solid var(--border-color-medium);
+  transition: 
+    transform 0.25s cubic-bezier(.4,2,.6,1), 
+    box-shadow 0.25s, 
+    border-color 0.25s,
+    filter 0.25s;
   cursor: pointer;
   color: var(--text-light);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  position: relative;
+  /* Efek glassmorphism */
+  backdrop-filter: blur(2.5px) saturate(1.2);
+  background-clip: padding-box;
 }
 .card-bs:hover, .card-bs:focus-visible {
-  transform: translateY(-5px) scale(1.015); /* Efek lebih subtle */
-  box-shadow: 0 7px 22px rgba(var(--primary-color-rgb-val), 0.4);
-  border-color: var(--border-color-strong);
+  transform: translateY(-8px) scale(1.025) rotate(-0.5deg);
+  box-shadow: 0 12px 38px 0 rgba(0,217,255,0.22), 0 2px 12px 0 rgba(143,92,255,0.18), 0 0 0 4px #00d9ff33;
+  border-color: #00d9ff;
   outline: none;
+  filter: brightness(1.07) saturate(1.15);
 }
-.card-bs:focus-visible:not(:hover) {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 1px;
+/* Efek garis gradasi di sisi kiri kolom */
+.card-bs::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 7px;
+  border-radius: 7px 0 0 7px;
+  background: linear-gradient(180deg, #00d9ff 0%, #8f5cff 60%, #00ffe7 100%);
+  opacity: 0.85;
+  transition: opacity 0.2s;
+  z-index: 1;
 }
-
-.card-img-wrapper-bs { /* Wrapper untuk kontrol padding dan background gambar */
-  background-color: var(--background-section);
-  padding: 10px;
-  height: 190px; /* Tinggi konsisten untuk area gambar */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid var(--border-color-soft);
+.card-bs:hover::before, .card-bs:focus-visible::before {
+  opacity: 1;
+  filter: brightness(1.15) drop-shadow(0 0 8px #00d9ff88);
 }
-.card-img-bs {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  border-radius: 4px; /* Radius kecil untuk gambar */
+/* Bunga SVG dekorasi background */
+.card-bs::after {
+  content: '';
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  width: 54px;
+  height: 54px;
+  background: url('data:image/svg+xml;utf8,<svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.18"><path d="M27 6c2.5 6.5 8.5 8.5 15 7-2.5 6.5 0 13.5 7 15-6.5 2.5-8.5 8.5-7 15-6.5-2.5-13.5 0-15 7-2.5-6.5-8.5-8.5-15-7 2.5-6.5 0-13.5-7-15 6.5-2.5 8.5-8.5 7-15 6.5 2.5 13.5 0 15-7z" fill="%23ffb6f9"/><circle cx="27" cy="27" r="7" fill="%23a5f3fc"/></g></svg>');
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 0;
 }
+.card-bs > * {
+  position: relative;
+  z-index: 2;
+}
+/* Efek animasi masuk untuk card */
+.card-bs {
+  opacity: 0;
+  transform: translateY(30px) scale(0.98);
+  animation: fadeInCard 0.7s cubic-bezier(.4,2,.6,1) forwards;
+}
+@keyframes fadeInCard {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+/* Animasi delay bertingkat untuk grid */
+.col.d-flex.align-items-stretch:nth-child(1) .card-bs { animation-delay: 0.05s; }
+.col.d-flex.align-items-stretch:nth-child(2) .card-bs { animation-delay: 0.12s; }
+.col.d-flex.align-items-stretch:nth-child(3) .card-bs { animation-delay: 0.18s; }
+.col.d-flex.align-items-stretch:nth-child(4) .card-bs { animation-delay: 0.25s; }
+.col.d-flex.align-items-stretch:nth-child(5) .card-bs { animation-delay: 0.32s; }
+.col.d-flex.align-items-stretch:nth-child(6) .card-bs { animation-delay: 0.39s; }
+/* Responsive: bunga lebih kecil di mobile */
+@media (max-width: 575.98px) {
+  .card-bs::after, .card-bs::before {
+    width: 32px;
+    height: 32px;
+    top: -10px;
+    right: -10px;
+    left: -10px;
+    bottom: -10px;
+  }
+  .card-bs {
+    border-radius: 9px;
+  }
+}
+/* Card inner shadow untuk depth */
 .card-bs .card-body {
-  padding: 1rem;
-  text-align: center;
-  flex-grow: 1;
+  box-shadow: 0 2px 12px 0 rgba(0,217,255,0.07) inset;
+  border-radius: 0 0 12px 12px;
+  background: linear-gradient(180deg, rgba(17,25,43,0.12) 0%, rgba(26,36,58,0.95) 100%);
+  padding: 1.1rem 1rem 1.2rem 1rem;
+  min-height: 210px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 .card-title-bs {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1rem; /* Disesuaikan */
-  font-weight: 500;
-  color: var(--primary-color);
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #00eaff;
   margin-bottom: 0.5rem;
   line-height: 1.35;
-  min-height: calc(1rem * 1.35 * 2);
+  min-height: calc(1.08rem * 1.35 * 2);
   display: flex;
   align-items: center;
   justify-content: center;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 8px #00eaff33;
 }
 .card-text-desc-bs {
-  font-size: 0.8rem;
-  color: var(--text-muted-bs);
-  line-height: 1.4;
+  font-size: 0.85rem;
+  color: #b8e0f7;
+  line-height: 1.5;
   margin-bottom: 0.75rem !important;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -709,16 +773,63 @@ export default {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: calc(0.8rem * 1.4 * 2);
+  min-height: calc(0.85rem * 1.5 * 2);
 }
 .card-text-price-bs {
-  font-size: 0.95rem; /* Disesuaikan */
+  font-size: 1.05rem;
   font-weight: bold;
   color: #fff;
+  letter-spacing: 0.2px;
+  text-shadow: 0 1px 8px #00eaff33;
 }
 .card-text-price-bs strong {
-  color: var(--primary-color);
+  color: #00ffe7;
   margin-right: 0.25rem;
+  text-shadow: 0 0 8px #00ffe755;
+}
+/* Efek hover pada gambar */
+.card-img-wrapper-bs {
+  background: linear-gradient(120deg, #11192b 60%, #00d9ff22 100%);
+  padding: 12px;
+  height: 190px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--border-color-soft);
+  transition: background 0.2s;
+}
+.card-bs:hover .card-img-wrapper-bs {
+  background: linear-gradient(120deg, #11192b 40%, #00ffe7 100%);
+}
+.card-img-bs {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 7px;
+  box-shadow: 0 2px 12px #00eaff22;
+  transition: transform 0.18s cubic-bezier(.4,2,.6,1);
+}
+.card-bs:hover .card-img-bs {
+  transform: scale(1.06) rotate(-2deg);
+  box-shadow: 0 4px 18px #00eaff44;
+}
+/* Responsive: grid gap dan bunga */
+@media (max-width: 575.98px) {
+  .card-bs .card-body {
+    min-height: 160px;
+    padding: 0.8rem 0.7rem 1rem 0.7rem;
+  }
+  .card-title-bs {
+    font-size: 0.95rem;
+    min-height: calc(0.95rem * 1.35 * 2);
+  }
+  .card-text-desc-bs {
+    font-size: 0.75rem;
+    min-height: calc(0.75rem * 1.5 * 2);
+  }
+  .card-text-price-bs {
+    font-size: 0.92rem;
+  }
 }
 
 .no-results-bs {
