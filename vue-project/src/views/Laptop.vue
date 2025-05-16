@@ -171,7 +171,7 @@ export default {
                     <p>
                       <strong>Status Stok:</strong>
                       <span :class="{'text-stock-ready-bs': selectedLaptopForModal.stock > 0, 'text-stock-kosong-bs': selectedLaptopForModal.stock <= 0}">
-                        {{ selectedLaptopForModal.stock > 0 ? 'Tersedia' : 'Kosong' }} ({{selectedLaptopForModal.stock}} unit)
+                        {{ selectedLaptopForModal.stock > 0 ? 'Tersedia' : 'Kosong' }}
                       </span>
                     </p>
                   </div>
@@ -304,6 +304,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 70px;
 }
 .category-title-bs {
   font-family: 'Orbitron', sans-serif;
@@ -320,6 +321,8 @@ export default {
   padding: 0.5rem 2.5rem;
   margin: 0 auto;
   display: inline-block;
+  min-width: 220px;
+  text-align: center;
 }
 .row.row-cols-1.row-cols-sm-2.row-cols-lg-3.row-cols-xl-4.g-3.g-lg-4.justify-content-center {
   --bs-gutter-x: 1.2rem;

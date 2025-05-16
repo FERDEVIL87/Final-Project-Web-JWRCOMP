@@ -280,7 +280,6 @@ export default {
       <div v-if="filteredPCs.length > 0">
         <div v-for="categoryData in categoriesWithPCs" :key="categoryData.name" class="category-section-bs mb-5">
           <div class="category-header-bs text-center" :style="categoryData.backgroundImage ? { '--bg-image': `url(${categoryData.backgroundImage})` } : {}">
-            <div class="category-header-overlay"></div>
             <h3 class="category-title-bs position-relative d-inline-block px-sm-4 px-3 py-2">{{ categoryData.name }}</h3>
           </div>
 
@@ -380,6 +379,31 @@ export default {
   overflow-x: hidden;
 }
 
+/* Container Styling */
+.container {
+  width: 100%;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-sizing: border-box;
+}
+@media (max-width: 1100px) {
+  .container {
+    max-width: 98vw;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+}
+@media (max-width: 575.98px) {
+  .container {
+    max-width: 100vw;
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+}
+
 /* Judul Utama Section */
 .section-title-bs {
   font-family: 'Orbitron', sans-serif;
@@ -438,7 +462,7 @@ export default {
 
 /* Category Section Styling */
 .category-section-bs {
-  /* Animasi bisa ditambahkan di sini jika mau per kategori */
+  margin-bottom: 2.2rem !important;
 }
 .category-header-bs {
   position: relative;
@@ -448,14 +472,11 @@ export default {
   border: 1px solid var(--border-color-medium);
   box-shadow: 0 5px 18px rgba(0,0,0,0.25);
   padding: 0.75rem 0;
-  /* Background image logic dari CSS asli bisa dipertahankan jika diinginkan */
-  /* background-image: var(--bg-image); */
-  /* background-size: cover; */
-  /* background-position: center; */
-  /* overflow: hidden; */
-}
-.category-header-overlay { /* Jika pakai background image, overlay ini membantu teks lebih terbaca */
-  /* position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(17, 25, 43, 0.7); z-index: 1; border-radius: inherit; */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70px;
 }
 .category-title-bs {
   font-family: 'Orbitron', sans-serif;
@@ -469,9 +490,26 @@ export default {
   box-shadow: 0 2px 6px rgba(var(--primary-color-rgb-val), 0.15);
   border: 1px solid var(--border-color-soft);
   z-index: 2; /* Agar di atas overlay jika ada */
+  padding: 0.5rem 2.5rem;
+  margin: 0 auto;
+  display: inline-block;
+  min-width: 220px;
+  text-align: center;
 }
 
 /* Card Styling */
+.row.row-cols-1.row-cols-sm-2.row-cols-lg-3.row-cols-xl-4.g-3.g-lg-4.justify-content-center {
+  --bs-gutter-x: 1.2rem;
+  --bs-gutter-y: 1.2rem;
+  margin-left: 0;
+  margin-right: 0;
+  justify-content: center;
+}
+.col.d-flex.align-items-stretch {
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+}
 .card-bs {
   background: var(--background-card);
   border-radius: 10px;
@@ -532,13 +570,13 @@ export default {
   color: var(--text-muted-bs);
   line-height: 1.4;
   margin-bottom: 0.75rem !important;
-  /* Batasi jumlah baris jika perlu */
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Tampilkan maksimal 2 baris */
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: calc(0.8rem * 1.4 * 2); /* Ruang untuk 2 baris deskripsi */
+  min-height: calc(0.8rem * 1.4 * 2);
 }
 .card-text-price-bs {
   font-size: 0.95rem; /* Disesuaikan */
@@ -694,7 +732,6 @@ export default {
     text-align: center !important;
   }
 }
-
 @media (max-width: 575.98px) { /* sm breakpoint */
   .pc-list-section-bs .container {
     padding-left: 10px;
