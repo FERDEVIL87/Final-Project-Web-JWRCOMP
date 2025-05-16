@@ -56,6 +56,7 @@ export default {
   padding: 20px;
   box-sizing: border-box;
   transition: background-position 0.1s ease-out;
+  border-radius: 1%;
 }
 
 /* Konten */

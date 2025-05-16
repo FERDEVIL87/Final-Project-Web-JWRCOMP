@@ -79,8 +79,11 @@
         <p>✨ Please select a category to view hardware components. ✨</p>
     </div>
 
+    <!-- Modal Detail Produk Bootstrap TIDAK LAGI DI SINI -->
+  </section>
 
-    <!-- Modal Detail Produk Bootstrap -->
+  <!-- Modal Detail Produk Bootstrap DIPINDAHKAN MENGGUNAKAN Teleport -->
+  <Teleport to="body">
     <div class="modal fade" id="productDetailModal" tabindex="-1" aria-labelledby="productDetailModalLabel" aria-hidden="true" ref="productModalRef">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content modal-content-bs">
@@ -88,9 +91,9 @@
             <h5 class="modal-title w-100 text-center" id="productDetailModalLabel">{{ selectedProduct?.name }}</h5>
             <button type="button" class="btn-close btn-close-custom-bs" @click="closeDetailsModal" aria-label="Close"></button>
           </div>
-          <div class="modal-body modal-body-bs text-center"> <!-- Tambahkan text-center di sini -->
+          <div class="modal-body modal-body-bs text-center">
             <img v-if="selectedProduct?.image" :src="selectedProduct.image" alt="Product Image" class="img-fluid rounded mx-auto d-block mb-3 product-image-bs" />
-            <div class="details-text-group"> <!-- Grup untuk teks agar bisa di-styling terpisah jika perlu -->
+            <div class="details-text-group">
               <p><strong>Price:</strong> {{ formatPrice(selectedProduct?.price) }}</p>
               <p><strong>Brand:</strong> {{ selectedProduct?.brand }}</p>
             </div>
@@ -109,11 +112,11 @@
         </div>
       </div>
     </div>
-  </section>
+  </Teleport>
 </template>
 
 <script>
-import { Modal } from 'bootstrap'; // Import Modal dari bootstrap
+import { Modal } from 'bootstrap';
 
 export default {
   data() {
@@ -125,7 +128,7 @@ export default {
         { title: "MEMORY", link: "/MEMORY" },
         { title: "VGA", link: "/VGA" },
         { title: "HDD", link: "/HDD" },
-        { title: "SSD", link: "/SSD" }, // Typo diperbaiki
+        { title: "SSD", link: "/SSD" },
         { title: "PSU", link: "/PSU" },
         { title: "CASE", link: "/CASE" },
         { title: "LED MONITOR", link: "/LED MONITOR" },
@@ -141,7 +144,7 @@ export default {
       ],
       selectedCategory: null,
       components: [
-        // ... (DATA PRODUK LENGKAP ANDA DI SINI, PASTIKAN HARGA SUDAH BENAR) ...
+        // ... (DATA PRODUK LENGKAP ANDA DI SINI) ...
         {
           id: 1,
           name: "Intel Processor Core i9-13900KF",
@@ -1100,17 +1103,27 @@ export default {
     };
   },
   mounted() {
-    const modalElement = this.$refs.productModalRef;
-    if (modalElement) {
-      this.bootstrapProductModal = new Modal(modalElement);
-      modalElement.addEventListener('hidden.bs.modal', () => {
-        this.selectedProduct = null;
-        document.body.style.overflow = '';
-      });
-      modalElement.addEventListener('shown.bs.modal', () => {
-        document.body.style.overflow = 'hidden';
-      });
-    }
+    // Inisialisasi modal dipindahkan ke $nextTick untuk memastikan elemen modal
+    // sudah dirender oleh Teleport ke DOM sebelum diinisialisasi.
+    this.$nextTick(() => {
+      const modalElement = this.$refs.productModalRef;
+      if (modalElement) {
+        this.bootstrapProductModal = new Modal(modalElement);
+        modalElement.addEventListener('hidden.bs.modal', () => {
+          this.selectedProduct = null;
+          // Pastikan body kembali bisa di-scroll setelah modal tertutup
+          document.body.classList.remove('modal-open');
+          document.body.style.overflow = ''; 
+          document.body.style.paddingRight = ''; // Bootstrap menambahkan ini jika ada scrollbar
+        });
+        modalElement.addEventListener('shown.bs.modal', () => {
+          // Bootstrap seharusnya menangani ini dengan kelas 'modal-open' pada body,
+          // tapi kita bisa pastikan overflow hidden jika perlu.
+          document.body.style.overflow = 'hidden';
+        });
+      }
+    });
+
     if (this.cards.length > 0) {
       this.selectCategory(this.cards[0]);
     }
@@ -1307,77 +1320,87 @@ export default {
   transform: scale(1.05);
 }
 
+/* 
+  Karena modal sekarang di-teleport ke <body>, 
+  style scoped mungkin tidak bisa menargetkan kelas-kelas modal secara langsung 
+  tanpa selector deep. Namun, kelas Bootstrap dasar (.modal, .modal-dialog, .modal-content) 
+  sudah di-style secara global oleh Bootstrap. Kelas kustom kita (.modal-content-bs, dll.) 
+  seharusnya masih bisa diaplikasikan jika tidak ada konflik.
+  Jika style tidak muncul, gunakan :deep() atau ::v-deep.
+  Contoh: :deep(.modal-content-bs) { ... }
+*/
+
 /* Modal Styles */
-.modal-content-bs {
+:deep(.modal-content-bs) { /* Menggunakan :deep agar style scoped bisa menargetkan konten teleported */
   background-color: #0d1b2a;
   color: #00d4ff;
   border-radius: 10px;
   border: 1px solid #00d4ff;
   box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
 }
-.modal-header-bs {
+:deep(.modal-header-bs) {
   border-bottom: 1px solid #00a3cc;
   color: #ffffff;
   padding: 1rem 1.5rem;
 }
-.modal-header-bs .modal-title {
+:deep(.modal-header-bs .modal-title) {
     font-family: 'Orbitron', sans-serif;
     text-shadow: 0 0 5px #00d4ff;
     font-size: 1.25rem;
 }
 
-.btn-close-custom-bs {
+:deep(.btn-close-custom-bs) {
     filter: invert(1) grayscale(100%) brightness(200%) sepia(100%) hue-rotate(150deg) saturate(500%);
     opacity: 0.8;
-    padding: 0.5rem; /* Sedikit padding agar mudah diklik */
+    padding: 0.5rem;
 }
-.btn-close-custom-bs:hover {
+:deep(.btn-close-custom-bs:hover) {
     opacity: 1;
 }
-.btn-close-custom-bs:focus {
-  box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.3); /* Shadow lebih soft */
+:deep(.btn-close-custom-bs:focus) {
+  box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.3);
 }
 
 
-.modal-body-bs {
+:deep(.modal-body-bs) {
   padding: 1.5rem;
 }
-.modal-body-bs .details-text-group p {
+:deep(.modal-body-bs .details-text-group p) {
   margin-bottom: 0.5rem;
   color: #f0f0f0;
 }
-.modal-body-bs .details-text-group strong {
+:deep(.modal-body-bs .details-text-group strong) {
   color: #00d4ff;
 }
 
-.product-image-bs {
-  max-width: 200px; /* Ukuran gambar di modal */
+:deep(.product-image-bs) {
+  max-width: 200px;
   max-height: 200px;
   object-fit: contain;
   border: 1px solid #00d4ff;
   border-radius: 8px;
   background-color: #1b263b;
 }
-.modal-body-bs .specs-list ul {
+:deep(.modal-body-bs .specs-list ul) {
     list-style-type: disc;
     padding-left: 1.5rem;
     color: #f5f5f5;
-    text-align: left; /* Spesifikasi rata kiri agar mudah dibaca */
+    text-align: left;
 }
-.modal-body-bs .specs-list p {
-    color: #00d4ff; /* Judul "Specifications" */
+:deep(.modal-body-bs .specs-list p) {
+    color: #00d4ff;
 }
-.modal-body-bs .specs-list ul li {
+:deep(.modal-body-bs .specs-list ul li) {
     margin-bottom: 0.25rem;
 }
 
-.modal-footer-bs {
+:deep(.modal-footer-bs) {
     border-top: 1px solid #00a3cc;
     justify-content: center;
     padding: 1rem 1.5rem;
 }
 
-.close-button-bs {
+:deep(.close-button-bs) {
   background: #00d4ff;
   color: #0d1b2a;
   border: none;
@@ -1385,7 +1408,7 @@ export default {
   padding: 0.5rem 1.5rem;
   transition: background 0.3s ease, transform 0.3s ease;
 }
-.close-button-bs:hover {
+:deep(.close-button-bs:hover) {
   background: #00a3cc;
   color: #ffffff;
   transform: scale(1.05);
@@ -1420,7 +1443,7 @@ export default {
 
 @media (max-width: 575.98px) { /* sm breakpoint - tabel jadi kartu */
   .table-responsive-custom {
-    overflow-x: visible; /* Tidak perlu scroll horizontal lagi */
+    overflow-x: visible;
     border: none;
   }
   .product-table-bs,
@@ -1432,28 +1455,28 @@ export default {
     display: block;
   }
   .product-table-bs thead {
-    display: none; /* Sembunyikan header tabel */
+    display: none;
   }
   .product-table-bs tr {
     margin-bottom: 1.5rem;
     border-radius: 10px;
-    background: #122030dd; /* Background lebih gelap sedikit untuk kartu */
+    background: #122030dd;
     border: 1px solid #00d4ff40;
     padding: 1rem;
     box-shadow: 0 4px 15px rgba(0, 172, 204, 0.15);
-    display: flex; /* Untuk alignment item */
-    flex-direction: column; /* Susun item secara vertikal */
-    align-items: center; /* Pusatkan item di dalam kartu */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .product-table-bs td {
     display: flex;
-    flex-direction: column; /* Label di atas, data di bawah */
-    align-items: center; /* Pusatkan label dan data */
-    text-align: center; /* Pusatkan teks */
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     padding: 0.5rem 0.25rem;
     border: none;
-    width: 100%; /* Ambil lebar penuh kartu */
-    margin-bottom: 0.5rem; /* Jarak antar field */
+    width: 100%;
+    margin-bottom: 0.5rem;
     color: #fff;
     background-color: #12283f;
   }
@@ -1461,30 +1484,28 @@ export default {
     margin-bottom: 0;
   }
 
-  /* Styling untuk label data-label */
   .product-table-bs td:before {
     content: attr(data-label);
     font-weight: bold;
     color: #00d4ff;
     font-size: 0.9em;
-    margin-bottom: 0.25rem; /* Jarak antara label dan data */
-    display: block; /* Agar label ada di baris sendiri */
+    margin-bottom: 0.25rem;
+    display: block;
     text-shadow: 0 0 2px #00d4ff80;
   }
 
-  /* Khusus untuk sel gambar agar tidak ada label & padding disesuaikan */
   .product-table-bs td[data-label="Image:"] {
-    padding: 0.5rem 0; /* Lebih sedikit padding vertikal */
+    padding: 0.5rem 0;
   }
   .product-table-bs td[data-label="Image:"]:before {
-    display: none; /* Sembunyikan label untuk gambar */
+    display: none;
   }
   .table-thumbnail-bs {
-    max-width: 100px; /* Gambar lebih besar di tampilan kartu */
-    margin: 0 auto 0.5rem auto; /* Pusatkan gambar dan beri margin bawah */
+    max-width: 100px;
+    margin: 0 auto 0.5rem auto;
   }
    .details-button-bs {
-    width: auto; /* Lebar tombol sesuai konten */
+    width: auto;
     padding: 0.4rem 1rem;
   }
 }
