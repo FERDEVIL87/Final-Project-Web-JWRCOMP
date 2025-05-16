@@ -430,7 +430,16 @@ export default {
                 @keydown.enter="openModal(pc)"
                 @keydown.space="openModal(pc)"
               >
-                <div class="card-img-wrapper-bs">
+                <div class="card-img-wrapper-bs pc-bg-wrapper">
+                  <div class="pc-bg-decor"></div>
+                  <!-- Hiasan SVG garis melengkung -->
+                  <svg class="pc-curve-decor" width="100" height="40" viewBox="0 0 100 40" fill="none">
+                    <path d="M0,35 Q50,0 100,35" stroke="#00ffe7" stroke-width="2.5" fill="none" opacity="0.18"/>
+                  </svg>
+                  <!-- Hiasan bintang -->
+                  <span class="pc-star star1"></span>
+                  <span class="pc-star star2"></span>
+                  <span class="pc-star star3"></span>
                   <img :src="pc.image" :alt="pc.name" class="card-img-top card-img-bs" />
                 </div>
                 <div class="card-body d-flex flex-column p-3">
