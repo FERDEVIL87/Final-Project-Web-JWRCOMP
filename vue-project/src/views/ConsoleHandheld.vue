@@ -31,9 +31,9 @@
           />
         </div>
         <div class="col-12 col-md-4">
-          <select v-model="selectedBrand" class="form-select bg-secondary bg-opacity-25 text-light border-info">
-            <option value="">All Brands</option>
-            <option v-for="brand in brands" :key="brand" :value="brand">{{ brand }}</option>
+          <select v-model="selectedBrand" class="form-select bg-secondary bg-opacity-25 text-light border-info" style="color: #111;">
+            <option value="" style="color: #111;">All Brands</option>
+            <option v-for="brand in brands" :key="brand" :value="brand" style="color: #111;">{{ brand }}</option>
           </select>
         </div>
         <div class="col-12 col-md-4 d-flex align-items-center">
@@ -44,7 +44,7 @@
             :max="maxPriceInCategory"
             step="50"
             class="form-range me-2"
-            style="accent-color: #00eaff;"
+            style="accent-color: #00d9ff;"
           />
           <span class="fw-semibold text-info">Max: {{ formatPrice(priceRangeUSD) }}</span>
         </div>
