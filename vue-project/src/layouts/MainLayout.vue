@@ -22,7 +22,6 @@ const toggleSidebar = () => {
     <!-- Navbar -->
     <nav class="navbar">
       <div class="logo">
-        <!-- MODIFIED: Image instead of text -->
         <img src="/logo.png" alt="JWR Comp Logo" />
       </div>
       <button class="toggle-btn" @click="toggleSidebar">☰</button>
@@ -73,6 +72,46 @@ const toggleSidebar = () => {
 </template>
 
 <style scoped>
+/* Global Resets & Scrollbar Styling */
+:global(html),
+:global(body) {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black; /* Ensures no white flashes or borders */
+  overflow-x: hidden; /* Prevents accidental horizontal scrollbars */
+
+  /* For Firefox */
+  scrollbar-width: thin; /* 'auto', 'thin', 'none' */
+  scrollbar-color: #555555 #1e1e1e; /* thumb track */
+}
+
+/* For Webkit-based browsers (Chrome, Safari, Edge, Opera) */
+:global(html::-webkit-scrollbar),
+:global(body::-webkit-scrollbar) {
+  width: 8px; /* Lebar scrollbar vertikal */
+  height: 8px; /* Tinggi scrollbar horizontal */
+}
+
+:global(html::-webkit-scrollbar-track),
+:global(body::-webkit-scrollbar-track) {
+  background: #1e1e1e; /* Warna latar belakang track */
+}
+
+:global(html::-webkit-scrollbar-thumb),
+:global(body::-webkit-scrollbar-thumb) {
+  background-color: #555555; /* Warna thumb (batang scroll) */
+  border-radius: 4px;    /* Membuat sudut thumb melengkung */
+  border: 1px solid #333333; /* Opsional: border tipis di sekitar thumb */
+}
+
+:global(html::-webkit-scrollbar-thumb:hover),
+:global(body::-webkit-scrollbar-thumb:hover) {
+  background-color: #777777; /* Warna thumb saat di-hover */
+}
+
+/* Universal Box Sizing & Reset */
 * {
   margin: 0;
   padding: 0;
@@ -83,7 +122,8 @@ const toggleSidebar = () => {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: black; /* Diubah ke hitam */
+  background: black;
+  width: 100%;
 }
 
 /* Navbar */
@@ -91,38 +131,28 @@ const toggleSidebar = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: black; /* Diubah ke hitam */
-  padding: 1rem;
+  background: black;
+  padding: 1rem; /* Vertical padding for navbar */
   flex-wrap: wrap;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1100; /* Di atas sidebar */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3); /* Shadow sedikit lebih terlihat di background hitam */
-}
-
-.content {
-  margin-top: 5rem; /* Margin untuk menghindari navbar. Sesuaikan dengan tinggi navbar jika perlu. */
-  padding: 1rem;
-  flex-grow: 1;
-  color: white; /* Pastikan teks konten terlihat di background hitam */
+  z-index: 1100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .logo {
-  /* font-size: 1.4rem; */ /* No longer needed for text size */
-  /* font-weight: bold; */ /* No longer needed for text weight */
-  color: white; /* Kept for alt text if image fails */
-  display: flex; /* Helps align the image if needed */
-  align-items: center; /* Vertically align image if its container has extra space */
+  color: white; /* For alt text */
+  display: flex;
+  align-items: center;
 }
 
 .logo img {
-  max-height: 40px; /* ADJUST THIS VALUE to fit your logo and navbar height */
-  width: auto;      /* Maintain aspect ratio */
-  display: block;   /* Ensures the image behaves like a block element */
+  max-height: 40px; /* Adjust as needed to fit navbar */
+  width: auto;
+  display: block;
 }
-
 
 .toggle-btn {
   background: none;
@@ -130,7 +160,7 @@ const toggleSidebar = () => {
   font-size: 1.5rem;
   color: white;
   cursor: pointer;
-  display: none;
+  display: none; /* Shown in media query */
 }
 
 .menu {
@@ -168,7 +198,7 @@ const toggleSidebar = () => {
   content: "";
   position: absolute;
   inset: 2px;
-  background: black; /* Diubah ke hitam */
+  background: black;
 }
 
 .animated-btn span {
@@ -188,7 +218,7 @@ const toggleSidebar = () => {
   position: absolute;
   width: 10px;
   height: 2px;
-  background: black; /* Diubah ke hitam */
+  background: black;
   border: 2px solid var(--clr);
   transition: 0.3s;
 }
@@ -228,13 +258,15 @@ const toggleSidebar = () => {
   left: 0;
   width: 250px;
   height: 100%;
-  background: black; /* Diubah ke hitam */
-  padding: 1rem;
-  padding-top: 5rem; /* Tambahkan padding atas agar konten sidebar tidak tertutup navbar */
+  background: black;
+  padding: 1rem; /* Side padding for sidebar content */
+  /* This padding-top must be at least navbar height */
+  padding-top: calc(2rem + 40px + 1rem); /* (navbar padding-v*2) + logo height + extra space */
   transform: translateX(-100%);
   transition: transform 0.3s ease;
   z-index: 1000;
-  box-shadow: 3px 0 10px rgba(0,0,0,0.3); /* Shadow untuk sidebar */
+  box-shadow: 3px 0 10px rgba(0,0,0,0.3);
+  overflow-y: auto; /* Allow sidebar to scroll if content is too long */
 }
 
 .sidebar.open {
@@ -342,8 +374,27 @@ const toggleSidebar = () => {
   border: none;
   cursor: pointer;
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 1rem; /* Relative to sidebar padding */
+  right: 1rem; /* Relative to sidebar padding */
+}
+
+/* Main Content */
+.content {
+  /* This margin-top must be at least navbar height */
+  margin-top: calc(2rem + 40px); /* (navbar padding-v*2) + logo height */
+  padding: 1rem 0; /* Vertical padding, no horizontal padding for full width content */
+  flex-grow: 1;
+  color: white;
+}
+
+/* Footer */
+.footer {
+  background: black;
+  color: white;
+  text-align: center;
+  padding: 1rem 0; /* Vertical padding, no horizontal padding */
+  margin-top: auto;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
 }
 
 /* Animations */
@@ -359,15 +410,6 @@ const toggleSidebar = () => {
   100% { box-shadow: none; }
 }
 
-.footer {
-  background: black;
-  color: white;
-  text-align: center;
-  padding: 1rem;
-  margin-top: auto;
-  box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .toggle-btn {
@@ -375,17 +417,22 @@ const toggleSidebar = () => {
   }
 
   .navbar .menu {
-    display: none;
+    display: none; /* Hide desktop menu on small screens */
   }
 
+  /* Adjust top margin/padding for content and sidebar if navbar height changes on mobile */
+  /* Assuming navbar height is consistent: (padding-v*2) + logo height */
   .content {
-    margin-top: 4.5rem;
+    margin-top: calc(2rem + 40px);
+    /* Optional: Add side padding to content on mobile if desired */
+    /* padding: 1rem 0.5rem; */
   }
   .sidebar {
-    padding-top: 4.5rem;
+    padding-top: calc(2rem + 40px + 1rem); /* Keep consistent with desktop or adjust */
   }
   .sidebar .close-btn {
-    top: 0.8rem;
+    top: 1rem; /* Ensure it's positioned well relative to sidebar's top padding */
+    right: 1rem;
   }
 }
 
