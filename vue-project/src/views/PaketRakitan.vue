@@ -86,8 +86,42 @@ export default {
             Casing: "Slim Tower"
           }
         },
+        // Duplikat 1 kolom di bagian office
+        {
+          id: 30,
+          name: "Paket Office Pro",
+          category: "Office",
+          price: 5500000,
+          image: "src/imgcomp/office2.png",
+          description: "PC office multitasking, cocok untuk desain ringan, Excel berat, dan meeting online.",
+          specs: {
+            CPU: "Intel Core i3 12100",
+            GPU: "Integrated Intel UHD",
+            RAM: "8GB DDR4",
+            Storage: "SSD 256GB",
+            PSU: "400W",
+            Casing: "Slim Tower"
+          }
+        },
         {
           id: 6,
+          name: "Paket Editing & Desain",
+          category: "Editing",
+          price: 12000000,
+          image: "src/imgcomp/edit1.png",
+          description: "PC untuk editing video, desain grafis, dan rendering 3D ringan.",
+          specs: {
+            CPU: "AMD Ryzen 5 5600G",
+            GPU: "GTX 1660 Super 6GB",
+            RAM: "16GB DDR4",
+            Storage: "SSD 512GB + HDD 1TB",
+            PSU: "550W",
+            Casing: "ATX"
+          }
+        },
+        // Duplikat 1 kolom di bagian editing
+        {
+          id: 35,
           name: "Paket Editing & Desain",
           category: "Editing",
           price: 12000000,
@@ -118,6 +152,39 @@ export default {
             Casing: "Full ATX"
           }
         },
+        // Duplikat 2 kolom di bagian streaming
+        {
+          id: 31,
+          name: "Paket Streaming & Content Creator",
+          category: "Streaming",
+          price: 15500000,
+          image: "src/imgcomp/streaming.png",
+          description: "PC untuk streaming, recording, dan editing konten YouTube/TikTok.",
+          specs: {
+            CPU: "Intel Core i7 12700F",
+            GPU: "RTX 3060 12GB",
+            RAM: "32GB DDR4",
+            Storage: "SSD NVMe 1TB",
+            PSU: "750W",
+            Casing: "Full ATX"
+          }
+        },
+        {
+          id: 32,
+          name: "Paket Streaming & Content Creator",
+          category: "Streaming",
+          price: 15500000,
+          image: "src/imgcomp/streaming.png",
+          description: "PC untuk streaming, recording, dan editing konten YouTube/TikTok.",
+          specs: {
+            CPU: "Intel Core i7 12700F",
+            GPU: "RTX 3060 12GB",
+            RAM: "32GB DDR4",
+            Storage: "SSD NVMe 1TB",
+            PSU: "750W",
+            Casing: "Full ATX"
+          }
+        },
         {
           id: 8,
           name: "Mining Rig 6 VGA",
@@ -134,8 +201,74 @@ export default {
             Casing: "Open Frame Mining"
           }
         },
+        // Duplikat 2 kolom di bagian mining
+        {
+          id: 36,
+          name: "Mining Rig 6 VGA",
+          category: "Mining",
+          price: 35000000,
+          image: "src/imgcomp/mining.png",
+          description: "Rig mining siap pakai, 6 slot VGA, cocok untuk ETH/altcoin mining.",
+          specs: {
+            CPU: "Intel Celeron G3930",
+            GPU: "6x RX 580 8GB",
+            RAM: "8GB DDR4",
+            Storage: "SSD 120GB",
+            PSU: "2x 1200W",
+            Casing: "Open Frame Mining"
+          }
+        },
+        {
+          id: 37,
+          name: "Mining Rig 6 VGA",
+          category: "Mining",
+          price: 35000000,
+          image: "src/imgcomp/mining.png",
+          description: "Rig mining siap pakai, 6 slot VGA, cocok untuk ETH/altcoin mining.",
+          specs: {
+            CPU: "Intel Celeron G3930",
+            GPU: "6x RX 580 8GB",
+            RAM: "8GB DDR4",
+            Storage: "SSD 120GB",
+            PSU: "2x 1200W",
+            Casing: "Open Frame Mining"
+          }
+        },
         {
           id: 9,
+          name: "Paket Warnet eSports",
+          category: "Warnet",
+          price: 6500000,
+          image: "src/imgcomp/warnet.png",
+          description: "PC untuk usaha warnet, lancar main eSports dan browsing.",
+          specs: {
+            CPU: "Intel Core i3 10105F",
+            GPU: "GT 1030 2GB",
+            RAM: "8GB DDR4",
+            Storage: "SSD 240GB",
+            PSU: "400W",
+            Casing: "Mini ATX"
+          }
+        },
+        // Duplikat 2 kolom di bagian warnet
+        {
+          id: 33,
+          name: "Paket Warnet eSports",
+          category: "Warnet",
+          price: 6500000,
+          image: "src/imgcomp/warnet.png",
+          description: "PC untuk usaha warnet, lancar main eSports dan browsing.",
+          specs: {
+            CPU: "Intel Core i3 10105F",
+            GPU: "GT 1030 2GB",
+            RAM: "8GB DDR4",
+            Storage: "SSD 240GB",
+            PSU: "400W",
+            Casing: "Mini ATX"
+          }
+        },
+        {
+          id: 34,
           name: "Paket Warnet eSports",
           category: "Warnet",
           price: 6500000,
