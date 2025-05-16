@@ -440,6 +440,10 @@ export default {
                   <span class="pc-star star1"></span>
                   <span class="pc-star star2"></span>
                   <span class="pc-star star3"></span>
+                  <!-- Efek animasi lingkaran berputar -->
+                  <span class="pc-orbit"></span>
+                  <!-- Efek glow pulse -->
+                  <span class="pc-glow"></span>
                   <img :src="pc.image" :alt="pc.name" class="card-img-top card-img-bs" />
                 </div>
                 <div class="card-body d-flex flex-column p-3">
@@ -1037,5 +1041,100 @@ export default {
     --bs-gutter-x: 0.8rem;
     --bs-gutter-y: 0.8rem;
   }
+}
+
+/* Tambahan efek animasi dan dekorasi */
+.pc-bg-wrapper {
+  position: relative;
+  z-index: 1;
+}
+.pc-bg-decor {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 12px;
+  background: radial-gradient(circle at 60% 40%, #00ffe7 0%, #8f5cff 40%, transparent 80%);
+  opacity: 0.18;
+  filter: blur(6px) saturate(1.2);
+  transition: opacity 0.25s;
+}
+.card-bs:hover .pc-bg-decor {
+  opacity: 0.28;
+  filter: blur(10px) saturate(1.3);
+}
+/* SVG garis melengkung */
+.pc-curve-decor {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  z-index: 2;
+  pointer-events: none;
+  animation: curve-fade 3s infinite alternate;
+}
+@keyframes curve-fade {
+  0% { opacity: 0.18; }
+  100% { opacity: 0.32; }
+}
+/* Hiasan bintang */
+.pc-star {
+  position: absolute;
+  display: block;
+  width: 13px;
+  height: 13px;
+  background: radial-gradient(circle, #fff 60%, #00ffe7 100%, transparent 100%);
+  border-radius: 50%;
+  opacity: 0.22;
+  filter: blur(0.5px);
+  pointer-events: none;
+  z-index: 3;
+  animation: star-twinkle 2.5s infinite alternate;
+}
+.pc-star.star1 { left: 18px; top: 18px; width: 10px; height: 10px; animation-delay: 0s;}
+.pc-star.star2 { right: 22px; top: 28px; width: 8px; height: 8px; animation-delay: 1.2s;}
+.pc-star.star3 { left: 40px; bottom: 18px; width: 7px; height: 7px; animation-delay: 2.1s;}
+@keyframes star-twinkle {
+  0% { opacity: 0.18; transform: scale(1);}
+  100% { opacity: 0.32; transform: scale(1.18);}
+}
+/* Efek orbit lingkaran berputar */
+.pc-orbit {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 80px; height: 80px;
+  transform: translate(-50%, -50%);
+  border: 1.5px dashed #00ffe7;
+  border-radius: 50%;
+  opacity: 0.13;
+  pointer-events: none;
+  z-index: 2;
+  animation: orbit-spin 7s linear infinite;
+}
+@keyframes orbit-spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg);}
+  100% { transform: translate(-50%, -50%) rotate(360deg);}
+}
+/* Efek glow pulse di tengah */
+.pc-glow {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 38px; height: 38px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, #00ffe7 0%, #8f5cff 60%, transparent 100%);
+  border-radius: 50%;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 2;
+  animation: glow-pulse 2.2s infinite alternate;
+}
+@keyframes glow-pulse {
+  0% { opacity: 0.13; transform: translate(-50%, -50%) scale(1);}
+  100% { opacity: 0.28; transform: translate(-50%, -50%) scale(1.18);}
+}
+/* Pastikan gambar di atas dekorasi */
+.card-img-bs {
+  position: relative;
+  z-index: 4;
 }
 </style>
