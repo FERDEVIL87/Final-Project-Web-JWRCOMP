@@ -9,7 +9,8 @@ const items = [
   { to: '/laptop', name: 'Laptop', color: '#00bcd4' },
   { to: '/consolehh', name: 'Console and Handheld PC', color: '#00bcd4' },
   { to: '/hardware', name: 'PC Parts', color: '#00bcd4' },
-  { to: '/cs', name: 'Customer Service', color: '#00bcd4' }
+  { to: '/cs', name: 'Customer Service', color: '#00bcd4' },
+  { to: '/Checkout', name: 'Checkout', color: '#00bcd4' }
 ];
 
 const sidebarOffcanvasRef = ref(null); // Ref untuk elemen offcanvas

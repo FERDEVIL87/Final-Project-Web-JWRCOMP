@@ -13,7 +13,8 @@ const routes = [
   { path: '/consolehh',name: 'ConsoleHandheldpc', component: ConsoleHandheld },
   { path: '/hardware', name: 'Hardware', component: Hardware },
   { path: '/paketrakitan',    name: 'PaketRakitan',   component: PaketRakitan },
-  { path: '/cs',   name: 'CS',     component: CustomerService }
+  { path: '/cs',   name: 'CS',     component: CustomerService },
+  { path: '/checkout', name: 'Checkout', component: () => import('@/views/Checkout.vue')}
 ]
 
 export default createRouter({
