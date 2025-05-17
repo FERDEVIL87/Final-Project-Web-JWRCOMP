@@ -40,34 +40,58 @@
         {{ selectedCategory.title }}
       </h3>
       <div class="row g-2 align-items-center mb-3">
-        <!-- ...existing code... -->
-        <div class="col-12 col-md-4">
-          <input
-            type="text"
-            v-model="searchQuery"
-            placeholder="Search console..."
-            class="form-control bg-secondary bg-opacity-25 text-light border-info"
-          />
+        <div class="col-12 col-md-4 mb-2 mb-md-0">
+        <input
+         type="text"
+         v-model="searchQuery"
+         placeholder="Search Component"
+         class="form-control bg-secondary bg-opacity-25 border-info text-white"
+         style="background: #222; color: #fff;"
+       />
+     </div>
+     <div class="col-12 col-md-4 mb-2 mb-md-0">
+       <select
+         v-model="selectedBrand"
+         class="form-select bg-secondary bg-opacity-25 border-info text-white"
+         :class="{'text-white': selectedBrand === '', 'text-light': selectedBrand !== ''}"
+         style="background: #222; color: #fff;"
+         >
+            <option value=""class="text-white"style="background: #222; color: #fff;">All Brands</option>
+  <option v-for="brand in filteredBrands":key="brand":value="brand"class="text-white"style="background: #222; color: #fff;">{{ brand }}</option>
+</select>
         </div>
-        <div class="col-12 col-md-4">
-          <select v-model="selectedBrand" class="form-select bg-secondary bg-opacity-25 text-light border-info">
-            <option value="">All Brands</option>
-            <option v-for="brand in brands" :key="brand" :value="brand">{{ brand }}</option>
-          </select>
-        </div>
-        <div class="col-12 col-md-4 d-flex align-items-center">
-          <input
-            type="range"
-            v-model="priceRangeUSD"
-            min="0"
-            :max="maxPriceInCategory"
-            step="50"
-            class="form-range me-2"
-            style="accent-color: #00eaff;"
-          />
-          <span class="fw-semibold text-info">Max: {{ formatPrice(priceRangeUSD) }}</span>
+        <div class="col-md-4">
+          <select v-model="sortBy" class="form-select mb-2" style="background-color: #23272b; color: #fff; border-color: #17a2b8;">
+    <option disabled value="">Urutkan</option>
+    <option v-for="opt in sortOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+  </select>
         </div>
       </div>
+      <div class="row align-items-center mb-3">
+  <div class="col-12">
+    <label class="form-label text-white">Rentang Harga</label>
+    <input
+      type="range"
+      class="form-range"
+      min="0"
+      :max="maxPriceInCategory"
+      v-model="priceRangeUSD"
+      step="50"
+      style="accent-color: #00eaff;"
+      @input="
+        if (priceRangeUSD < minPriceInCategory) {
+          priceRangeUSD = minPriceInCategory;
+        } else if (priceRangeUSD > maxPriceInCategory) {
+          priceRangeUSD = maxPriceInCategory;
+        }
+      "
+    />
+    <div class="d-flex justify-content-between text-white">
+      <span>{{ formatPrice(minPriceInCategory) }}</span>
+      <span>{{ formatPrice(maxPriceInCategory) }}</span>
+    </div>
+  </div>
+</div>
 
       <div v-if="filteredConsoles.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-2">
         <div
@@ -187,7 +211,15 @@ export default {
       bootstrapModalInstance: null,
       hover: null,
       isModalOpen: false,
-      // Data produk biarkan saja, tidak diubah
+
+      sortBy: 'lowToHigh', // default
+    sortOptions: [
+      { value: 'lowToHigh', label: 'Harga Termurah' },
+      { value: 'highToLow', label: 'Harga Termahal' },
+      { value: 'populer', label: 'Paling Populer' },
+      { value: 'tidakPopuler', label: 'Paling Tidak Populer' }
+    ],
+
       components: [
         {
           id: 1,
@@ -1152,6 +1184,11 @@ export default {
       const consolesInCategory = this.consoles.filter(c => c.category === this.selectedCategory.title);
       return [...new Set(consolesInCategory.map(c => c.brand))].sort();
     },
+    filteredBrands() {
+      if (!this.selectedCategory) return [];
+      const consolesInCategory = this.consoles.filter(c => c.category === this.selectedCategory.title);
+      return [...new Set(consolesInCategory.map(c => c.brand))].sort();
+    },
     filteredConsoles() {
       if (!this.selectedCategory) return [];
       let filtered = this.consoles.filter(
@@ -1166,6 +1203,19 @@ export default {
         filtered = filtered.filter(c => c.brand === this.selectedBrand);
       }
       filtered = filtered.filter(c => c.price <= Number(this.priceRangeUSD));
+      if (this.sortBy === 'highToLow') {
+        filtered.sort((a, b) => b.price - a.price);
+      } else if (this.sortBy === 'populer') {
+        // Implementasi logika untuk menyortir berdasarkan popularitas
+        // Misalnya, berdasarkan jumlah terjual atau rating
+        // Untuk saat ini, kita anggap semua item memiliki tingkat popularitas yang sama
+        filtered.sort(() => Math.random() - 0.5); // Acak urutan sebagai placeholder
+      } else if (this.sortBy === 'tidakPopuler') {
+        // Implementasi logika untuk menyortir berdasarkan tidak populernya
+        // Misalnya, berdasarkan jumlah stok atau tanggal ditambahkan
+        // Untuk saat ini, kita anggap semua item memiliki tingkat tidak populer yang sama
+        filtered.sort(() => Math.random() - 0.5); // Acak urutan sebagai placeholder
+      }
       return filtered;
     },
     maxPriceInCategory() {
@@ -1176,7 +1226,16 @@ export default {
       if (consolesInCategory.length === 0) return 1500;
       const maxPrice = Math.max(...consolesInCategory.map(c => c.price), 0);
       return Math.ceil(maxPrice / 50) * 50 || 50;
-    }
+    },
+    minPriceInCategory() {
+  if (!this.selectedCategory) return 50;
+  const consolesInCategory = this.consoles.filter(
+    c => c.category === this.selectedCategory.title
+  );
+  if (consolesInCategory.length === 0) return 50;
+  const minPrice = Math.min(...consolesInCategory.map(c => c.price));
+  return minPrice > 0 ? Math.floor(minPrice / 50) * 50 : 50;
+},
   },
   methods: {
     selectCategory(category) {
@@ -1187,18 +1246,17 @@ export default {
         this.priceRangeUSD = this.maxPriceInCategory;
       });
     },
-    formatPrice(priceUSD) {
-      if (typeof priceUSD !== 'number' || isNaN(priceUSD)) {
-        return 'Rp 0';
-      }
-      const priceIDR = priceUSD * this.usdToIdrRate;
-      return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(priceIDR);
-    },
+    formatPrice(price) {
+  if (typeof price !== 'number' || isNaN(price)) {
+    return 'Rp 0';
+  }
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+},
     showDetails(consoleItem) {
     this.selectedProduct = consoleItem;
     this.isModalOpen = true;
@@ -1236,15 +1294,34 @@ export default {
       this.selectCategory(this.cards[0]);
     }
   },
-  watch: {
-    selectedCategory(newCategory, oldCategory) {
-      if (newCategory !== oldCategory) {
-        this.$nextTick(() => {
-          this.priceRangeUSD = this.maxPriceInCategory;
-        });
-      }
+  // ...existing code...
+watch: {
+  selectedCategory(newCategory, oldCategory) {
+    if (newCategory !== oldCategory) {
+      this.$nextTick(() => {
+        this.priceRangeUSD = this.maxPriceInCategory;
+      });
+    }
+  },
+  minPriceInCategory(val) {
+    if (this.priceRangeUSD < val) {
+      this.priceRangeUSD = val;
+    }
+  },
+  maxPriceInCategory(val) {
+    if (this.priceRangeUSD > val) {
+      this.priceRangeUSD = val;
+    }
+  },
+  priceRangeUSD(val) {
+    // Batasi agar tidak keluar dari range min-max
+    if (val < this.minPriceInCategory) {
+      this.priceRangeUSD = this.minPriceInCategory;
+    } else if (val > this.maxPriceInCategory) {
+      this.priceRangeUSD = this.maxPriceInCategory;
     }
   }
+},
 };
 </script>
 
@@ -1254,5 +1331,12 @@ export default {
   backdrop-filter: blur(150px);
   background: rgba(16, 24, 41, 0.25) !important;
   transition: backdrop-filter 0.3s;
+}
+
+
+input::placeholder,
+input.text-white::placeholder {
+  color: #fff !important;
+  opacity: 1;
 }
 </style>
