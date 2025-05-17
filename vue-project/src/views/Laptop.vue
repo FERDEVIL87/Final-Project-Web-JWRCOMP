@@ -21,7 +21,17 @@ export default {
       selectedCategoryFilter: "",
       selectedLaptopForModal: null,
       bootstrapLaptopModal: null,
+      minPrice: 0,
+      maxPrice: 0,
+      priceSlider: [0, 0], // dua slider: [min, max]
     };
+  },
+  created() {
+    // Inisialisasi min, max, dan slider harga saat komponen dibuat
+    const prices = this.laptops.map(l => l.price);
+    this.minPrice = Math.min(...prices);
+    this.maxPrice = Math.max(...prices);
+    this.priceSlider = [this.minPrice, this.maxPrice];
   },
   mounted() {
     const modalElement = this.$refs.laptopDetailModalRef;
@@ -41,7 +51,8 @@ export default {
       return this.laptops.filter((laptop) => {
         const matchesSearch = laptop.name.toLowerCase().includes(this.searchQuery.toLowerCase());
         const matchesCategory = this.selectedCategoryFilter ? laptop.category === this.selectedCategoryFilter : true;
-        return matchesSearch && matchesCategory;
+        const matchesPrice = laptop.price >= this.priceSlider[0] && laptop.price <= this.priceSlider[1];
+        return matchesSearch && matchesCategory && matchesPrice;
       });
     },
     categoriesWithLaptops() {
@@ -86,69 +97,106 @@ export default {
     <div class="container py-4 py-md-5">
       <h2 class="section-title-bs text-center">List Laptop</h2>
       <!-- Filter Section -->
-      <div class="row justify-content-center mb-4">
-        <div class="col-lg-10 col-xl-8">
-          <div class="filters-bs p-3 rounded-3">
-            <div class="row g-2 g-md-3 align-items-center">
-              <div class="col-md">
-                <input
-                  type="text"
-                  v-model="searchQuery"
-                  placeholder="Cari nama laptop..."
-                  class="form-control form-control-lg search-box-bs"
-                  aria-label="Cari laptop"
-                />
+      <transition name="fade-slide" appear>
+        <div class="row justify-content-center mb-4">
+          <div class="col-lg-10 col-xl-8">
+            <div class="filters-bs p-3 rounded-3">
+              <div class="row g-2 g-md-3 align-items-center">
+                <div class="col-md">
+                  <input
+                    type="text"
+                    v-model="searchQuery"
+                    placeholder="Cari nama laptop..."
+                    class="form-control form-control-lg search-box-bs"
+                    aria-label="Cari laptop"
+                  />
+                </div>
+                <div class="col-md-auto">
+                  <select v-model="selectedCategoryFilter" class="form-select form-select-lg filter-select-bs" aria-label="Pilih kategori laptop">
+                    <option value="">Semua Kategori</option>
+                    <option value="Low-End">Low-End</option>
+                    <option value="Mid-Range">Mid-Range</option>
+                    <option value="High-End">High-End</option>
+                  </select>
+                </div>
               </div>
-              <div class="col-md-auto">
-                <select v-model="selectedCategoryFilter" class="form-select form-select-lg filter-select-bs" aria-label="Pilih kategori laptop">
-                  <option value="">Semua Kategori</option>
-                  <option value="Low-End">Low-End</option>
-                  <option value="Mid-Range">Mid-Range</option>
-                  <option value="High-End">High-End</option>
-                </select>
+              <!-- Slider Harga Ganda (Min & Max) Rapi -->
+              <div class="row mt-3 align-items-center">
+                <div class="col-12">
+                  <div class="slider-harga-bs d-flex flex-column flex-md-row align-items-center gap-3 p-2 rounded-3" style="background: var(--background-card); border: 1px solid var(--border-color-soft);">
+                    <label class="form-label mb-0" style="color: var(--primary-color); font-weight: 500; min-width: 140px;">Rentang Harga (Rp):</label>
+                    <div class="slider-range-group">
+                      <span class="harga-min-bs" style="min-width: 90px;">{{ formatPrice(priceSlider[0]) }}</span>
+                      <input
+                        type="range"
+                        v-model.number="priceSlider[0]"
+                        :min="minPrice"
+                        :max="priceSlider[1]"
+                        step="100000"
+                        class="form-range slider-min-bs"
+                        style="accent-color: var(--primary-color);"
+                      />
+                      <input
+                        type="range"
+                        v-model.number="priceSlider[1]"
+                        :min="priceSlider[0]"
+                        :max="maxPrice"
+                        step="100000"
+                        class="form-range slider-max-bs"
+                        style="accent-color: var(--primary-color);"
+                      />
+                      <span class="harga-max-bs" style="min-width: 90px;">{{ formatPrice(priceSlider[1]) }}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
+              <!-- End Slider Harga Ganda Rapi -->
             </div>
           </div>
         </div>
-      </div>
+      </transition>
       <!-- Laptop Categories and Cards -->
-      <div v-if="filteredLaptops.length > 0">
-        <div v-for="categoryData in categoriesWithLaptops" :key="categoryData.name" class="category-section-bs mb-5">
-          <div class="category-header-bs text-center">
-            <h3 class="category-title-bs position-relative d-inline-block px-sm-4 px-3 py-2">{{ categoryData.name }}</h3>
-          </div>
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-3 g-lg-4 justify-content-center">
-            <div
-              v-for="laptop in categoryData.laptops"
-              :key="laptop.id"
-              class="col d-flex align-items-stretch"
-            >
+      <transition-group name="fade-slide" tag="div" appear>
+        <div v-if="filteredLaptops.length > 0" key="laptop-list">
+          <div v-for="categoryData in categoriesWithLaptops" :key="categoryData.name" class="category-section-bs mb-5">
+            <div class="category-header-bs text-center">
+              <h3 class="category-title-bs position-relative d-inline-block px-sm-4 px-3 py-2">{{ categoryData.name }}</h3>
+            </div>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-3 g-lg-4 justify-content-center">
               <div
-                class="card h-100 card-bs"
-                @click="openModal(laptop)"
-                role="button"
-                tabindex="0"
-                @keydown.enter="openModal(laptop)"
-                @keydown.space="openModal(laptop)"
+                v-for="laptop in categoryData.laptops"
+                :key="laptop.id"
+                class="col d-flex align-items-stretch"
               >
-                <div class="card-img-wrapper-bs">
-                  <img :src="laptop.image" :alt="laptop.name" class="card-img-top card-img-bs" />
-                </div>
-                <div class="card-body d-flex flex-column p-3">
-                  <h4 class="card-title card-title-bs mb-2">{{ laptop.name }}</h4>
-                  <p class="card-text-desc-bs small mb-2">{{ laptop.description.split(',')[0] }}</p>
-                  <p class="card-text card-text-price-bs mt-auto mb-0">
-                    <strong>Harga:</strong> {{ formatPrice(laptop.price) }}
-                  </p>
-                </div>
+                <transition name="fade-slide" appear>
+                  <div
+                    class="card h-100 card-bs"
+                    @click="openModal(laptop)"
+                    role="button"
+                    tabindex="0"
+                    @keydown.enter="openModal(laptop)"
+                    @keydown.space="openModal(laptop)"
+                  >
+                    <div class="card-img-wrapper-bs">
+                      <img :src="laptop.image" :alt="laptop.name" class="card-img-top card-img-bs" />
+                    </div>
+                    <div class="card-body d-flex flex-column p-3">
+                      <h4 class="card-title card-title-bs mb-2">{{ laptop.name }}</h4>
+                      <p class="card-text-desc-bs small mb-2">{{ laptop.description.split(',')[0] }}</p>
+                      <p class="card-text card-text-price-bs mt-auto mb-0">
+                        <strong>Harga:</strong> {{ formatPrice(laptop.price) }}
+                      </p>
+                    </div>
+                  </div>
+                </transition>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div v-else class="no-results-bs text-center py-5">
-        <p>Tidak ada laptop yang cocok dengan kriteria pencarian Anda.</p>
-      </div>
+        <div v-else key="no-result" class="no-results-bs text-center py-5">
+          <p>Tidak ada laptop yang cocok dengan kriteria pencarian Anda.</p>
+        </div>
+      </transition-group>
       <!-- Modal Bootstrap -->
       <div class="modal fade" id="laptopDetailModalBs" tabindex="-1" aria-labelledby="laptopDetailModalLabelBs" aria-hidden="true" ref="laptopDetailModalRef">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
@@ -288,6 +336,51 @@ export default {
 .filter-select-bs {
   cursor: pointer;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300d9ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+.slider-harga-bs {
+  background: var(--background-card);
+  border: 1px solid var(--border-color-soft);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  flex-wrap: wrap;
+}
+.slider-harga-bs label {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+.slider-harga-bs .slider-range-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  flex: 1 1 0%;
+  min-width: 180px;
+}
+.slider-harga-bs .form-range {
+  margin: 0.2rem 0;
+  width: 100%;
+  min-width: 120px;
+  max-width: 100%;
+}
+.harga-min-bs, .harga-max-bs {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1rem;
+}
+@media (max-width: 767.98px) {
+  .slider-harga-bs {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    padding: 0.7rem 0.5rem !important;
+  }
+  .slider-harga-bs label {
+    min-width: unset;
+    width: 100%;
+    text-align: left;
+  }
+  .slider-harga-bs .slider-range-group {
+    min-width: 100%;
+  }
 }
 .category-section-bs {
   margin-bottom: 2.2rem !important;
@@ -521,6 +614,49 @@ export default {
 @keyframes scaleUpModal-bs {
   from { transform: scale(0.92) translateY(12px); opacity: 0; }
   to { transform: scale(1) translateY(0); opacity: 1; }
+}
+.fade-slide-enter-active, .fade-slide-leave-active {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fade-slide-enter-from, .fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(30px) scale(0.97);
+}
+.fade-slide-enter-to, .fade-slide-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.fade-nasbar-enter-active {
+  animation: fadeNasbarIn 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.fade-nasbar-leave-active {
+  animation: fadeNasbarOut 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  position: absolute;
+  width: 100%;
+}
+@keyframes fadeNasbarIn {
+  0% {
+    opacity: 0;
+    transform: translateY(60px) scale(0.95);
+  }
+  60% {
+    opacity: 0.7;
+    transform: translateY(-8px) scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes fadeNasbarOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.97);
+  }
 }
 @media (min-width: 768px) {
   .card-bs .card-body {
