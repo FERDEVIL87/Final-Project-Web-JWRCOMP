@@ -24,6 +24,7 @@ export default {
       minPrice: 0,
       maxPrice: 0,
       priceSlider: [0, 0], // dua slider: [min, max]
+      checkoutQty: 1, // jumlah pembelian
     };
   },
   created() {
@@ -79,6 +80,7 @@ export default {
     },
     openModal(laptop) {
       this.selectedLaptopForModal = laptop;
+      this.checkoutQty = 1;
       if (this.bootstrapLaptopModal) {
         this.bootstrapLaptopModal.show();
       }
@@ -87,6 +89,9 @@ export default {
       if (this.bootstrapLaptopModal) {
         this.bootstrapLaptopModal.hide();
       }
+    },
+    checkout(laptop) {
+      console.log(`Checkout laptop: ${laptop.name}, Qty: ${this.checkoutQty}`);
     }
   }
 };
@@ -230,6 +235,21 @@ export default {
                         {{ spec.trim() }}
                       </li>
                     </ul>
+                    <!-- Tombol Checkout dan Input Jumlah -->
+                    <div class="d-flex flex-column flex-md-row align-items-center gap-3 justify-content-center justify-content-lg-start mt-3">
+                      <div class="input-group" style="max-width: 140px;">
+                        <span class="input-group-text">Qty</span>
+                        <input type="number" min="1" :max="selectedLaptopForModal.stock" v-model.number="checkoutQty" class="form-control" style="min-width: 60px;"/>
+                      </div>
+                      <button
+                        class="btn btn-primary"
+                        :disabled="selectedLaptopForModal.stock <= 0 || checkoutQty < 1 || checkoutQty > selectedLaptopForModal.stock"
+                        style="background: var(--primary-color); border: none; font-weight: 600; min-width: 140px;"
+                        @click="checkout(selectedLaptopForModal)"
+                      >
+                        Checkout
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
