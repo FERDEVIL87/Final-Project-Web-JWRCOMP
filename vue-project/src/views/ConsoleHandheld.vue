@@ -31,8 +31,8 @@
       >
         {{ selectedCategory.title }}
       </h3>
-      <div class="row g-2 align-items-center mb-3">
-        <div class="col-12 col-md-4">
+      <div class="row g-3 align-items-center mb-3">
+        <div class="col-12 col-md-6">
           <input
             type="text"
             v-model ="searchQuery"
@@ -40,25 +40,53 @@
             class="form-control bg-secondary bg-opacity-25 text-light border-info"
           />
         </div>
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-6">
           <select v-model="selectedBrand" class="form-select bg-secondary bg-opacity-25 text-light border-info" style="color: #111;">
             <option value="" style="color: #111;">All Brands</option>
             <option v-for="brand in brands" :key="brand" :value="brand" style="color: #111;">{{ brand }}</option>
           </select>
         </div>
-        <div class="col-12 col-md-4 d-flex align-items-center">
-          <input
-            type="range"
-            v-model="priceRangeUSD"
-            min="0"
-            :max="maxPriceInCategory"
-            step="50"
-            class="form-range me-2"
-            style="accent-color: #00d9ff;"
-          />
-          <span class="fw-semibold text-info">Max: {{ formatPrice(priceRangeUSD) }}</span>
+      </div>
+
+      <!-- New Price Range Filter -->
+      <div class="mb-4">
+        <label class="form-label text-light fw-bold d-block mb-2 fs-5">Rentang Harga</label>
+        <div class="mb-2">
+          <div class="d-flex align-items-center">
+            <span class="me-3 text-light" style="min-width: 140px; text-align: left; font-variant-numeric: tabular-nums;">{{ formatPrice(minPriceIDR) }}</span>
+            <input
+              type="range"
+              v-model.number="minPriceIDR"
+              :min="minSliderBoundIDR"
+              :max="maxSliderBoundIDR"
+              :step="priceStepIDR"
+              class="form-range"
+              style="accent-color: #00d9ff;"
+              id="minPriceRange"
+            />
+          </div>
+        </div>
+        <div class="mb-2">
+          <div class="d-flex align-items-center">
+            <span class="me-3 text-light" style="min-width: 140px; text-align: left; font-variant-numeric: tabular-nums;">{{ formatPrice(maxPriceIDR) }}</span>
+            <input
+              type="range"
+              v-model.number="maxPriceIDR"
+              :min="minSliderBoundIDR"
+              :max="maxSliderBoundIDR"
+              :step="priceStepIDR"
+              class="form-range"
+              style="accent-color: #00d9ff;"
+              id="maxPriceRange"
+            />
+          </div>
+        </div>
+        <div class="d-flex justify-content-between text-light mt-1 px-1">
+          <span class="small">Min: {{ formatPrice(minPriceIDR) }}</span>
+          <span class="small">Max: {{ formatPrice(maxPriceIDR) }}</span>
         </div>
       </div>
+
 
       <div v-if="filteredConsoles.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-2">
         <div
@@ -92,7 +120,7 @@
                   {{ consoleItem.stock }}
                 </span>
               </p>
-              <p class="fw-bold mb-0">{{ formatPrice(consoleItem.price) }}</p>
+              <p class="fw-bold mb-0">{{ formatPrice(consoleItem.price * usdToIdrRate) }}</p>
             </div>
           </div>
         </div>
@@ -109,7 +137,6 @@
     <div class="modal fade" id="consoleDetailModal" tabindex="-1" aria-labelledby="consoleDetailModalLabel" aria-hidden="true" ref="consoleModalRef">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-light position-relative">
-          <!-- Tombol close Bootstrap standar akan muncul di sini jika tidak dioverride header -->
           <div class="modal-header border-0 pb-0">
             <h3
               class="modal-title w-100 text-center fw-bold"
@@ -123,7 +150,7 @@
           <div class="modal-body">
             <img :src="selectedProduct?.image" :alt="selectedProduct?.name" class="d-block mx-auto mb-3 rounded" style="max-width: 280px; max-height: 180px; object-fit: contain; background: #101829;" />
             <div class="mb-3">
-              <p class="mb-1"><strong>Price:</strong> <span>{{ formatPrice(selectedProduct?.price) }}</span></p>
+              <p class="mb-1"><strong>Price:</strong> <span>{{ formatPrice(selectedProduct?.price ? selectedProduct.price * usdToIdrRate : 0) }}</span></p>
               <p class="mb-1"><strong>Brand:</strong> <span>{{ selectedProduct?.brand }}</span></p>
               <p class="mb-1"><strong>Stock:</strong> <span :class="getStockClass(selectedProduct?.stock)">{{ selectedProduct?.stock }}</span></p>
             </div>
@@ -136,13 +163,12 @@
           </div>
         </div>
       </div>
-      <!-- HAPUS BACKDROP MANUAL DARI SINI -->
     </div>
   </section>
 </template>
 
 <script>
-import { Modal } from 'bootstrap'; // Pastikan ini diimpor
+import { Modal } from 'bootstrap';
 
 export default {
   name: "GameConsolesHub",
@@ -158,18 +184,22 @@ export default {
       selectedCategory: null,
       searchQuery: "",
       selectedBrand: "",
-      priceRangeUSD: 1500,
       usdToIdrRate: 15000,
+      minPriceIDR: 0,          // Updated to match error image
+      maxPriceIDR: 12200000,    // Updated to match error image
+      defaultMinPriceIDR: 0,    // Updated to match error image
+      defaultMaxPriceIDR: 12200000, // Updated to match error image
+      priceStepIDR: 100000,
+
       selectedProduct: null,
-      // isModalVisible: false, // TIDAK DIPERLUKAN LAGI
-      bootstrapModalInstance: null, // Untuk menyimpan instance Modal Bootstrap
+      bootstrapModalInstance: null,
       hover: null,
       consoles: [
         // ... (data konsol Anda yang panjang ada di sini) ...
         {
           id: 1,
           name: "PlayStation 5",
-          price: 499,
+          price: 499, // Price in USD
           brand: "Sony",
           category: "🎮 PlayStation Powerhouse",
           image: "https://media.dinomarket.com/docs/imgTD/2024-02/DM_CA961EB8D9C88E81647BBFE7417EB9C0_210224140212_ll.jpg",
@@ -820,20 +850,15 @@ export default {
     };
   },
   mounted() {
-    // Inisialisasi Modal Bootstrap
-    const modalElement = this.$refs.consoleModalRef; // Ganti ref jika perlu
+    const modalElement = this.$refs.consoleModalRef;
     if (modalElement) {
       this.bootstrapModalInstance = new Modal(modalElement);
-
-      // Listener untuk event ketika modal selesai disembunyikan
       modalElement.addEventListener('hidden.bs.modal', () => {
-        this.selectedProduct = null; // Reset produk terpilih
-        document.body.style.overflow = ''; // Kembalikan scroll body
+        this.selectedProduct = null;
+        document.body.style.overflow = '';
       });
-
-      // Listener untuk event ketika modal selesai ditampilkan
       modalElement.addEventListener('shown.bs.modal', () => {
-        document.body.style.overflow = 'hidden'; // Sembunyikan scroll body
+        document.body.style.overflow = 'hidden';
       });
     }
 
@@ -846,6 +871,19 @@ export default {
       if (!this.selectedCategory) return [];
       const consolesInCategory = this.consoles.filter(c => c.category === this.selectedCategory.title);
       return [...new Set(consolesInCategory.map(c => c.brand))].sort();
+    },
+    minSliderBoundIDR() {
+      return 0; 
+    },
+    maxSliderBoundIDR() {
+      if (!this.consoles || this.consoles.length === 0) {
+        // Ensure the slider can always reach defaultMaxPriceIDR or a bit higher
+        return Math.max(this.defaultMaxPriceIDR, this.priceStepIDR * 20); 
+      }
+      const maxProductPriceUSD = Math.max(0, ...this.consoles.map(c => c.price));
+      const maxProductPriceIDR = maxProductPriceUSD * this.usdToIdrRate;
+      const practicalMax = Math.max(maxProductPriceIDR, this.defaultMaxPriceIDR);
+      return Math.ceil(practicalMax / this.priceStepIDR) * this.priceStepIDR;
     },
     filteredConsoles() {
       if (!this.selectedCategory) return [];
@@ -860,52 +898,42 @@ export default {
       if (this.selectedBrand) {
         filtered = filtered.filter(c => c.brand === this.selectedBrand);
       }
-      filtered = filtered.filter(c => c.price <= Number(this.priceRangeUSD));
+      filtered = filtered.filter(c => {
+        const priceIDR = c.price * this.usdToIdrRate;
+        return priceIDR >= this.minPriceIDR && priceIDR <= this.maxPriceIDR;
+      });
       return filtered;
     },
-    maxPriceInCategory() {
-      if (!this.selectedCategory) return 1500;
-      const consolesInCategory = this.consoles.filter(
-        c => c.category === this.selectedCategory.title
-      );
-      if (consolesInCategory.length === 0) return 1500;
-      const maxPrice = Math.max(...consolesInCategory.map(c => c.price), 0);
-      return Math.ceil(maxPrice / 50) * 50 || 50;
-    }
   },
   methods: {
     selectCategory(category) {
       this.selectedCategory = category;
       this.searchQuery = "";
       this.selectedBrand = "";
-      this.$nextTick(() => {
-        this.priceRangeUSD = this.maxPriceInCategory;
-      });
+      this.minPriceIDR = this.defaultMinPriceIDR;
+      this.maxPriceIDR = this.defaultMaxPriceIDR;
     },
-    formatPrice(priceUSD) {
-      if (typeof priceUSD !== 'number' || isNaN(priceUSD)) {
+    formatPrice(price) {
+      if (typeof price !== 'number' || isNaN(price)) {
         return 'Rp 0';
       }
-      const priceIDR = priceUSD * this.usdToIdrRate;
       return new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
-      }).format(priceIDR);
+      }).format(price);
     },
     showDetails(consoleItem) {
       this.selectedProduct = consoleItem;
       if (this.bootstrapModalInstance) {
         this.bootstrapModalInstance.show();
       }
-      // Pengelolaan overflow body sekarang di handle oleh event listener 'shown.bs.modal'
     },
     closeDetails() {
       if (this.bootstrapModalInstance) {
         this.bootstrapModalInstance.hide();
       }
-      // Pengelolaan selectedProduct dan overflow body sekarang di handle oleh event listener 'hidden.bs.modal'
     },
     getStockClass(stockStatus) {
       if (stockStatus === "Ready") {
@@ -917,13 +945,28 @@ export default {
     }
   },
   watch: {
-    selectedCategory(newCategory, oldCategory) {
-      if (newCategory !== oldCategory) {
-        this.$nextTick(() => {
-          this.priceRangeUSD = this.maxPriceInCategory;
-        });
+    minPriceIDR(newValue) {
+      const newMin = Number(newValue);
+      const currentMax = Number(this.maxPriceIDR);
+      if (newMin < this.minSliderBoundIDR) {
+        this.minPriceIDR = this.minSliderBoundIDR;
+      } else if (newMin > this.maxSliderBoundIDR) { // cap at max possible slider value
+        this.minPriceIDR = this.maxSliderBoundIDR;
+      } else if (newMin > currentMax) {
+        this.maxPriceIDR = newMin; 
       }
-    }
+    },
+    maxPriceIDR(newValue) {
+      const newMax = Number(newValue);
+      const currentMin = Number(this.minPriceIDR);
+      if (newMax > this.maxSliderBoundIDR) {
+        this.maxPriceIDR = this.maxSliderBoundIDR;
+      } else if (newMax < this.minSliderBoundIDR) { // cap at min possible slider value
+        this.maxPriceIDR = this.minSliderBoundIDR;
+      } else if (newMax < currentMin) {
+        this.minPriceIDR = newMax; 
+      }
+    },
   }
 };
 </script>
