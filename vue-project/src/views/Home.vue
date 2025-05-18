@@ -9,9 +9,7 @@ const products = ref([
     brand: "ROG RYUO IV",
     name: "SLC 360 ARGB",
     slogan: "A NEW VISION OF COOLING",
-    // Ganti dengan placeholder atau path lokal jika CORS menjadi masalah
-    imageSrc: "https://dlcdnwebimgs.asus.com/files/media/d3b46fd8-035f-41c1-a995-2dca5a228e9b/v1/img/gallery/2.jpg", // Placeholder
-    // imageSrc: "/images/rog-ryuo-iv.jpg", // Contoh path lokal jika gambar ada di public/images/
+    imageSrc: "https://dlcdnwebimgs.asus.com/files/media/d3b46fd8-035f-41c1-a995-2dca5a228e9b/v1/img/gallery/2.jpg",
     features: [
       "High-Performance Pump",
       "Extraordinary Visuals",
@@ -33,8 +31,7 @@ const products = ref([
     brand: "ASUS TUF Gaming",
     name: "TUF Gaming A15 (2024)",
     slogan: "GEARED FOR SERIOUS GAMING AND REAL-WORLD DURABILITY",
-    imageSrc: "https://dlcdnwebimgs.asus.com/gain/49bac8ff-76c9-45b5-846c-057f79c30c8b/asus-tuf-gaming-a15-fa507uv-product-photo.png", // Placeholder
-    // imageSrc: "/images/tuf-gaming-a15.png", // Contoh path lokal
+    imageSrc: "https://dlcdnwebimgs.asus.com/gain/49bac8ff-76c9-45b5-846c-057f79c30c8b/asus-tuf-gaming-a15-fa507uv-product-photo.png",
     features: [
       "Latest AMD Ryzen CPU & NVIDIA GPU",
       "Blazing-Fast NVMe SSD",
@@ -58,8 +55,7 @@ const products = ref([
     brand: "Corsair",
     name: "K70 RGB MK.2",
     slogan: "BUILT TO LAST. PERFORM LIKE A LEGEND.",
-    imageSrc: "https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Gaming-Keyboards/CH-9109012-NA/Gallery/K70_RGB_MK2_02.webp", // Placeholder
-    // imageSrc: "/images/corsair-k70.webp", // Contoh path lokal
+    imageSrc: "https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Gaming-Keyboards/CH-9109012-NA/Gallery/K70_RGB_MK2_02.webp",
     features: [
       "Genuine Cherry MX Switches",
       "Dynamic Per-Key RGB Backlighting",
@@ -82,6 +78,7 @@ const products = ref([
 const carouselSettings = {
   itemsToShow: 1,
   snapAlign: 'center',
+  transition: 500, // Durasi transisi slide
 };
 const carouselBreakpoints = {
   700: {
@@ -96,7 +93,9 @@ const carouselBreakpoints = {
 
 const currentSlideAccentColor = ref(products.value[0].accentColor);
 const onSlideChange = (data) => {
-  currentSlideAccentColor.value = products.value[data.currentSlideIndex].accentColor;
+  if (products.value[data.currentSlideIndex]) {
+    currentSlideAccentColor.value = products.value[data.currentSlideIndex].accentColor;
+  }
 };
 
 </script>
@@ -126,12 +125,14 @@ const onSlideChange = (data) => {
         :breakpoints="carouselBreakpoints"
         :wrap-around="true"
         :autoplay="5000"
+        :pause-autoplay-on-hover="true"
         @slide-start="onSlideChange"
         :style="{'--slide-accent-color': currentSlideAccentColor }"
       >
         <Slide v-for="product in products" :key="product.id">
           <div class="carousel__item" :style="{ background: product.backgroundColor }">
-            <div class="product-slide-content container">
+            <!-- IMPORTANT: Remove .container class here if you haven't -->
+            <div class="product-slide-content">
               <div class="product-text-info">
                 <h3 class="product-brand" :style="{ color: product.accentColor }">{{ product.brand }}</h3>
                 <h1 class="product-name">{{ product.name }}</h1>
@@ -172,7 +173,7 @@ const onSlideChange = (data) => {
     </section>
 
     <section class="store-info-section">
-      <div class="container store-info-container">
+      <div class="store-info-container">
         <h2 class="section-title store-section-title">Welcome to YourTech Haven</h2>
         <p class="section-subtitle store-section-subtitle">
           Your premier destination for cutting-edge hardware, expert advice, and unparalleled gaming experiences.
@@ -238,32 +239,30 @@ const onSlideChange = (data) => {
 
 /* General Page Styles */
 .page-wrapper {
-  background-color: #000000; /* Deep black base */
+  background-color: #000000;
   overflow-x: hidden;
-}
-
-.container {
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 20px;
-  box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
 
-/* Video Hero Section - Enhanced Gradients */
+/* Video Hero Section */
 .video-hero-section {
   position: relative;
-  height: 100vh;
+  height: 100vh; /* Fallback */
+  height: 100dvh;
   width: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Align content to bottom */
+  justify-content: flex-end;
   align-items: center;
   text-align: center;
-  background-color: #000000; /* Fallback: Pure black */
-  padding-bottom: 10vh; /* Space for content above bottom gradient */
+  background-color: #000000;
+  padding-bottom: 10vh; /* Fallback */
+  padding-bottom: 10dvh;
 }
 
 .hero-background-video {
@@ -275,7 +274,7 @@ const onSlideChange = (data) => {
   object-fit: cover;
   transform: translate(-50%, -50%);
   z-index: 1;
-  filter: brightness(0.5) grayscale(0.2); /* Further darken and slightly desaturate video */
+  filter: brightness(0.5) grayscale(0.2);
 }
 
 .video-overlay {
@@ -288,13 +287,15 @@ const onSlideChange = (data) => {
 
 .video-overlay.top-gradient {
   top: 0;
-  height: 20vh;
+  height: 20vh; /* Fallback */
+  height: 20dvh;
   background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 70%, #000000 100%);
 }
 
 .video-overlay.bottom-gradient {
   bottom: 0;
-  height: 30vh;
+  height: 30vh; /* Fallback */
+  height: 30dvh;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000000 90%);
 }
 
@@ -303,7 +304,7 @@ const onSlideChange = (data) => {
   z-index: 3;
   padding: 20px;
   width: 100%;
-  max-width: 800px; /* Max width for text content */
+  max-width: 800px;
 }
 
 .hero-text-container h1 {
@@ -359,67 +360,85 @@ const onSlideChange = (data) => {
 }
 
 
-/* Product Hero Slider - Black/Gray Theme */
+/* Product Hero Slider */
 .product-hero-slider {
   width: 100%;
-  height: 100vh; /* Full viewport height */
-  min-height: 600px; /* Minimum height for smaller screens */
+  box-sizing: border-box;
+  height: 100vh; /* Fallback */
+  height: 100dvh;
   font-family: 'Roboto', sans-serif;
   background-color: #000000;
-  position: relative; /* For positioning navigation/pagination absolutely if needed */
-  display: flex; /* To help center carousel if it's not full height by default */
-  align-items: center; /* Vertical centering of carousel content */
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+:deep(.carousel),
+:deep(.carousel__viewport),
+:deep(.carousel__track) {
+  width: 100%;
+  height: 100%;
 }
 
 .carousel__item {
-  min-height: 100vh; /* Ensure slides take full height */
+  height: 100%;
   width: 100%;
+  box-sizing: border-box;
   color: #D1D5DB;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative; /* For absolute positioning of elements within a slide if needed */
+  position: relative;
+  overflow: hidden;
 }
 
-.product-slide-content {
+.product-slide-content { /* Assuming .container class was removed from its div in HTML */
   display: grid;
-  grid-template-columns: 1fr 1.2fr; /* Text on left, image slightly larger on right */
-  grid-template-rows: auto 1fr auto; /* Brand/Name, Slogan/Features, Badges */
+  grid-template-columns: 1fr 1.2fr;
+  grid-template-rows: auto 1fr auto;
   grid-template-areas:
     "text image"
     "text image"
     "badges badges";
-  align-items: center; /* Vertically align content in grid areas */
-  gap: 20px 40px; /* Row gap, Column gap */
+  align-items: center;
+  gap: 20px 40px;
   height: 100%;
-  max-height: 90vh; /* Prevent content from touching viewport edges */
+  max-height: 90vh; /* Fallback */
+  max-height: 90dvh;
   box-sizing: border-box;
-  padding: 40px 20px; /* Add some padding around the content */
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: clamp(20px, 4dvh, 40px) clamp(15px, 3vw, 40px);
+}
+
+.product-text-info,
+.product-image-container,
+.product-badges-container {
+  opacity: 0;
+  box-sizing: border-box;
+}
+
+:deep(.carousel__slide--active) .product-text-info {
+  animation: fadeInFromLeft 0.8s 0.1s ease-out forwards;
+}
+:deep(.carousel__slide--active) .product-image-container {
+  animation: fadeInFromRight 0.8s 0.3s ease-out forwards;
+}
+:deep(.carousel__slide--active) .product-badges-container {
+  animation: fadeInUp 0.8s 0.5s ease-out forwards;
 }
 
 .product-text-info {
   grid-area: text;
   text-align: left;
-  padding-right: 30px; /* Space between text and image column */
-  animation: fadeInFromLeft 0.8s ease-out forwards;
+  padding-right: 30px; /* Only on desktop grid */
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Center text content vertically */
+  justify-content: center;
 }
-
-@keyframes fadeInFromLeft {
-  from { opacity: 0; transform: translateX(-30px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes fadeInFromRight {
-  from { opacity: 0; transform: translateX(30px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 
 .product-brand {
   font-family: 'Orbitron', sans-serif;
@@ -428,7 +447,6 @@ const onSlideChange = (data) => {
   margin-bottom: 5px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  /* color is set by :style binding */
 }
 
 .product-name {
@@ -465,7 +483,6 @@ const onSlideChange = (data) => {
 .product-features li svg {
   margin-right: 10px;
   flex-shrink: 0;
-  /* color is set by :style binding */
 }
 
 .product-image-container {
@@ -473,15 +490,15 @@ const onSlideChange = (data) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: fadeInFromRight 0.8s 0.2s ease-out forwards;
-  opacity: 0; /* Start hidden for animation */
+  width: 100%;
 }
 
 .product-image {
   max-width: 100%;
-  max-height: 65vh; /* Adjust based on typical image aspect ratios */
+  max-height: clamp(40dvh, 45vw, 60dvh);
   object-fit: contain;
   filter: drop-shadow(0 10px 25px rgba(0,0,0,0.4));
+  display: block;
 }
 
 .product-badges-container {
@@ -491,11 +508,9 @@ const onSlideChange = (data) => {
   justify-content: center;
   gap: 15px;
   padding-top: 20px;
-  margin-top: 20px; /* Space above badges */
+  margin-top: 20px;
   border-top: 1px solid #374151;
-  animation: fadeInUp 0.8s 0.4s ease-out forwards;
-  opacity: 0; /* Start hidden for animation */
-  width: 100%; /* Ensure it takes full width of its grid area */
+  width: 100%;
 }
 
 .product-badge {
@@ -558,21 +573,21 @@ const onSlideChange = (data) => {
 
 :deep(.carousel__pagination) {
   position: absolute;
-  bottom: 20px; /* Position pagination at the bottom */
+  bottom: clamp(15px, 3dvh, 20px);
   left: 50%;
   transform: translateX(-50%);
-  z-index: 5; /* Ensure it's above other elements */
+  z-index: 5;
 }
 
 :deep(.carousel__pagination-button) {
   background-color: rgba(107, 114, 128, 0.4) !important;
-  padding: 5px; /* This effectively sets the size of the non-active dot */
+  padding: 5px;
   width: 10px;
   height: 10px;
   border-radius: 50%;
   margin: 0 4px;
   transition: background-color 0.3s ease, transform 0.3s ease;
-  border: none; /* Remove default border if any */
+  border: none;
 }
 :deep(.carousel__pagination-button--active) {
   background-color: var(--slide-accent-color, #9CA3AF) !important;
@@ -580,15 +595,14 @@ const onSlideChange = (data) => {
 }
 
 
-/* Store Information Section - Black/Gray Theme */
-/* Using text for icons, consider SVGs for better scalability and styling */
+/* Store Information Section */
 .icon-store::before { content: "🏢 "; }
 .icon-pin::before { content: "📍 "; }
 .icon-clock::before { content: "🕒 "; }
 .icon-services::before { content: "🛠️ "; }
 .icon-map::before { content: "🗺️ "; }
 .icon-connect::before { content: "🔗 "; }
-.icon-facebook::before { content: "📘 "; font-size: 1em; /* Adjusted for better alignment */ }
+.icon-facebook::before { content: "📘 "; font-size: 1em; }
 .icon-twitter::before { content: "🐦 "; font-size: 1em; }
 .icon-instagram::before { content: "📸 "; font-size: 1em; }
 .icon-discord::before { content: "💬 "; font-size: 1em; }
@@ -600,15 +614,12 @@ const onSlideChange = (data) => {
   font-family: 'Roboto', sans-serif;
 }
 
-/* .store-info-container class definition itself is not problematic.
-   Its styles come from the .container class and potentially specific overrides.
-   If it's marked red in your IDE, check for syntax errors *above* this rule in your CSS,
-   or ensure the class name in your HTML matches exactly.
-   The CSS provided is syntactically correct. */
 .store-info-container {
-  /* This class is used in conjunction with .container: <div class="container store-info-container">
-     It can be used to add specific styles to this container if needed,
-     beyond what .container provides. Currently, it has no specific styles of its own here. */
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .section-title.store-section-title {
@@ -661,10 +672,10 @@ const onSlideChange = (data) => {
   align-items: center;
   gap: 10px;
 }
-.info-block h3 i { /* Styles for icon pseudo-elements */
-  font-size: 1em; /* Adjust if using actual icon font/SVG */
+.info-block h3 i {
+  font-size: 1em;
   color: #9CA3AF;
-  font-style: normal; /* Prevent italics if i tag is used for semantic grouping */
+  font-style: normal;
 }
 
 .info-block p, .info-block li {
@@ -708,9 +719,9 @@ const onSlideChange = (data) => {
 
 .map-social-container {
     display: grid;
-    grid-template-columns: 2fr 1fr; /* Map takes more space */
+    grid-template-columns: 2fr 1fr;
     gap: 30px;
-    align-items: flex-start; /* Align items to the top of their grid cell */
+    align-items: flex-start;
     margin-top: 40px;
 }
 
@@ -759,7 +770,7 @@ const onSlideChange = (data) => {
     display: inline-block;
     margin-right: 15px;
     color: #9CA3AF;
-    font-size: 1.8rem; /* Base size for the container of the icon */
+    font-size: 1.8rem;
     transition: color 0.3s ease, transform 0.3s ease;
     text-decoration: none;
 }
@@ -770,8 +781,8 @@ const onSlideChange = (data) => {
     color: #D1D5DB;
     transform: scale(1.1);
 }
-.social-links a i { /* Styles for icon pseudo-elements if used within <a> */
-  font-size: 1em; /* Makes the icon text inherit the 1.8rem from <a> */
+.social-links a i {
+  font-size: 1em;
   font-style: normal;
 }
 
@@ -779,48 +790,47 @@ const onSlideChange = (data) => {
 /* Responsive Adjustments */
 @media (max-width: 992px) {
   .product-slide-content {
-    grid-template-columns: 1fr; /* Stack text, image, badges */
-    grid-template-rows: auto auto auto; /* Adjust rows for stacked layout */
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
     grid-template-areas:
       "text"
       "image"
       "badges";
     text-align: center;
-    gap: 30px; /* Consistent gap */
-    padding: 60px 20px 80px; /* Adjust padding, more bottom for pagination */
-    max-height: none; /* Allow content to flow */
+    gap: 20px;
+    padding: clamp(30px, 5dvh, 50px) 15px clamp(60px, 8dvh, 70px); /* Adjusted mobile padding */
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    max-height: none;
   }
   .product-text-info {
-    padding-right: 0;
+    padding-right: 0; /* No right padding when stacked */
     text-align: center;
-    align-items: center; /* Center text items like slogan if max-width is set */
-  }
-  .product-features {
-    justify-content: center; /* Center list items container if it's flex */
-    align-items: center; /* Center items if they are block */
-  }
-  .product-features li {
-    /* justify-content: flex-start; Remove if text-align:center on parent works */
-    /* text-align: left; Keep for readability if list is centered */
-    margin-left: auto; /* Center the list items block */
-    margin-right: auto;
-    max-width: 350px; /* Control width of feature text lines */
-  }
-  .product-image {
-    max-height: 40vh;
-  }
-  .product-badges-container {
-    margin-top: 10px; /* Reduce space when stacked */
+    align-items: center;
   }
 
+  .product-features li {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 350px; /* Max width for feature text */
+    text-align: left; /* Keep text aligned left within the centered block */
+  }
+  .product-image {
+    max-height: clamp(30dvh, 45vw, 40dvh);
+  }
+  .product-badges-container {
+    margin-top: 10px;
+  }
   .map-social-container {
-      grid-template-columns: 1fr; /* Stack map and social links */
+      grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 576px) {
   .video-hero-section {
-    padding-bottom: 8vh;
+    padding-bottom: 8vh; /* fallback */
+    padding-bottom: 8dvh;
   }
   .hero-text-container h1 {
     font-size: clamp(2rem, 10vw, 2.8rem);
@@ -834,88 +844,84 @@ const onSlideChange = (data) => {
   }
 
   .product-slide-content {
-    padding: 40px 15px 70px; /* Further adjust padding for small screens */
-    gap: 20px;
+    gap: 15px;
+    padding: clamp(20px, 4dvh, 40px) 10px clamp(50px, 7dvh, 60px);
   }
   .product-name {
-    font-size: clamp(2rem, 6vw, 2.8rem);
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
   }
   .product-slogan {
-    font-size: clamp(1rem, 3vw, 1.2rem);
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
   }
   .product-features li {
-    font-size: 0.9rem;
-    max-width: 90%;
+    font-size: 0.85rem;
+    max-width: 100%;
   }
   .product-features {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
   .product-image {
-    max-height: 35vh;
+    max-height: clamp(25dvh, 50vw, 35dvh);
   }
 
   .badge-main-text {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
   .badge-subtext, .badge-detail {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
   }
 
   :deep(.carousel__prev) {
-    left: 10px !important;
-    width: 35px;
-    height: 35px;
+    left: 5px !important;
+    width: 30px;
+    height: 30px;
   }
   :deep(.carousel__next) {
-    right: 10px !important;
-    width: 35px;
-    height: 35px;
+    right: 5px !important;
+    width: 30px;
+    height: 30px;
   }
   :deep(.carousel__pagination) {
-    bottom: 15px; /* Adjust pagination position */
+    bottom: clamp(8px, 1.5dvh, 10px);
   }
   :deep(.carousel__pagination-button) {
-    padding: 4px;
-    width: 8px;
-    height: 8px;
+    padding: 3px;
+    width: 7px;
+    height: 7px;
   }
 
   .section-title.store-section-title {
-    font-size: clamp(1.8rem, 6vw, 2.2rem);
+    font-size: clamp(1.6rem, 6vw, 2rem);
   }
   .section-subtitle.store-section-subtitle {
-    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+    font-size: clamp(0.8rem, 3.5vw, 1rem);
   }
   .info-block h3 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
   .info-block {
-    padding: 20px;
+    padding: 15px;
   }
   .info-block p, .info-block li {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
   .social-links a {
-    font-size: 1.6rem; /* Slightly smaller social icons */
-    margin-right: 10px;
+    font-size: 1.5rem;
+    margin-right: 8px;
   }
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-/* Animation keyframes (ensure they are defined if not already) */
+/* Keyframes */
 @keyframes fadeInFromLeft {
-  from { opacity: 0; transform: translateX(-30px); }
+  from { opacity: 0; transform: translateX(-20px); }
   to { opacity: 1; transform: translateX(0); }
 }
 @keyframes fadeInFromRight {
-  from { opacity: 0; transform: translateX(30px); }
+  from { opacity: 0; transform: translateX(20px); }
   to { opacity: 1; transform: translateX(0); }
 }
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 </style>

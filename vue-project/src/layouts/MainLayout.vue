@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
 import { ref, onMounted, onUnmounted } from 'vue';
-import { Offcanvas } from 'bootstrap'; // Import Offcanvas
+import { Offcanvas } from 'bootstrap';
 
 const items = [
   { to: '/', name: 'Tentang', color: '#00bcd4' },
@@ -13,21 +13,21 @@ const items = [
   { to: '/Checkout', name: 'Checkout', color: '#00bcd4' }
 ];
 
-const sidebarOffcanvasRef = ref(null); // Ref untuk elemen offcanvas
-let bsOffcanvas = null; // Variabel untuk menyimpan instance Offcanvas Bootstrap
+const sidebarOffcanvasRef = ref(null);
+let bsOffcanvas = null;
 
 onMounted(() => {
   if (sidebarOffcanvasRef.value) {
     bsOffcanvas = new Offcanvas(sidebarOffcanvasRef.value, {
-      backdrop: true, // Anda bisa set ke false jika tidak mau backdrop gelap
-      scroll: false // Body tidak bisa di-scroll saat offcanvas terbuka
+      backdrop: true,
+      scroll: false
     });
   }
 });
 
 onUnmounted(() => {
   if (bsOffcanvas) {
-    bsOffcanvas.dispose(); // Hancurkan instance saat komponen di-unmount
+    bsOffcanvas.dispose();
   }
 });
 
@@ -119,7 +119,7 @@ const closeSidebar = () => {
 
     <!-- Main Content -->
     <main class="content-bs flex-grow-1">
-      <div class="container py-4">
+      <div class="container-fluid py-4 px-0">
         <transition name="fade-page" mode="out-in">
           <RouterView />
         </transition>
@@ -134,20 +134,65 @@ const closeSidebar = () => {
 </template>
 
 <style scoped>
+/* --- GLOBAL CSS RESET & BASIC SETUP --- */
+:global(html), :global(body) {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* Mencegah scroll horizontal yang tidak diinginkan */
+}
+:global(body) {
+   background-color: black; /* Warna dasar body */
+}
+
+/* --- CUSTOM SCROLLBAR --- */
+/* Untuk browser berbasis WebKit (Chrome, Safari, Edge, Opera) */
+:global(body::-webkit-scrollbar),
+:global(html::-webkit-scrollbar) {
+  width: 8px; /* Lebar scrollbar */
+  height: 8px; /* Tinggi scrollbar (untuk scroll horizontal) */
+}
+
+:global(body::-webkit-scrollbar-track),
+:global(html::-webkit-scrollbar-track) {
+  background: #1a1a1a; /* Warna track (abu-abu sangat gelap) */
+  border-radius: 4px;
+}
+
+:global(body::-webkit-scrollbar-thumb),
+:global(html::-webkit-scrollbar-thumb) {
+  background-color: #555555; /* Warna thumb (abu-abu sedang) */
+  border-radius: 4px;
+  border: 2px solid #1a1a1a; /* Border dengan warna track untuk efek tipis */
+}
+
+:global(body::-webkit-scrollbar-thumb:hover),
+:global(html::-webkit-scrollbar-thumb:hover) {
+  background-color: #777777; /* Warna thumb saat hover (abu-abu lebih terang) */
+}
+
+/* Untuk Firefox */
+:global(html) {
+  scrollbar-width: thin; /* Membuat scrollbar lebih tipis */
+  scrollbar-color: #555555 #1a1a1a; /* Warna thumb lalu warna track */
+}
+
+
 /* --- GLOBAL & LAYOUT --- */
 .layout-bs {
-  background-color: black; /* Pastikan background utama adalah hitam */
+  background-color: black;
 }
 
 .content-bs {
-  padding-top: 70px; /* Sesuaikan dengan tinggi navbar Anda; navbar fixed-top Bootstrap sekitar 56px */
+  padding-top: 70px;
   color: white;
 }
 
-.shadow-sm { /* Untuk navbar */
+.shadow-sm {
   box-shadow: 0 0.125rem 0.25rem rgba(200, 200, 200, 0.15) !important;
 }
-.shadow-top-sm { /* Untuk footer */
+.shadow-top-sm {
   box-shadow: 0 -0.125rem 0.25rem rgba(200, 200, 200, 0.15) !important;
 }
 
@@ -161,40 +206,37 @@ const closeSidebar = () => {
   width: auto;
 }
 .logo-bs-sidebar img {
-  max-height: 35px; /* Logo di sidebar bisa sedikit lebih kecil */
+  max-height: 35px;
   width: auto;
 }
 
-
-/* Override default navbar-nav behavior if needed for spacing */
 .navbar-nav {
-  gap: 0.3rem; /* Jarak antar tombol di navbar desktop */
+  gap: 0.3rem;
 }
 .nav-item-bs {
-  list-style: none; /* Bootstrap biasanya sudah menangani ini */
+  list-style: none;
 }
 
 /* --- ANIMATED BUTTONS (NAVBAR & SIDEBAR) --- */
-/* Base style untuk kedua jenis tombol animasi */
 .animated-btn-bs, .sidebar-btn-bs {
   position: relative;
-  background: #444; /* Sama seperti original */
-  color: #fff !important; /* Penting untuk override warna default .nav-link */
+  background: #444;
+  color: #fff !important;
   text-transform: uppercase;
   border: none;
   letter-spacing: 0.1rem;
-  padding: 0.5rem 1rem; /* Padding disesuaikan agar pas dengan .nav-link */
+  padding: 0.5rem 1rem;
   transition: 0.2s;
-  display: inline-block; /* Atau block jika di sidebar ingin full width */
+  display: inline-block;
   cursor: pointer;
-  text-decoration: none !important; /* Override Bootstrap */
-  border-radius: 0.25rem; /* Sedikit radius agar lebih modern */
+  text-decoration: none !important;
+  border-radius: 0.25rem;
   font-weight: 500;
 }
 
 .animated-btn-bs:hover,
 .sidebar-btn-bs:hover,
-.animated-btn-bs.active-animated-bs, /* Menggunakan active-class dari RouterLink */
+.animated-btn-bs.active-animated-bs,
 .sidebar-btn-bs.active-sidebar-bs {
   background: var(--clr);
   color: var(--clr) !important;
@@ -206,9 +248,9 @@ const closeSidebar = () => {
   content: "";
   position: absolute;
   inset: 2px;
-  background: black; /* Sesuai original */
-  z-index: 0; /* Di bawah span dan i */
-  border-radius: calc(0.25rem - 2px); /* Match parent's radius */
+  background: black;
+  z-index: 0;
+  border-radius: calc(0.25rem - 2px);
 }
 
 .animated-btn-bs span,
@@ -222,7 +264,7 @@ const closeSidebar = () => {
   position: absolute;
   inset: 0;
   display: block;
-  z-index: 1; /* Pastikan di atas pseudo-element ::before */
+  z-index: 1;
 }
 
 .animated-btn-bs i::before, .animated-btn-bs i::after,
@@ -231,13 +273,12 @@ const closeSidebar = () => {
   position: absolute;
   width: 10px;
   height: 2px;
-  background: black; /* Sesuai original */
+  background: black;
   border: 2px solid var(--clr);
   transition: 0.3s;
-  z-index: 2; /* Di atas ::before tombol utama */
+  z-index: 2;
 }
 
-/* Posisi i::before & i::after untuk NAVBAR buttons */
 .animated-btn-bs i::before { left: 80%; top: -2px; }
 .animated-btn-bs i::after { left: 20%; bottom: -2px; }
 
@@ -250,16 +291,14 @@ const closeSidebar = () => {
   width: 15px; left: 80%; animation: move-bs 3s infinite;
 }
 
-/* Penyesuaian untuk tombol di Navbar Desktop */
 .navbar .nav-link.animated-btn-bs {
-  font-size: 0.8rem; /* Ukuran font navbar desktop */
-  padding: 0.4rem 0.8rem; /* Padding lebih kecil untuk navbar */
+  font-size: 0.8rem;
+  padding: 0.4rem 0.8rem;
 }
 
 /* --- SIDEBAR (OFFCANVAS) --- */
 .sidebar-bs {
-  width: 260px; /* Lebar sidebar */
-  /* box-shadow: 3px 0 10px rgba(200,200,200,0.15); Tidak perlu jika menggunakan shadow Bootstrap */
+  width: 260px;
 }
 .sidebar-bs .offcanvas-header {
   border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -269,18 +308,16 @@ const closeSidebar = () => {
   padding: 1rem;
 }
 .sidebar-bs .nav-item-bs {
-  margin-bottom: 0.5rem; /* Jarak antar item sidebar */
+  margin-bottom: 0.5rem;
 }
 
-/* Penyesuaian untuk tombol di Sidebar */
 .nav-link.sidebar-btn-bs {
-  font-size: 0.9rem; /* Ukuran font sidebar */
-  padding: 0.6rem 1rem; /* Padding lebih besar untuk sidebar */
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
   width: 100%;
   text-align: center;
 }
 
-/* Posisi i::before & i::after untuk SIDEBAR buttons */
 .sidebar-btn-bs i::before { left: 80%; top: -2px; }
 .sidebar-btn-bs i::after { left: 20%; bottom: -2px; }
 
@@ -292,7 +329,6 @@ const closeSidebar = () => {
 .sidebar-btn-bs.active-sidebar-bs i::after {
   width: 20px; left: 75%; animation: move-bs 3s infinite;
 }
-
 
 /* --- ANIMATIONS --- */
 @keyframes move-bs {
@@ -317,10 +353,10 @@ const closeSidebar = () => {
   opacity: 0;
 }
 
-/* --- RESPONSIVE OVERRIDES (jika diperlukan) --- */
-@media (max-width: 991.98px) { /* lg breakpoint (kapan navbar collapse) */
+/* --- RESPONSIVE OVERRIDES --- */
+@media (max-width: 991.98px) {
   .navbar .navbar-collapse .navbar-nav {
-    display: none; /* Sembunyikan menu navbar desktop saat di mobile, karena akan ada di sidebar */
+    display: none;
   }
   .navbar .navbar-toggler {
     border-color: rgba(255,255,255,0.1);
@@ -329,7 +365,7 @@ const closeSidebar = () => {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
   }
   .content-bs {
-    padding-top: 60px; /* Sedikit penyesuaian untuk tinggi navbar di mobile */
+    padding-top: 60px;
   }
 }
 </style>
