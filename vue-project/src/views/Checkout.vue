@@ -88,7 +88,7 @@ export default {
         {
           id: 1,
           name: " ",
-          qty: 1,
+          jumlah: 0,
           price: 0,
           category: " ",
           description: " ",
@@ -99,13 +99,24 @@ export default {
   },
   computed: {
     totalPrice() {
-      return this.formItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+      return this.formItems.reduce((sum, item) => sum + item.price * item.jumlah, 0);
     }
   },
   methods: {
     handleCheckout() {
-      if (this.formItems.length === 0) {
-        alert("Keranjang kosong!");
+      if (
+        this.formItems.length === 0 ||
+        this.formItems.some(
+          item =>
+            !item.name ||
+            !item.category ||
+            !item.description ||
+            !item.specification ||
+            !item.qty ||
+            !item.price
+        )
+      ) {
+        alert("Semua kolom pesanan harus diisi dengan benar!");
         return;
       }
       // Simulasi pembayaran
@@ -116,7 +127,7 @@ export default {
           this.formItems
             .map(
               (item) =>
-                `${item.name} (${item.category})\nDeskripsi: ${item.description}\nSpesifikasi: ${item.specification}\nQty: ${item.qty}\nHarga: Rp${item.price.toLocaleString()}`
+                `\nNama Pesanan: (${item.name})\nKategori: (${item.category})\nDeskripsi: ${item.description}\nSpesifikasi: ${item.specification}\nJumlah: ${item.qty}\nHarga: Rp${item.price.toLocaleString()}`
             )
             .join("\n\n")
       );
