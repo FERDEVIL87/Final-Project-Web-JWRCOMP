@@ -1,9 +1,21 @@
-//DIDIT//
 <template>
   <section class="container py-4">
     <h2 class="text-center fw-bold mb-4" style="font-family:'Orbitron',sans-serif;color:#fff;min-height:2.5em;">
-      HARDWARE
+      KOMPONEN HARDWARE
     </h2>
+
+    <!-- Tombol Checkout Global -->
+    <div class="text-center my-4 py-3 border-top border-bottom border-secondary">
+        <h4 class="mb-3" style="font-family:'Orbitron',sans-serif;color:#fff;">Keranjang Belanja Global</h4>
+        <p v-if="cartStore.items.length > 0" class="mb-2 text-light">
+          Total Item: {{ cartStore.items.reduce((acc, item) => acc + item.qty, 0) }} | Total Harga: <span class="text-success fw-bold">{{ formatPrice(cartStore.totalPrice) }}</span>
+        </p>
+        <p v-else class="text-muted mb-2">Keranjang belanja utama masih kosong.</p>
+        <button class="btn btn-success btn-lg px-5" @click="goToCheckout" style="font-family:'Orbitron',sans-serif;">
+           <i class="bi bi-cart-check-fill me-2"></i> Lihat Keranjang & Checkout
+        </button>
+    </div>
+
     <div v-if="loading" class="text-center text-info py-5" style="font-family:'Orbitron',sans-serif;">
       <span>Loading data hardware...</span>
     </div>
@@ -32,7 +44,7 @@
               type="text"
               v-model="searchQuery"
               placeholder="Search Component"
-              class="form-control form-control-sm"
+              class="form-control form-control-sm bg-secondary bg-opacity-25 text-light border-info"
               autocomplete="off"
               aria-label="Cari komponen"
             />
@@ -42,7 +54,7 @@
             <select
               id="brandSelect"
               v-model="selectedBrand"
-              class="form-select form-select-sm"
+              class="form-select form-select-sm bg-secondary bg-opacity-25 text-light border-info"
               aria-label="Pilih brand"
             >
               <option value="">All Brands</option>
@@ -51,105 +63,166 @@
           </div>
           <div class="col-md-4">
             <label for="sortSelect" class="form-label visually-hidden">Urutkan</label>
-            <select id="sortSelect" v-model="sortBy" class="form-select form-select-sm" aria-label="Urutkan">
+            <select id="sortSelect" v-model="sortBy" class="form-select form-select-sm bg-secondary bg-opacity-25 text-light border-info" aria-label="Urutkan">
               <option disabled value="">Urutkan</option>
               <option v-for="opt in sortOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
             </select>
           </div>
         </div>
+        
+        <!-- MODIFIED PRICE RANGE SLIDERS -->
         <div class="row align-items-center mb-3">
           <div class="col-12">
-            <label for="priceRangeSlider" class="form-label text-white">Rentang Harga</label>
-            <input
-              id="priceRangeSlider"
-              type="range"
-              class="form-range"
-              min="0"
-              :max="maxPriceInCategory"
-              v-model="priceRangeUSD"
-              step="50"
-              aria-label="Rentang harga"
-              @input="
-                if (priceRangeUSD < minPriceInCategory) {
-                  priceRangeUSD = minPriceInCategory;
-                } else if (priceRangeUSD > maxPriceInCategory) {
-                  priceRangeUSD = maxPriceInCategory;
-                }
-              "
-            />
-            <div class="d-flex justify-content-between text-white small">
-              <span>{{ formatPrice(minPriceInCategory) }}</span>
-              <span>{{ formatPrice(maxPriceInCategory) }}</span>
+            <label class="form-label text-white d-block">Rentang Harga</label>
+            <div class="mb-2">
+              <label :for="'minPriceSlider-' + selectedCategory.title.replace(/\s+/g, '')" class="form-label text-white small">Min: {{ formatPrice(minPriceFilter) }}</label>
+              <input
+                :id="'minPriceSlider-' + selectedCategory.title.replace(/\s+/g, '')"
+                type="range"
+                class="form-range"
+                :min="minPriceInCategory"
+                :max="maxPriceInCategory"
+                v-model.number="minPriceFilter"
+                :step="priceStep"
+                aria-label="Minimum harga"
+                style="accent-color:#00d9ff;"
+                @input="adjustMaxPriceFilter" 
+              />
+            </div>
+            <div>
+              <label :for="'maxPriceSlider-' + selectedCategory.title.replace(/\s+/g, '')" class="form-label text-white small">Max: {{ formatPrice(maxPriceFilter) }}</label>
+              <input
+                :id="'maxPriceSlider-' + selectedCategory.title.replace(/\s+/g, '')"
+                type="range"
+                class="form-range"
+                :min="minPriceInCategory" 
+                :max="maxPriceInCategory"
+                v-model.number="maxPriceFilter"
+                :step="priceStep"
+                aria-label="Maksimum harga"
+                style="accent-color:#00d9ff;"
+                @input="adjustMinPriceFilter"
+              />
+            </div>
+             <div class="d-flex justify-content-between text-white small mt-1">
+              <span>Global Min: {{ formatPrice(minPriceInCategory) }}</span>
+              <span>Global Max: {{ formatPrice(maxPriceInCategory) }}</span>
             </div>
           </div>
         </div>
-        <div v-if="filteredConsoles.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-2" style="min-height:120px;">
+
+        <div v-if="filteredHardware.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-2" style="min-height:120px;">
           <div
-            v-for="consoleItem in filteredConsoles"
-            :key="consoleItem.id"
-            class="col"
+            v-for="item in filteredHardware"
+            :key="item.id"
+            class="col d-flex align-items-stretch" 
           >
             <div
-              class="card h-100 border-info"
+              class="card h-100 border-info d-flex flex-column" 
               role="button"
               tabindex="0"
-              @click="showDetails(consoleItem)"
-              @keydown.enter.prevent="showDetails(consoleItem)"
-              @keydown.space.prevent="showDetails(consoleItem)"
               style="background:#232b36;color:#fff;cursor:pointer;"
             >
               <img
-                :src="consoleItem.image"
-                :alt="consoleItem.name"
+                :src="item.image"
+                :alt="item.name"
                 class="card-img-top"
                 style="height:120px;width:100%;object-fit:cover;background:#101829;display:block;"
                 loading="lazy"
                 width="240"
                 height="120"
+                @click="showDetails(item)"
+                @keydown.enter.prevent="showDetails(item)"
+                @keydown.space.prevent="showDetails(item)"
               />
-              <div class="card-body py-2">
-                <h4 class="card-title fw-bold mb-1" style="font-family:'Orbitron',sans-serif;font-size:1rem;">{{ consoleItem.name }}</h4>
-                <p class="mb-1"><span class="fw-semibold">Brand:</span> {{ consoleItem.brand }}</p>
-                <p class="mb-1">
+              <div class="card-body py-2 d-flex flex-column flex-grow-1">
+                <h4 class="card-title fw-bold mb-1" style="font-family:'Orbitron',sans-serif;font-size:1rem;" @click="showDetails(item)">{{ item.name }}</h4>
+                <p class="mb-1" @click="showDetails(item)"><span class="fw-semibold">Brand:</span> {{ item.brand }}</p>
+                <p class="mb-1" @click="showDetails(item)">
                   <span class="fw-semibold">Stock:</span>
-                  <span :class="getStockClass(consoleItem.stock)" :style="consoleItem.stock === 'Ready' ? 'color:#1aff6b;' : 'color:#ff4d4d;'">
-                    {{ consoleItem.stock }}
+                  <span :class="getStockClass(item.stock)" :style="item.stock > 0 || item.stock === 'Ready' ? 'color:#1aff6b;' : 'color:#ff4d4d;'">
+                    {{ item.stock === 'Ready' ? 'Ready' : (item.stock > 0 ? item.stock : 'Kosong') }}
                   </span>
                 </p>
-                <p class="fw-bold mb-0" style="color:#fff;">{{ formatPrice(consoleItem.price) }}</p>
+                <p class="fw-bold mb-2" @click="showDetails(item)" style="color:#fff;">{{ formatPrice(item.price) }}</p>
+                <button 
+                    class="btn btn-sm btn-info fw-bold mt-auto" 
+                    style="font-family:'Orbitron',sans-serif;"
+                    @click.stop="addItemToCartFromCard(item)"
+                    :disabled="item.stock === 'Kosong' || item.stock === 0"
+                >
+                    <i class="bi bi-cart-plus-fill"></i> Add to Cart
+                </button>
               </div>
             </div>
           </div>
         </div>
         <div v-else class="text-center text-info py-4" style="font-family:'Orbitron',sans-serif;min-height:80px;">
-          <p>No consoles match your current filters.</p>
+          <p>No hardware components match your current filters.</p>
         </div>
       </div>
       <div v-else class="text-center text-info py-4" style="font-family:'Orbitron',sans-serif;">
-        <p>✨ Please select a category above to explore our awesome consoles! ✨</p>
+        <p>✨ Please select a category above to explore our hardware components! ✨</p>
       </div>
-      <div class="modal fade" id="consoleDetailModal" tabindex="-1" aria-labelledby="consoleDetailModalLabel" aria-hidden="true" ref="consoleModalRef">
+      
+      <!-- MODAL -->
+      <div class="modal fade" id="hardwareDetailModal" tabindex="-1" aria-labelledby="hardwareDetailModalLabel" aria-hidden="true" ref="hardwareModalRef">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content bg-dark text-light">
             <div class="modal-header border-0 pb-0">
-              <h3 class="modal-title w-100 text-center fw-bold" id="consoleDetailModalLabel" style="font-family:'Orbitron',sans-serif;color:#fff;">
+              <h3 class="modal-title w-100 text-center fw-bold" id="hardwareDetailModalLabel" style="font-family:'Orbitron',sans-serif;color:#fff;">
                 {{ selectedProduct?.name }}
               </h3>
               <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="closeDetails"></button>
             </div>
             <div class="modal-body">
-              <img :src="selectedProduct?.image" :alt="selectedProduct?.name" class="d-block mx-auto mb-3 rounded" style="max-width:220px;max-height:120px;object-fit:contain;background:#101829;" loading="lazy" width="220" height="120" />
-              <div class="mb-3">
-                <p class="mb-1"><strong>Price:</strong> <span>{{ formatPrice(selectedProduct?.price) }}</span></p>
-                <p class="mb-1"><strong>Brand:</strong> <span>{{ selectedProduct?.brand }}</span></p>
-                <p class="mb-1"><strong>Stock:</strong> <span :class="getStockClass(selectedProduct?.stock)">{{ selectedProduct?.stock }}</span></p>
+              <img v-if="selectedProduct" :src="selectedProduct.image" :alt="selectedProduct.name" class="d-block mx-auto mb-3 rounded" style="max-width:220px;max-height:120px;object-fit:contain;background:#101829;" loading="lazy" width="220" height="120" />
+              <div v-if="selectedProduct" class="mb-3">
+                <p class="mb-1"><strong>Price:</strong> <span>{{ formatPrice(selectedProduct.price) }}</span></p>
+                <p class="mb-1"><strong>Brand:</strong> <span>{{ selectedProduct.brand }}</span></p>
+                <p class="mb-1"><strong>Stock:</strong> 
+                  <span :class="getStockClass(selectedProduct.stock)" :style="selectedProduct.stock > 0 || selectedProduct.stock === 'Ready' ? 'color:#1aff6b;' : 'color:#ff4d4d;'">
+                    {{ selectedProduct.stock === 'Ready' ? 'Ready' : (selectedProduct.stock > 0 ? selectedProduct.stock : 'Kosong') }}
+                  </span>
+                </p>
               </div>
-              <div v-if="selectedProduct?.specs && selectedProduct?.specs.length > 0">
+              <div v-if="selectedProduct?.specs && selectedProduct.specs.length > 0">
                 <p class="fw-bold text-info mb-1">Features:</p>
                 <ul class="ps-3 mb-0">
                   <li v-for="(feature, index) in selectedProduct.specs" :key="index">{{ feature }}</li>
                 </ul>
               </div>
+              <div v-else-if="selectedProduct">
+                 <p class="text-muted fst-italic">No specific features listed for this component.</p>
+              </div>
+
+            <div v-if="selectedProduct && (selectedProduct.stock > 0 || selectedProduct.stock === 'Ready')" class="mt-3 pt-3 border-top border-secondary">
+                <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+                    <label for="modalQtyHardware" class="form-label mb-0 text-light">Qty:</label>
+                    <input 
+                        type="number" 
+                        id="modalQtyHardware" 
+                        v-model.number="modalQuantity" 
+                        min="1" 
+                        :max="selectedProduct.stock === 'Ready' ? 99 : selectedProduct.stock"
+                        class="form-control form-control-sm bg-secondary bg-opacity-25 text-light border-info" 
+                        style="width: 70px;"
+                    >
+                </div>
+                <button 
+                    class="btn btn-info w-100 fw-bold" 
+                    style="font-family:'Orbitron',sans-serif;"
+                    @click="addItemToCartFromModal(selectedProduct)"
+                >
+                    <i class="bi bi-cart-plus-fill"></i> Add to Cart
+                </button>
+            </div>
+            <div v-else-if="selectedProduct" class="mt-3 text-center">
+                <p class="text-danger fw-bold">This item is currently out of stock.</p>
+            </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-outline-secondary" @click="closeDetails">Close</button>
             </div>
           </div>
         </div>
@@ -160,108 +233,127 @@
 
 <script>
 import { Modal } from 'bootstrap';
+import { cartStore } from '@/store/cartStore';
+import { useRouter } from 'vue-router';
 
 export default {
-  name: "GameConsolesHub",
+  name: "HardwareList",
+  setup() {
+    const router = useRouter();
+    return { router, cartStore };
+  },
   data() {
     return {
       cards: [
-        { title: "PROCESSOR INTEL", link: "/PROCESSOR INTEL" },
-        { title: "PROCESSOR AMD", link: "/PROCESSOR AMD" },
-        { title: "MAINBOARD", link: "/MAINBOARD" },
-        { title: "MEMORY", link: "/MEMORY" },
-        { title: "VGA", link: "/VGA" },
-        { title: "HDD", link: "/HDD" },
-        { title: "SSD", link: "/SSD" },
-        { title: "PSU", link: "/PSU" },
-        { title: "CASE", link: "/CASE" },
-        { title: "LED MONITOR", link: "/LED MONITOR" },
-        { title: "MOUSE", link: "/MOUSE" },
-        { title: "KEYBOARD", link: "/KEYBOARD" },
-        { title: "MOUSEPAD", link: "/MOUSEPAD" },
-        { title: "WEBCAM", link: "/WEBCAM" },
-        { title: "CABLE", link: "/CABLE" },
-        { title: "HEADSET", link: "/HEADSET" },
-        { title: "SPEAKER", link: "/SPEAKER" },
-        { title: "USB FLASHDISK", link: "/USB FLASHDISK" },
-        { title: "PRINTER", link: "/PRINTER" },
+        { title: "PROCESSOR INTEL" }, { title: "PROCESSOR AMD" }, { title: "MAINBOARD" },
+        { title: "MEMORY" }, { title: "VGA" }, { title: "HDD" }, { title: "SSD" },
+        { title: "PSU" }, { title: "CASE" }, { title: "LED MONITOR" }, { title: "MOUSE" },
+        { title: "KEYBOARD" }, { title: "MOUSEPAD" }, { title: "WEBCAM" }, { title: "CABLE" },
+        { title: "HEADSET" }, { title: "SPEAKER" }, { title: "USB FLASHDISK" }, { title: "PRINTER" },
       ],
       selectedCategory: null,
       searchQuery: "",
       selectedBrand: "",
-      priceRangeUSD: 1500,
-      usdToIdrRate: 15000,
+      minPriceFilter: 0, // New: for min price slider
+      maxPriceFilter: 0, // New: for max price slider
       selectedProduct: null,
       bootstrapModalInstance: null,
-      hover: null,
       sortBy: 'lowToHigh',
       sortOptions: [
         { value: 'lowToHigh', label: 'Harga Termurah' },
         { value: 'highToLow', label: 'Harga Termahal' }
       ],
-      components: [],
+      allHardware: [],
       loading: true,
+      modalQuantity: 1,
     };
   },
   computed: {
-    consoles() {
-      return this.components;
+    priceStep() {
+      const range = this.maxPriceInCategory - this.minPriceInCategory;
+      if (range <= 0) return 50000; // Default step if no range
+      return Math.max(50000, Math.floor(range / 100 / 50000) * 50000 || 50000); // Ensure step is multiple of 50k
     },
     filteredBrands() {
-      if (!this.selectedCategory) return [];
-      const consolesInCategory = this.consoles.filter(c => c.category === this.selectedCategory.title);
-      return [...new Set(consolesInCategory.map(c => c.brand))].sort();
+      if (!this.selectedCategory || !this.allHardware.length) return [];
+      const itemsInCategory = this.allHardware.filter(item => item.category === this.selectedCategory.title);
+      return [...new Set(itemsInCategory.map(item => item.brand))].sort();
     },
-    filteredConsoles() {
-      if (!this.selectedCategory) return [];
-      let filtered = this.consoles.filter(
-        c => c.category === this.selectedCategory.title
+    minPriceInCategory() {
+        if (!this.selectedCategory || !this.allHardware.length) return 0;
+        const itemsInCategory = this.allHardware.filter(item => item.category === this.selectedCategory.title);
+        if (itemsInCategory.length === 0) return 0;
+        return Math.min(...itemsInCategory.map(item => Number(item.price) || 0), 0);
+    },
+    maxPriceInCategory() {
+        if (!this.selectedCategory || !this.allHardware.length) return 10000000;
+        const itemsInCategory = this.allHardware.filter(item => item.category === this.selectedCategory.title);
+        if (itemsInCategory.length === 0) return 10000000;
+        const max = Math.max(...itemsInCategory.map(item => Number(item.price) || 0), 0);
+        return max > 0 ? max : 10000000; // Ensure it's not 0 if actual max is 0
+    },
+    filteredHardware() {
+      if (!this.selectedCategory || !this.allHardware.length) return [];
+      let filtered = this.allHardware.filter(
+        item => item.category === this.selectedCategory.title
       );
       if (this.searchQuery) {
-        filtered = filtered.filter(c =>
-          c.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+        filtered = filtered.filter(item =>
+          item.name.toLowerCase().includes(this.searchQuery.toLowerCase())
         );
       }
       if (this.selectedBrand) {
-        filtered = filtered.filter(c => c.brand === this.selectedBrand);
+        filtered = filtered.filter(item => item.brand === this.selectedBrand);
       }
-      filtered = filtered.filter(c => c.price <= Number(this.priceRangeUSD));
+      // MODIFIED: Filter by min and max price
+      filtered = filtered.filter(item => 
+        (Number(item.price) || 0) >= this.minPriceFilter &&
+        (Number(item.price) || 0) <= this.maxPriceFilter
+      );
+      
       if (this.sortBy === 'highToLow') {
-        filtered.sort((a, b) => b.price - a.price);
+        filtered.sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0));
       } else {
-        filtered.sort((a, b) => a.price - b.price);
+        filtered.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
       }
       return filtered;
     },
-    maxPriceInCategory() {
-      if (!this.selectedCategory) return 1500;
-      const consolesInCategory = this.consoles.filter(
-        c => c.category === this.selectedCategory.title
-      );
-      if (consolesInCategory.length === 0) return 1500;
-      const maxPrice = Math.max(...consolesInCategory.map(c => c.price), 0);
-      return Math.ceil(maxPrice / 50) * 50 || 50;
-    },
-    minPriceInCategory() {
-      if (!this.selectedCategory) return 50;
-      const consolesInCategory = this.consoles.filter(
-        c => c.category === this.selectedCategory.title
-      );
-      if (consolesInCategory.length === 0) return 50;
-      const minPrice = Math.min(...consolesInCategory.map(c => c.price));
-      return minPrice > 0 ? Math.floor(minPrice / 50) * 50 : 50;
-    },
   },
   methods: {
+    async fetchHardwareData() {
+        // ... (fetchHardwareData remains the same)
+        this.loading = true;
+        try {
+            const res = await fetch('/data/hardware.json'); 
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            const jsonData = await res.json();
+            this.allHardware = jsonData.map(item => ({
+                ...item,
+                id: String(item.id || `hw-${Math.random().toString(36).substr(2, 9)}`),
+                price: Number(item.price) || 0, 
+                stock: item.stock === "Ready" ? 100 : (item.stock === "Kosong" ? 0 : (Number(item.stock) || 0)),
+                brand: item.brand || 'Unknown Brand',
+                image: item.image || '/img/placeholder.webp' 
+            }));
+        } catch (error) {
+            console.error("Failed to load hardware data:", error);
+            this.allHardware = [];
+        } finally {
+            this.loading = false;
+        }
+    },
     selectCategory(category) {
       this.selectedCategory = category;
       this.searchQuery = "";
       this.selectedBrand = "";
+      this.sortBy = 'lowToHigh';
       this.$nextTick(() => {
-        this.priceRangeUSD = this.maxPriceInCategory;
+        this.minPriceFilter = this.minPriceInCategory; // MODIFIED
+        this.maxPriceFilter = this.maxPriceInCategory; // MODIFIED
       });
     },
     formatPrice(price) {
+      // ... (formatPrice remains the same)
       if (typeof price !== 'number' || isNaN(price)) {
         return 'Rp 0';
       }
@@ -272,48 +364,108 @@ export default {
         maximumFractionDigits: 0,
       }).format(price);
     },
-    showDetails(consoleItem) {
-      this.selectedProduct = consoleItem;
+    showDetails(item) {
+      // ... (showDetails remains the same)
+      this.selectedProduct = item;
+      this.modalQuantity = 1; 
       if (this.bootstrapModalInstance) this.bootstrapModalInstance.show();
     },
     closeDetails() {
+      // ... (closeDetails remains the same)
       if (this.bootstrapModalInstance) this.bootstrapModalInstance.hide();
     },
-    getStockClass(stockStatus) {
-      if (stockStatus === "Ready") {
-        return 'fw-bold';
-      } else if (stockStatus === "Kosong") {
-        return 'fw-bold';
+    getStockClass(stock) {
+      // ... (getStockClass remains the same)
+      if (stock > 0 || stock === 'Ready') return 'fw-bold'; 
+      return 'fw-bold'; 
+    },
+    addItemToCart(item, quantity) {
+        // ... (addItemToCart remains the same)
+        if (!item || quantity < 1) {
+            alert("Invalid item or quantity.");
+            return;
+        }
+        const stockNumber = Number(item.stock); 
+        if (isNaN(stockNumber) || stockNumber <= 0 || quantity > stockNumber) {
+             alert(`Quantity (x${quantity}) exceeds available stock (${stockNumber > 0 ? stockNumber : 'Kosong'}) or item is out of stock.`);
+            return;
+        }
+
+        const itemToAdd = {
+            id: String(item.id),
+            source: 'hardware', 
+            name: item.name,
+            price: Number(item.price), 
+            qty: quantity,
+            category: item.category, 
+            brand: item.brand,
+            image: item.image,
+            specification: item.specs ? item.specs.join(', ') : 'N/A'
+        };
+        cartStore.addItem(itemToAdd);
+        alert(`${item.name} (x${quantity}) added to cart!`);
+    },
+    addItemToCartFromCard(item) {
+        // ... (addItemToCartFromCard remains the same)
+        this.addItemToCart(item, 1);
+    },
+    addItemToCartFromModal(item) {
+        // ... (addItemToCartFromModal remains the same)
+        this.addItemToCart(item, this.modalQuantity);
+        this.closeDetails();
+    },
+    goToCheckout() {
+      // ... (goToCheckout remains the same)
+      if (cartStore.items.length === 0) {
+        alert("Keranjang belanja Anda kosong. Silakan tambahkan produk terlebih dahulu.");
+        return;
       }
-      return '';
+      this.router.push('/checkout');
+    },
+    // New methods to keep min/max sliders in check
+    adjustMaxPriceFilter() {
+        if (this.minPriceFilter > this.maxPriceFilter) {
+            this.maxPriceFilter = this.minPriceFilter;
+        }
+    },
+    adjustMinPriceFilter() {
+        if (this.maxPriceFilter < this.minPriceFilter) {
+            this.minPriceFilter = this.maxPriceFilter;
+        }
     }
   },
   async mounted() {
-    try {
-      const res = await fetch('/data/hardware.json');
-      this.components = await res.json();
-    } catch {
-      this.components = [];
-    } finally {
-      this.loading = false;
-    }
-    const modalElement = this.$refs.consoleModalRef;
+    // ... (mounted remains largely the same, ensure fetchHardwareData is called)
+    await this.fetchHardwareData(); 
+    
+    const modalElement = this.$refs.hardwareModalRef; 
     if (modalElement) {
       this.bootstrapModalInstance = new Modal(modalElement);
       modalElement.addEventListener('hidden.bs.modal', () => {
         this.selectedProduct = null;
+        this.modalQuantity = 1;
       });
     }
-    if (this.cards && this.cards.length > 0) {
-      this.selectCategory(this.cards[0]);
+    if (this.cards && this.cards.length > 0 && !this.selectedCategory) {
+      this.selectCategory(this.cards[0]); 
     }
+  },
+   watch: {
+    // No need for watchers on min/maxPriceInCategory if sliders directly use them
+    // and are reset on category change.
+    // Watchers for minPriceFilter and maxPriceFilter can be added if more complex
+    // interaction is needed, but the @input handlers might be sufficient.
   }
 };
 </script>
 
 <style scoped>
+/* ... (styles remain the same) ... */
 .bg-dark { background: #181c22 !important; }
-.card { border-radius: 10px; border-width: 1.5px; background: #232b36 !important; color: #fff !important; }
+.card { 
+    border-radius: 10px; 
+    border-width: 1.5px; 
+}
 .card-img-top { border-radius: 10px 10px 0 0; }
 .btn-outline-info.active,
 .btn-outline-info:active,
@@ -321,5 +473,32 @@ export default {
   background-color: #00d9ff !important;
   color: #181c22 !important;
   border-color: #00d9ff !important;
+}
+.form-control, .form-select {
+    background-color: #2a3038 !important; 
+    color: #e8eff5 !important; 
+    border-color: #00d9ff55 !important; 
+}
+.form-control::placeholder {
+    color: #adb5bdAA !important; 
+}
+.form-control:focus, .form-select:focus {
+    border-color: #00d9ff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 217, 255, 0.25) !important;
+}
+.form-range::-webkit-slider-thumb {
+  background-color: #00d9ff;
+}
+.form-range::-moz-range-thumb {
+  background-color: #00d9ff;
+}
+.form-range::-ms-thumb {
+  background-color: #00d9ff;
+}
+.modal-footer {
+    border-top-color: var(--bs-secondary);
+}
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
 }
 </style>
