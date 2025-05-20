@@ -9,7 +9,7 @@ const products = ref([
     brand: "ROG RYUO IV",
     name: "SLC 360 ARGB",
     slogan: "A NEW VISION OF COOLING",
-    imageSrc: "https://dlcdnwebimgs.asus.com/files/media/d3b46fd8-035f-41c1-a995-2dca5a228e9b/v1/img/gallery/2.jpg",
+    imageSrc: "src/img home/slc.jpg",
     features: [
       "High-Performance Pump",
       "Extraordinary Visuals",
@@ -31,7 +31,7 @@ const products = ref([
     brand: "ASUS TUF Gaming",
     name: "TUF Gaming A15 (2024)",
     slogan: "GEARED FOR SERIOUS GAMING AND REAL-WORLD DURABILITY",
-    imageSrc: "https://dlcdnwebimgs.asus.com/gain/49bac8ff-76c9-45b5-846c-057f79c30c8b/asus-tuf-gaming-a15-fa507uv-product-photo.png",
+    imageSrc: "src/img home/tuf.png",
     features: [
       "Latest AMD Ryzen CPU & NVIDIA GPU",
       "Blazing-Fast NVMe SSD",
@@ -55,7 +55,7 @@ const products = ref([
     brand: "Corsair",
     name: "K70 RGB MK.2",
     slogan: "BUILT TO LAST. PERFORM LIKE A LEGEND.",
-    imageSrc: "https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Gaming-Keyboards/CH-9109012-NA/Gallery/K70_RGB_MK2_02.webp",
+    imageSrc: "src/img home/k70avif.avif",
     features: [
       "Genuine Cherry MX Switches",
       "Dynamic Per-Key RGB Backlighting",
@@ -137,7 +137,8 @@ const techNews = ref([
     <section class="video-hero-section">
       <div class="video-overlay top-gradient"></div>
       <video autoplay muted loop playsinline class="hero-background-video" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAABAAACwAAAAAAQABAAACAkQBADs=">
-        <source src="https://assets.corsair.com/video/upload/f_auto,ac_none/q_75/Homepage%20Assets/Hero-Banners/doom-crop.mp4" type="video/mp4">
+        <!-- MODIFIED LINE BELOW -->
+        <source src="/src/img home/video/doom.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
       <div class="video-overlay bottom-gradient"></div>
