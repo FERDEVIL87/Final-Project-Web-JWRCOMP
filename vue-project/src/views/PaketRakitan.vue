@@ -304,7 +304,7 @@ export default {
       selectedCategoryFilter: "",
       selectedPCForModal: null,
       bootstrapPCModal: null, // Instance untuk Modal Bootstrap
-      showSimulasi: false,
+      showSimulasi: false, // Tetap gunakan variabel, hanya label/tampilan yang diganti
       showPreview: false,
       partsData: {
         CPU: [
@@ -355,14 +355,12 @@ export default {
         Casing: 1,
       },
       totalPrice: 0,
-      showSpecsId: null, // Untuk menampilkan spesifikasi detail per card
       cart: [],
       showCart: false,
     };
   },
   mounted() {
-    // Inisialisasi Modal Bootstrap
-    const modalElement = this.$refs.pcDetailModalRef; // Ganti ref jika berbeda
+    const modalElement = this.$refs.pcDetailModalRef;
     if (modalElement) {
       this.bootstrapPCModal = new Modal(modalElement);
       modalElement.addEventListener('hidden.bs.modal', () => {
@@ -373,10 +371,7 @@ export default {
         document.body.style.overflow = 'hidden';
       });
     }
-    // Jika ingin kategori pertama otomatis terpilih saat halaman dimuat
-    // if (this.uniqueCategoriesList.length > 0) {
-    //   this.selectedCategoryFilter = this.uniqueCategoriesList[0];
-    // }
+    this.updateTotal();
   },
   computed: {
     filteredPCs() {
@@ -386,25 +381,18 @@ export default {
         return matchesSearch && matchesCategory;
       });
     },
-    // Membuat daftar kategori unik dari data PC untuk filter dropdown
     uniqueCategoriesList() {
       const categories = this.pcs.map(pc => pc.category);
-      return [...new Set(categories)].sort(); // Urutkan kategori
+      return [...new Set(categories)].sort();
     },
     categoriesWithPCs() {
-      // Menggunakan uniqueCategoriesList untuk urutan yang konsisten
       const categoryData = this.uniqueCategoriesList.map(categoryName => {
         const pcsInCategory = this.filteredPCs.filter(pc => pc.category === categoryName);
-        // Mengambil gambar dari PC pertama dalam kategori tersebut sebagai background header (jika ada)
-        const firstPCOfCategory = this.pcs.find(pc => pc.category === categoryName && pc.image);
         return {
           name: categoryName,
           pcs: pcsInCategory,
-          // backgroundImage: firstPCOfCategory ? firstPCOfCategory.image : '', // Hapus jika tidak ingin background image di header
         };
       });
-
-      // Filter kategori berdasarkan pilihan filter atau tampilkan semua yang memiliki PC
       if (this.selectedCategoryFilter) {
         return categoryData.filter(cat => cat.name === this.selectedCategoryFilter && cat.pcs.length > 0);
       }
@@ -431,7 +419,6 @@ export default {
     },
     selectPart(part, item) {
       this.selectedParts[part] = item;
-      // Reset jumlah ke 1 jika memilih baru, atau ke 1 jika dikosongkan
       this.quantities[part] = item ? 1 : 1;
       this.updateTotal();
     },
@@ -455,72 +442,71 @@ export default {
         this.quantities[key] = 1;
       }
       this.updateTotal();
+      this.showPreview = false;
     },
-    printSimulasi() {
-      // Cetak struk sederhana di jendela baru
-      const win = window.open('', '', 'width=600,height=700');
-      let html = `
-        <html>
-        <head>
-          <title>Struk Pembelian Simulasi Rakitan PC</title>
-          <style>
-            body { font-family: Arial, sans-serif; color: #222; background: #fff; margin: 0; padding: 20px; }
-            h2 { text-align: center; margin-bottom: 18px; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
-            th, td { border: 1px solid #aaa; padding: 6px 10px; font-size: 0.98em; }
-            th { background: #f0f0f0; }
-            .total-row td { font-weight: bold; border-top: 2px solid #222; }
-            .footer { text-align: center; margin-top: 24px; font-size: 0.95em; color: #666; }
-          </style>
-        </head>
-        <body>
-          <h2>Struk Pembelian Simulasi Rakitan PC</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Komponen</th>
-                <th>Nama</th>
-                <th>Harga Satuan</th>
-                <th>Jumlah</th>
-                <th>Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-      `;
-      for (const part in this.selectedParts) {
-        const item = this.selectedParts[part];
-        if (item) {
-          html += `
-            <tr>
-              <td>${part}</td>
-              <td>${item.name}</td>
-              <td>Rp ${item.price.toLocaleString('id-ID')}</td>
-              <td>${this.quantities[part]}</td>
-              <td>Rp ${(item.price * this.quantities[part]).toLocaleString('id-ID')}</td>
-            </tr>
-          `;
-        }
-      }
-      html += `
-            <tr class="total-row">
-              <td colspan="4" style="text-align:right;">Total</td>
-              <td>Rp ${this.totalPrice.toLocaleString('id-ID')}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="footer">
-          Dicetak pada: ${new Date().toLocaleString('id-ID')}
-        </div>
-        </body>
-        </html>
-      `;
-      win.document.write(html);
-      win.document.close();
-      win.focus();
-      setTimeout(() => win.print(), 300);
-    },
+    // printSimulasi() {
+    //   const win = window.open('', '', 'width=600,height=700');
+    //   let html = `
+    //     <html>
+    //     <head>
+    //       <title>Struk Pembelian Simulasi Rakitan PC</title>
+    //       <style>
+    //         body { font-family: Arial, sans-serif; color: #222; background: #fff; margin: 0; padding: 20px; }
+    //         h2 { text-align: center; margin-bottom: 18px; }
+    //         table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
+    //         th, td { border: 1px solid #aaa; padding: 6px 10px; font-size: 0.98em; }
+    //         th { background: #f0f0f0; }
+    //         .total-row td { font-weight: bold; border-top: 2px solid #222; }
+    //         .footer { text-align: center; margin-top: 24px; font-size: 0.95em; color: #666; }
+    //       </style>
+    //     </head>
+    //     <body>
+    //       <h2>Struk Pembelian Simulasi Rakitan PC</h2>
+    //       <table>
+    //         <thead>
+    //           <tr>
+    //             <th>Komponen</th>
+    //             <th>Nama</th>
+    //             <th>Harga Satuan</th>
+    //             <th>Jumlah</th>
+    //             <th>Subtotal</th>
+    //           </tr>
+    //         </thead>
+    //         <tbody>
+    //   `;
+    //   for (const part in this.selectedParts) {
+    //     const item = this.selectedParts[part];
+    //     if (item) {
+    //       html += `
+    //         <tr>
+    //           <td>${part}</td>
+    //           <td>${item.name}</td>
+    //           <td>Rp ${item.price.toLocaleString('id-ID')}</td>
+    //           <td>${this.quantities[part]}</td>
+    //           <td>Rp ${(item.price * this.quantities[part]).toLocaleString('id-ID')}</td>
+    //         </tr>
+    //       `;
+    //     }
+    //   }
+    //   html += `
+    //         <tr class="total-row">
+    //           <td colspan="4" style="text-align:right;">Total</td>
+    //           <td>Rp ${this.totalPrice.toLocaleString('id-ID')}</td>
+    //         </tr>
+    //       </tbody>
+    //     </table>
+    //     <div class="footer">
+    //       Dicetak pada: ${new Date().toLocaleString('id-ID')}
+    //     </div>
+    //     </body>
+    //     </html>
+    //   `;
+    //   win.document.write(html);
+    //   win.document.close();
+    //   win.focus();
+    //   setTimeout(() => win.print(), 300);
+    // },
     saveSimulasi() {
-      // Simpan ke localStorage (atau bisa ke backend jika ada API)
       const data = {
         parts: this.selectedParts,
         quantities: this.quantities,
@@ -535,11 +521,7 @@ export default {
       this.quantities[part] = 1;
       this.updateTotal();
     },
-    toggleSpecs(id) {
-      this.showSpecsId = this.showSpecsId === id ? null : id;
-    },
     addToCartSimulasi() {
-      // Buat item keranjang dari parts yang dipilih
       const parts = Object.entries(this.selectedParts)
         .filter(([_, item]) => item)
         .map(([part, item]) => ({
@@ -556,11 +538,18 @@ export default {
       this.cart.push({
         id: Date.now(),
         type: 'rakitan',
+        // name: 'Simulasi Rakitan Kustom', // Dihapus sesuai permintaan
         parts,
         total: this.totalPrice
       });
       this.showCart = true;
-      // alert('Simulasi rakitan berhasil ditambahkan ke keranjang!');
+      // Reset jumlah produk setelah menambah ke keranjang
+      for (const key in this.selectedParts) {
+        this.selectedParts[key] = null;
+        this.quantities[key] = 1;
+      }
+      this.updateTotal();
+      this.showPreview = false;
     },
     addToCart(pc) {
       const found = this.cart.find(item => item.id === pc.id && item.type !== 'rakitan');
@@ -570,7 +559,6 @@ export default {
         this.cart.push({ ...pc, qty: 1, type: 'paket' });
       }
       this.showCart = true;
-      // alert('Paket berhasil ditambahkan ke keranjang!');
     },
     removeFromCart(id) {
       this.cart = this.cart.filter(item => item.id !== id);
@@ -590,11 +578,11 @@ export default {
     selectedParts: {
       handler: 'updateTotal',
       deep: true
+    },
+    quantities: {
+      handler: 'updateTotal',
+      deep: true
     }
-  },
-  mounted() {
-    // ...existing code...
-    this.updateTotal();
   },
 };
 </script>
@@ -604,21 +592,21 @@ export default {
     <div class="container py-4 py-md-5">
       <h2 class="section-title-bs text-center">Paket Rakitan PC</h2>
 
-      <!-- Pembelian Paket -->
+      <!-- Pembelian Produk -->
       <div class="text-center mb-4">
         <div class="pembelian-paket-highlight d-inline-block position-relative">
           <button
             class="btn btn-pembelian-paket-bs"
             @click="showSimulasi = !showSimulasi"
           >
-            {{ showSimulasi ? 'Tutup Pembelian Paket' : 'Pembelian Paket' }}
+            {{ showSimulasi ? 'Tutup Pembelian Produk' : 'Pembelian Produk' }}
           </button>
           <div class="paket-pointer-efek"></div>
         </div>
       </div>
       <transition name="fade-slide">
         <div v-if="showSimulasi" class="row justify-content-center mb-4">
-          <div class="col-lg-10 col-xl-8">
+          <div class="col-12">
             <div class="simulasi-form-bs p-3 rounded-3 mb-3 shadow-lg animate-glow">
               <table class="table table-dark table-bordered align-middle mb-0 simulasi-table-bs">
                 <thead>
@@ -650,7 +638,6 @@ export default {
                         class="form-control form-control-sm"
                         style="width: 70px;"
                         v-model.number="quantities[part]"
-                        @input="updateTotal"
                       />
                       <span v-else>-</span>
                     </td>
@@ -690,14 +677,14 @@ export default {
               <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
                 <div class="total-bs fs-5 fw-bold neon-text-glow">Total: {{ formatPrice(totalPrice) }}</div>
                 <div class="d-flex flex-wrap align-items-center">
-                  <button class="btn btn-secondary me-2" @click="resetSimulasi">Batalkan</button>
-                  <button class="btn btn-primary me-2" @click="printSimulasi">Cetak Struk</button>
-                  <button class="btn btn-success me-2" @click="addToCartSimulasi">Tambah ke Keranjang</button>
+                  <button class="btn btn-secondary me-2 mt-1 mt-md-0" @click="resetSimulasi">Batalkan</button>
+                  <!-- <button class="btn btn-primary me-2 mt-1 mt-md-0" @click="printSimulasi">Cetak Struk</button> -->
+                  <button class="btn btn-success me-2 mt-1 mt-md-0" @click="addToCartSimulasi">Tambah ke Keranjang</button>
                 </div>
               </div>
               <!-- Preview Section -->
               <div v-if="showPreview" class="preview-simulasi-bs mt-4 p-3 rounded-3">
-                <h5 class="mb-3">Preview Simulasi Rakitan</h5>
+                <h5 class="mb-3">Preview Pembelian Produk</h5>
                 <ul class="list-group mb-2">
                   <li v-for="(item, part) in selectedParts" :key="part" v-if="item"
                       class="list-group-item bg-transparent text-light border-secondary py-1 px-2">
@@ -716,14 +703,14 @@ export default {
         <div v-if="showCart" class="cart-shopee-bs shadow-lg rounded-3 p-3 mb-4">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div class="fw-bold fs-5 text-info"><i class="bi bi-cart3 me-2"></i>Keranjang</div>
-            <button class="btn btn-sm btn-danger" @click="clearCart">Batalkan</button>
+            <!-- <button class="btn btn-sm btn-danger" @click="clearCart">Batalkan</button> -->
           </div>
           <div v-if="cart.length > 0">
             <table class="table table-sm table-dark table-bordered align-middle mb-2">
               <thead>
                 <tr>
                   <th>Item</th>
-                  <th>Qty</th>
+                  <th>Jumlah Barang</th>
                   <th>Subtotal</th>
                   <th>Aksi</th>
                 </tr>
@@ -732,10 +719,10 @@ export default {
                 <tr v-for="item in cart" :key="item.id">
                   <td>
                     <template v-if="item.type === 'rakitan'">
-                      <div><strong>Rakitan</strong></div>
+                      <!-- <div><strong>{{ item.name }}</strong></div> -->
                       <ul class="mb-0 ps-3">
                         <li v-for="part in item.parts" :key="part.part">
-                          {{ part.part }}: {{ part.name }} x{{ part.qty }}
+                          {{ part.part }}: {{ part.name }}
                         </li>
                       </ul>
                     </template>
@@ -744,22 +731,20 @@ export default {
                     </template>
                   </td>
                   <td>
-                    <template v-if="item.type === 'rakitan'">1</template>
-                    <template v-else>
-                      <input type="number" min="1" v-model.number="item.qty" style="width:60px;" class="form-control form-control-sm" />
-                    </template>
+                    <!-- Set jumlah barang otomatis satu per item, tidak bisa diubah -->
+                    1
                   </td>
                   <td>
                     <template v-if="item.type === 'rakitan'">
                       {{ formatPrice(item.total) }}
                     </template>
                     <template v-else>
-                      {{ formatPrice(item.price * item.qty) }}
+                      {{ formatPrice(item.price) }}
                     </template>
                   </td>
                   <td>
                     <button class="btn btn-sm btn-outline-danger" @click="removeFromCart(item.id)">
-                      <i class="bi bi-trash"></i>
+                      <i class="bi bi-trash"></i> Pembatalan Produk
                     </button>
                   </td>
                 </tr>
@@ -824,11 +809,9 @@ export default {
               >
                 <div class="card-img-wrapper-bs pc-bg-wrapper">
                   <div class="pc-bg-decor"></div>
-                  <!-- Hiasan SVG garis melengkung -->
                   <svg class="pc-curve-decor" width="100" height="40" viewBox="0 0 100 40" fill="none">
                     <path d="M0,35 Q50,0 100,35" stroke="#00ffe7" stroke-width="2.5" fill="none" opacity="0.18"/>
                   </svg>
-                  <!-- Hiasan bintang -->
                   <span class="pc-star star1"></span>
                   <span class="pc-star star2"></span>
                   <span class="pc-star star3"></span>
@@ -837,10 +820,8 @@ export default {
                 <div class="card-body d-flex flex-column p-3">
                   <h4 class="card-title card-title-bs mb-2">{{ pc.name }}</h4>
                   <p class="card-text-desc-bs small mb-2">{{ pc.description }}</p>
-                  <div class="d-flex flex-wrap align-items-center mb-2 gap-2">
-                    <button class="btn btn-outline-info btn-sm" @click.stop="toggleSpecs(pc.id)">
-                      Spesifikasi Detail
-                    </button>
+                  
+                  <div class="d-flex flex-wrap align-items-center justify-content-center mb-2 gap-2">
                     <span
                       class="badge"
                       :class="pc.price < 10000000 ? 'bg-success text-light' : 'bg-danger text-light'"
@@ -848,14 +829,15 @@ export default {
                     >
                       {{ pc.price < 10000000 ? 'Ready Stock' : 'Stock Kosong' }}
                     </span>
+                    <button
+                      v-if="pc.price < 10000000"
+                      class="btn btn-sm btn-success" 
+                      @click.stop="addToCart(pc)"
+                    >
+                      <i class="bi bi-cart-plus-fill me-1"></i> Checkout
+                    </button>
                   </div>
-                  <div v-if="showSpecsId === pc.id" class="mb-2">
-                    <ul class="list-group list-group-flush">
-                      <li v-for="(value, key) in pc.specs" :key="key" class="list-group-item bg-transparent text-light py-1 px-2 border-0">
-                        <strong>{{ key }}:</strong> {{ value }}
-                      </li>
-                    </ul>
-                  </div>
+                  
                   <p class="card-text card-text-price-bs mt-auto mb-0">
                     <strong>Harga:</strong> {{ formatPrice(pc.price) }}
                   </p>
@@ -871,7 +853,7 @@ export default {
 
       <!-- Modal Bootstrap -->
       <div class="modal fade" id="pcDetailModalBs" tabindex="-1" aria-labelledby="pcDetailModalLabelBs" aria-hidden="true" ref="pcDetailModalRef">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"> <!-- modal-lg untuk modal lebih lebar -->
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
           <div class="modal-content modal-content-bs">
             <div class="modal-header modal-header-bs">
               <h5 class="modal-title w-100 text-center modal-pc-title-bs" id="pcDetailModalLabelBs">
@@ -1220,6 +1202,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   min-height: calc(0.85rem * 1.5 * 2);
+  text-align: center; /* Added to center description text */
 }
 .card-text-price-bs {
   font-size: 1.05rem;
@@ -1227,6 +1210,7 @@ export default {
   color: #fff;
   letter-spacing: 0.2px;
   text-shadow: 0 1px 8px #00eaff33;
+  text-align: center; /* Added to center price text */
 }
 .card-text-price-bs strong {
   color: #00ffe7;
@@ -1421,11 +1405,17 @@ export default {
 
 /* Responsive Adjustments */
 @media (min-width: 768px) { /* md ke atas */
-  .card-bs .card-body {
-    text-align: left;
-  }
+  /* .card-bs .card-body {
+    text-align: left; 
+  } */ /* Commented out to allow individual text-center to work */
   .card-title-bs {
-    justify-content: flex-start;
+    justify-content: flex-start; /* Title text aligns left on md+ */
+  }
+  .card-text-desc-bs {
+     text-align: left; /* Description text aligns left on md+ */
+  }
+  .card-text-price-bs {
+     text-align: left; /* Price text aligns left on md+ */
   }
 }
 @media (max-width: 767.98px) { /* Di bawah md */
@@ -1461,13 +1451,16 @@ export default {
   .card-title-bs {
     font-size: 0.9rem;
     min-height: calc(0.9rem * 1.35 * 2);
+    justify-content: center !important; /* Ensure title text is centered on small screens */
   }
   .card-text-desc-bs {
     font-size: 0.75rem;
     min-height: calc(0.75rem * 1.4 * 2);
+    text-align: center !important; /* Ensure desc text is centered on small screens */
   }
    .card-text-price-bs {
     font-size: 0.85rem;
+    text-align: center !important; /* Ensure price text is centered on small screens */
   }
   .card-bs .card-body {
     padding: 0.75rem;
@@ -1595,5 +1588,28 @@ export default {
 @keyframes paket-pointer-blink {
   0% { opacity: 0.45; }
   100% { opacity: 0.7; filter: blur(0.5px); }
+}
+
+/* Keranjang Shopee Style */
+.cart-shopee-bs {
+  background: #11192b; /* Dark background */
+  border: 1px solid #00d9ff33; /* Neon border */
+  color: var(--text-light);
+}
+.cart-shopee-bs .table {
+  color: var(--text-light); /* Ensure table text is light */
+}
+.cart-shopee-bs .table th,
+.cart-shopee-bs .table td {
+  border-color: #00d9ff55; /* Neon border for table cells */
+}
+.cart-shopee-bs .table thead th {
+  background-color: #1a243a; /* Darker header for table */
+  color: var(--primary-color);
+}
+.cart-shopee-bs .form-control-sm {
+  background-color: var(--background-card);
+  color: var(--text-light);
+  border-color: var(--border-color-medium);
 }
 </style>
