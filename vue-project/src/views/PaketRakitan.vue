@@ -1,8 +1,14 @@
 <script>
 import { Modal } from 'bootstrap'; // Import Modal Bootstrap
+import { cartStore } from '@/store/cartStore'; // Import global cart store
+import { useRouter } from 'vue-router'; // Import for navigation
 
 export default {
-  name: "PaketRakitanPC", // Mengganti nama komponen agar sesuai konteks
+  name: "PaketRakitanPC",
+  setup() {
+    const router = useRouter(); // Initialize router
+    return { router, cartStore }; // Expose to template
+  },
   data() {
     return {
       pcs: [ // Data PC Anda
@@ -11,7 +17,7 @@ export default {
           name: "Paket Gaming Low-End",
           category: "Gaming",
           price: 4500000,
-          image: "src/imgcomp/gaming1.png", // Pastikan path ini benar
+          image: "src/imgcomp/gaming1.png",
           description: "PC gaming hemat untuk game eSports seperti Valorant, Dota 2, dan CS:GO. Cocok untuk pelajar dan warnet.",
           specs: {
             CPU: "Intel Core i3 10100F",
@@ -86,10 +92,9 @@ export default {
             Casing: "Slim Tower"
           }
         },
-        // Duplikat 1 kolom di bagian office
         {
           id: 30,
-          name: "Paket Office Pro",
+          name: "Paket Office Pro (Duplicate)", // Renamed for clarity
           category: "Office",
           price: 5500000,
           image: "src/imgcomp/office2.png",
@@ -119,10 +124,9 @@ export default {
             Casing: "ATX"
           }
         },
-        // Duplikat 1 kolom di bagian editing
         {
           id: 35,
-          name: "Paket Editing & Desain",
+          name: "Paket Editing & Desain (Duplicate)", // Renamed
           category: "Editing",
           price: 12000000,
           image: "src/imgcomp/edit1.png",
@@ -152,10 +156,9 @@ export default {
             Casing: "Full ATX"
           }
         },
-        // Duplikat 2 kolom di bagian streaming
         {
           id: 31,
-          name: "Paket Streaming & Content Creator",
+          name: "Paket Streaming (Duplicate 1)", // Renamed
           category: "Streaming",
           price: 15500000,
           image: "src/imgcomp/streaming.png",
@@ -171,7 +174,7 @@ export default {
         },
         {
           id: 32,
-          name: "Paket Streaming & Content Creator",
+          name: "Paket Streaming (Duplicate 2)", // Renamed
           category: "Streaming",
           price: 15500000,
           image: "src/imgcomp/streaming.png",
@@ -201,10 +204,9 @@ export default {
             Casing: "Open Frame Mining"
           }
         },
-        // Duplikat 2 kolom di bagian mining
         {
           id: 36,
-          name: "Mining Rig 6 VGA",
+          name: "Mining Rig (Duplicate 1)", // Renamed
           category: "Mining",
           price: 35000000,
           image: "src/imgcomp/mining.png",
@@ -220,7 +222,7 @@ export default {
         },
         {
           id: 37,
-          name: "Mining Rig 6 VGA",
+          name: "Mining Rig (Duplicate 2)", // Renamed
           category: "Mining",
           price: 35000000,
           image: "src/imgcomp/mining.png",
@@ -250,10 +252,9 @@ export default {
             Casing: "Mini ATX"
           }
         },
-        // Duplikat 2 kolom di bagian warnet
         {
           id: 33,
-          name: "Paket Warnet eSports",
+          name: "Paket Warnet (Duplicate 1)", // Renamed
           category: "Warnet",
           price: 6500000,
           image: "src/imgcomp/warnet.png",
@@ -269,7 +270,7 @@ export default {
         },
         {
           id: 34,
-          name: "Paket Warnet eSports",
+          name: "Paket Warnet (Duplicate 2)", // Renamed
           category: "Warnet",
           price: 6500000,
           image: "src/imgcomp/warnet.png",
@@ -303,60 +304,22 @@ export default {
       searchQuery: "",
       selectedCategoryFilter: "",
       selectedPCForModal: null,
-      bootstrapPCModal: null, // Instance untuk Modal Bootstrap
-      showSimulasi: false, // Tetap gunakan variabel, hanya label/tampilan yang diganti
-      showPreview: false,
+      bootstrapPCModal: null,
+      showSimulasi: false,
+      showPreview: false, // Keep for simulation preview before adding to global cart
       partsData: {
-        CPU: [
-          { id: 1, name: "Intel Core i3 10100F", price: 1200000 },
-          { id: 2, name: "Intel Core i5 12400F", price: 2200000 },
-          { id: 3, name: "AMD Ryzen 5 5600G", price: 2100000 },
-        ],
-        GPU: [
-          { id: 1, name: "GTX 750 Ti 2GB", price: 900000 },
-          { id: 2, name: "GTX 1650 4GB", price: 1800000 },
-          { id: 3, name: "RTX 3060 12GB", price: 5500000 },
-        ],
-        RAM: [
-          { id: 1, name: "8GB DDR4", price: 350000 },
-          { id: 2, name: "16GB DDR4", price: 700000 },
-          { id: 3, name: "32GB DDR4", price: 1400000 },
-        ],
-        Storage: [
-          { id: 1, name: "SSD 240GB", price: 350000 },
-          { id: 2, name: "SSD 512GB", price: 700000 },
-          { id: 3, name: "SSD NVMe 1TB", price: 1500000 },
-        ],
-        PSU: [
-          { id: 1, name: "450W", price: 350000 },
-          { id: 2, name: "500W", price: 500000 },
-          { id: 3, name: "750W 80+ Gold", price: 1200000 },
-        ],
-        Casing: [
-          { id: 1, name: "Mini ATX", price: 300000 },
-          { id: 2, name: "ATX RGB", price: 600000 },
-          { id: 3, name: "Full ATX RGB", price: 900000 },
-        ],
+        CPU: [ { id: 1, name: "Intel Core i3 10100F", price: 1200000 }, { id: 2, name: "Intel Core i5 12400F", price: 2200000 }, { id: 3, name: "AMD Ryzen 5 5600G", price: 2100000 }, ],
+        GPU: [ { id: 1, name: "GTX 750 Ti 2GB", price: 900000 }, { id: 2, name: "GTX 1650 4GB", price: 1800000 }, { id: 3, name: "RTX 3060 12GB", price: 5500000 }, ],
+        RAM: [ { id: 1, name: "8GB DDR4", price: 350000 }, { id: 2, name: "16GB DDR4", price: 700000 }, { id: 3, name: "32GB DDR4", price: 1400000 }, ],
+        Storage: [ { id: 1, name: "SSD 240GB", price: 350000 }, { id: 2, name: "SSD 512GB", price: 700000 }, { id: 3, name: "SSD NVMe 1TB", price: 1500000 }, ],
+        PSU: [ { id: 1, name: "450W", price: 350000 }, { id: 2, name: "500W", price: 500000 }, { id: 3, name: "750W 80+ Gold", price: 1200000 }, ],
+        Casing: [ { id: 1, name: "Mini ATX", price: 300000 }, { id: 2, name: "ATX RGB", price: 600000 }, { id: 3, name: "Full ATX RGB", price: 900000 }, ],
       },
-      selectedParts: {
-        CPU: null,
-        GPU: null,
-        RAM: null,
-        Storage: null,
-        PSU: null,
-        Casing: null,
-      },
-      quantities: {
-        CPU: 1,
-        GPU: 1,
-        RAM: 1,
-        Storage: 1,
-        PSU: 1,
-        Casing: 1,
-      },
+      selectedParts: { CPU: null, GPU: null, RAM: null, Storage: null, PSU: null, Casing: null, },
+      quantities: { CPU: 1, GPU: 1, RAM: 1, Storage: 1, PSU: 1, Casing: 1, },
       totalPrice: 0,
-      cart: [],
-      showCart: false,
+      // cart: [], // REMOVED: Local cart is no longer used
+      // showCart: false, // REMOVED
     };
   },
   mounted() {
@@ -371,7 +334,7 @@ export default {
         document.body.style.overflow = 'hidden';
       });
     }
-    this.updateTotal();
+    this.updateTotal(); // For simulation
   },
   computed: {
     filteredPCs() {
@@ -388,10 +351,7 @@ export default {
     categoriesWithPCs() {
       const categoryData = this.uniqueCategoriesList.map(categoryName => {
         const pcsInCategory = this.filteredPCs.filter(pc => pc.category === categoryName);
-        return {
-          name: categoryName,
-          pcs: pcsInCategory,
-        };
+        return { name: categoryName, pcs: pcsInCategory, };
       });
       if (this.selectedCategoryFilter) {
         return categoryData.filter(cat => cat.name === this.selectedCategoryFilter && cat.pcs.length > 0);
@@ -419,7 +379,7 @@ export default {
     },
     selectPart(part, item) {
       this.selectedParts[part] = item;
-      this.quantities[part] = item ? 1 : 1;
+      this.quantities[part] = item ? 1 : 1; // Reset quantity if item selected, or keep 1 if deselected (though not used if null)
       this.updateTotal();
     },
     getSubtotal(part) {
@@ -444,76 +404,7 @@ export default {
       this.updateTotal();
       this.showPreview = false;
     },
-    // printSimulasi() {
-    //   const win = window.open('', '', 'width=600,height=700');
-    //   let html = `
-    //     <html>
-    //     <head>
-    //       <title>Struk Pembelian Simulasi Rakitan PC</title>
-    //       <style>
-    //         body { font-family: Arial, sans-serif; color: #222; background: #fff; margin: 0; padding: 20px; }
-    //         h2 { text-align: center; margin-bottom: 18px; }
-    //         table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
-    //         th, td { border: 1px solid #aaa; padding: 6px 10px; font-size: 0.98em; }
-    //         th { background: #f0f0f0; }
-    //         .total-row td { font-weight: bold; border-top: 2px solid #222; }
-    //         .footer { text-align: center; margin-top: 24px; font-size: 0.95em; color: #666; }
-    //       </style>
-    //     </head>
-    //     <body>
-    //       <h2>Struk Pembelian Simulasi Rakitan PC</h2>
-    //       <table>
-    //         <thead>
-    //           <tr>
-    //             <th>Komponen</th>
-    //             <th>Nama</th>
-    //             <th>Harga Satuan</th>
-    //             <th>Jumlah</th>
-    //             <th>Subtotal</th>
-    //           </tr>
-    //         </thead>
-    //         <tbody>
-    //   `;
-    //   for (const part in this.selectedParts) {
-    //     const item = this.selectedParts[part];
-    //     if (item) {
-    //       html += `
-    //         <tr>
-    //           <td>${part}</td>
-    //           <td>${item.name}</td>
-    //           <td>Rp ${item.price.toLocaleString('id-ID')}</td>
-    //           <td>${this.quantities[part]}</td>
-    //           <td>Rp ${(item.price * this.quantities[part]).toLocaleString('id-ID')}</td>
-    //         </tr>
-    //       `;
-    //     }
-    //   }
-    //   html += `
-    //         <tr class="total-row">
-    //           <td colspan="4" style="text-align:right;">Total</td>
-    //           <td>Rp ${this.totalPrice.toLocaleString('id-ID')}</td>
-    //         </tr>
-    //       </tbody>
-    //     </table>
-    //     <div class="footer">
-    //       Dicetak pada: ${new Date().toLocaleString('id-ID')}
-    //     </div>
-    //     </body>
-    //     </html>
-    //   `;
-    //   win.document.write(html);
-    //   win.document.close();
-    //   win.focus();
-    //   setTimeout(() => win.print(), 300);
-    // },
-    saveSimulasi() {
-      const data = {
-        parts: this.selectedParts,
-        quantities: this.quantities,
-        total: this.totalPrice,
-        savedAt: new Date().toISOString()
-      };
-      localStorage.setItem('simulasiRakitan', JSON.stringify(data));
+    saveSimulasi() { // This now just shows preview, actual saving to cart is addToCartSimulasi
       this.showPreview = true;
     },
     gantiKomponen(part) {
@@ -521,68 +412,70 @@ export default {
       this.quantities[part] = 1;
       this.updateTotal();
     },
-    addToCartSimulasi() {
-      const parts = Object.entries(this.selectedParts)
-        .filter(([_, item]) => item)
-        .map(([part, item]) => ({
-          part,
-          name: item.name,
-          price: item.price,
-          qty: this.quantities[part] || 1,
-          subtotal: item.price * (this.quantities[part] || 1)
-        }));
-      if (parts.length === 0) {
+    addToCartSimulasi() { // Adds custom build to GLOBAL cartStore
+      const selectedPartsForCart = {};
+      let atLeastOnePartSelected = false;
+      for (const partKey in this.selectedParts) {
+        if (this.selectedParts[partKey]) {
+          atLeastOnePartSelected = true;
+          selectedPartsForCart[partKey] = {
+            name: this.selectedParts[partKey].name,
+            price: this.selectedParts[partKey].price, // Include price for display if needed
+            // No need for quantity here as Checkout.vue displays one line per part type
+          };
+        }
+      }
+
+      if (!atLeastOnePartSelected) {
         alert('Pilih minimal satu komponen untuk ditambahkan ke keranjang!');
         return;
       }
-      this.cart.push({
-        id: Date.now(),
-        type: 'rakitan',
-        // name: 'Simulasi Rakitan Kustom', // Dihapus sesuai permintaan
-        parts,
-        total: this.totalPrice
-      });
-      this.showCart = true;
-      // Reset jumlah produk setelah menambah ke keranjang
-      for (const key in this.selectedParts) {
-        this.selectedParts[key] = null;
-        this.quantities[key] = 1;
+
+      const customBuildItem = {
+        id: `sim-${Date.now()}`, // Unique ID for this custom build
+        source: 'rakitan_kustom',
+        name: 'Simulasi Rakitan Kustom',
+        price: this.totalPrice,
+        qty: 1, // A custom build is considered one item
+        category: 'Custom Rakitan',
+        brand: 'JWR Custom',
+        image: 'src/imgcomp/custom_build_placeholder.png', // Path to a generic placeholder image
+                                                          // Ensure this image exists and is accessible
+        specification: {
+          parts: selectedPartsForCart, // Pass the structured parts
+          // quantities: { ...this.quantities } // Optionally pass quantities if needed by Checkout.vue in future
+        }
+      };
+      cartStore.addItem(customBuildItem);
+      alert('Simulasi rakitan berhasil ditambahkan ke keranjang!');
+      this.resetSimulasi(); // Reset simulation form
+    },
+    addPaketToCart(pc) { // Renamed from addToCart to be specific
+      const paketItem = {
+        id: pc.id,
+        source: 'paket_rakitan',
+        name: pc.name,
+        price: pc.price,
+        qty: 1,
+        category: pc.category,
+        brand: pc.specs.CPU.includes("Intel") ? "Intel Build" : (pc.specs.CPU.includes("AMD") ? "AMD Build" : "JWR Paket"),
+        image: pc.image,
+        specification: Object.entries(pc.specs).map(([key, value]) => `${key}: ${value}`).join('; ')
+      };
+      cartStore.addItem(paketItem);
+      alert(`${pc.name} berhasil ditambahkan ke keranjang!`);
+    },
+    goToCheckout() {
+      if (cartStore.items.length === 0) {
+        alert("Keranjang belanja Anda kosong. Silakan tambahkan produk terlebih dahulu.");
+        return;
       }
-      this.updateTotal();
-      this.showPreview = false;
-    },
-    addToCart(pc) {
-      const found = this.cart.find(item => item.id === pc.id && item.type !== 'rakitan');
-      if (found) {
-        found.qty += 1;
-      } else {
-        this.cart.push({ ...pc, qty: 1, type: 'paket' });
-      }
-      this.showCart = true;
-    },
-    removeFromCart(id) {
-      this.cart = this.cart.filter(item => item.id !== id);
-    },
-    clearCart() {
-      this.cart = [];
-      this.showCart = false;
-    },
-    cartTotal() {
-      return this.cart.reduce((sum, item) => {
-        if (item.type === 'rakitan') return sum + (item.total || 0);
-        return sum + (item.price * (item.qty || 1));
-      }, 0);
+      this.router.push('/checkout');
     },
   },
   watch: {
-    selectedParts: {
-      handler: 'updateTotal',
-      deep: true
-    },
-    quantities: {
-      handler: 'updateTotal',
-      deep: true
-    }
+    selectedParts: { handler: 'updateTotal', deep: true },
+    quantities: { handler: 'updateTotal', deep: true }
   },
 };
 </script>
@@ -592,14 +485,14 @@ export default {
     <div class="container py-4 py-md-5">
       <h2 class="section-title-bs text-center">Paket Rakitan PC</h2>
 
-      <!-- Pembelian Produk -->
+      <!-- Pembelian Produk (Simulasi) -->
       <div class="text-center mb-4">
         <div class="pembelian-paket-highlight d-inline-block position-relative">
           <button
             class="btn btn-pembelian-paket-bs"
             @click="showSimulasi = !showSimulasi"
           >
-            {{ showSimulasi ? 'Tutup Pembelian Produk' : 'Pembelian Produk' }}
+            {{ showSimulasi ? 'Tutup Simulasi Kustom' : 'Buat Rakitan Kustom' }}
           </button>
           <div class="paket-pointer-efek"></div>
         </div>
@@ -675,16 +568,20 @@ export default {
                 </tbody>
               </table>
               <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-                <div class="total-bs fs-5 fw-bold neon-text-glow">Total: {{ formatPrice(totalPrice) }}</div>
+                <div class="total-bs fs-5 fw-bold neon-text-glow">Total Simulasi: {{ formatPrice(totalPrice) }}</div>
                 <div class="d-flex flex-wrap align-items-center">
-                  <button class="btn btn-secondary me-2 mt-1 mt-md-0" @click="resetSimulasi">Batalkan</button>
-                  <!-- <button class="btn btn-primary me-2 mt-1 mt-md-0" @click="printSimulasi">Cetak Struk</button> -->
-                  <button class="btn btn-success me-2 mt-1 mt-md-0" @click="addToCartSimulasi">Tambah ke Keranjang</button>
+                  <button class="btn btn-secondary me-2 mt-1 mt-md-0" @click="resetSimulasi">Reset</button>
+                  <button class="btn btn-info me-2 mt-1 mt-md-0" @click="saveSimulasi" :disabled="totalPrice === 0">
+                    Preview Rakitan
+                  </button>
+                  <button class="btn btn-success me-2 mt-1 mt-md-0" @click="addToCartSimulasi" :disabled="totalPrice === 0">
+                    <i class="bi bi-cart-plus-fill"></i> Tambah ke Keranjang
+                  </button>
                 </div>
               </div>
               <!-- Preview Section -->
               <div v-if="showPreview" class="preview-simulasi-bs mt-4 p-3 rounded-3">
-                <h5 class="mb-3">Preview Pembelian Produk</h5>
+                <h5 class="mb-3">Preview Rakitan Kustom</h5>
                 <ul class="list-group mb-2">
                   <li v-for="(item, part) in selectedParts" :key="part" v-if="item"
                       class="list-group-item bg-transparent text-light border-secondary py-1 px-2">
@@ -698,68 +595,18 @@ export default {
         </div>
       </transition>
 
-      <!-- Keranjang Pembelian di bawah pembelian paket -->
-      <transition name="fade-slide">
-        <div v-if="showCart" class="cart-shopee-bs shadow-lg rounded-3 p-3 mb-4">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <div class="fw-bold fs-5 text-info"><i class="bi bi-cart3 me-2"></i>Keranjang</div>
-            <!-- <button class="btn btn-sm btn-danger" @click="clearCart">Batalkan</button> -->
-          </div>
-          <div v-if="cart.length > 0">
-            <table class="table table-sm table-dark table-bordered align-middle mb-2">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Jumlah Barang</th>
-                  <th>Subtotal</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in cart" :key="item.id">
-                  <td>
-                    <template v-if="item.type === 'rakitan'">
-                      <!-- <div><strong>{{ item.name }}</strong></div> -->
-                      <ul class="mb-0 ps-3">
-                        <li v-for="part in item.parts" :key="part.part">
-                          {{ part.part }}: {{ part.name }}
-                        </li>
-                      </ul>
-                    </template>
-                    <template v-else>
-                      {{ item.name }}
-                    </template>
-                  </td>
-                  <td>
-                    <!-- Set jumlah barang otomatis satu per item, tidak bisa diubah -->
-                    1
-                  </td>
-                  <td>
-                    <template v-if="item.type === 'rakitan'">
-                      {{ formatPrice(item.total) }}
-                    </template>
-                    <template v-else>
-                      {{ formatPrice(item.price) }}
-                    </template>
-                  </td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-danger" @click="removeFromCart(item.id)">
-                      <i class="bi bi-trash"></i> Pembatalan Produk
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="fw-bold fs-5">Total: <span class="text-success">{{ formatPrice(cartTotal()) }}</span></div>
-              <button class="btn btn-success btn-lg px-4" @click="alert('Checkout belum diimplementasi')">
-                Beli Sekarang
-              </button>
-            </div>
-          </div>
-          <div v-else class="text-center text-muted py-3">Keranjang kosong.</div>
-        </div>
-      </transition>
+      <!-- Tombol Checkout Global -->
+      <div class="text-center my-4 py-3 border-top border-bottom border-secondary">
+        <h4 class="mb-3">Keranjang Belanja Global</h4>
+        <p v-if="cartStore.items.length > 0" class="mb-2">
+          Total Item: {{ cartStore.items.reduce((acc, item) => acc + item.qty, 0) }} | Total Harga: <span class="text-success fw-bold">{{ formatPrice(cartStore.totalPrice) }}</span>
+        </p>
+        <p v-else class="text-muted mb-2">Keranjang belanja utama masih kosong.</p>
+        <button class="btn btn-success btn-lg px-5" @click="goToCheckout">
+           <i class="bi bi-cart-check-fill me-2"></i> Lihat Keranjang & Checkout
+        </button>
+      </div>
+
 
       <!-- Filter Section -->
       <div class="row justify-content-center mb-4">
@@ -801,13 +648,15 @@ export default {
             >
               <div
                 class="card h-100 card-bs"
-                @click="openModal(pc)"
-                role="button"
+                role="button" 
                 tabindex="0"
-                @keydown.enter="openModal(pc)"
-                @keydown.space="openModal(pc)"
               >
-                <div class="card-img-wrapper-bs pc-bg-wrapper">
+                <div 
+                  class="card-img-wrapper-bs pc-bg-wrapper"
+                  @click="openModal(pc)"
+                  @keydown.enter="openModal(pc)"
+                  @keydown.space="openModal(pc)"
+                >
                   <div class="pc-bg-decor"></div>
                   <svg class="pc-curve-decor" width="100" height="40" viewBox="0 0 100 40" fill="none">
                     <path d="M0,35 Q50,0 100,35" stroke="#00ffe7" stroke-width="2.5" fill="none" opacity="0.18"/>
@@ -818,8 +667,15 @@ export default {
                   <img :src="pc.image" :alt="pc.name" class="card-img-top card-img-bs" />
                 </div>
                 <div class="card-body d-flex flex-column p-3">
-                  <h4 class="card-title card-title-bs mb-2">{{ pc.name }}</h4>
-                  <p class="card-text-desc-bs small mb-2">{{ pc.description }}</p>
+                  <h4 
+                    class="card-title card-title-bs mb-2" 
+                    @click="openModal(pc)"
+                    @keydown.enter="openModal(pc)"
+                  >{{ pc.name }}</h4>
+                  <p 
+                    class="card-text-desc-bs small mb-2"
+                    @click="openModal(pc)"
+                  >{{ pc.description }}</p>
                   
                   <div class="d-flex flex-wrap align-items-center justify-content-center mb-2 gap-2">
                     <span
@@ -831,14 +687,17 @@ export default {
                     </span>
                     <button
                       v-if="pc.price < 10000000"
-                      class="btn btn-sm btn-success" 
-                      @click.stop="addToCart(pc)"
+                      class="btn btn-sm btn-primary" 
+                      @click.stop="addPaketToCart(pc)"
                     >
-                      <i class="bi bi-cart-plus-fill me-1"></i> Checkout
+                      <i class="bi bi-cart-plus-fill me-1"></i> Tambah ke Keranjang
                     </button>
                   </div>
                   
-                  <p class="card-text card-text-price-bs mt-auto mb-0">
+                  <p 
+                    class="card-text card-text-price-bs mt-auto mb-0"
+                    @click="openModal(pc)"
+                  >
                     <strong>Harga:</strong> {{ formatPrice(pc.price) }}
                   </p>
                 </div>
@@ -883,6 +742,16 @@ export default {
                 </div>
               </div>
             </div>
+             <div class="modal-footer d-flex justify-content-center">
+                <button 
+                    v-if="selectedPCForModal && selectedPCForModal.price < 10000000" 
+                    type="button" 
+                    class="btn btn-primary" 
+                    @click="addPaketToCart(selectedPCForModal); closeModal();">
+                    <i class="bi bi-cart-plus-fill"></i> Tambah ke Keranjang
+                </button>
+                <button type="button" class="btn btn-secondary" @click="closeModal">Tutup</button>
+            </div>
           </div>
         </div>
       </div>
@@ -891,6 +760,7 @@ export default {
 </template>
 
 <style scoped>
+/* Styles from previous response, ensure they are complete */
 /* Variabel Warna Lokal */
 .pc-list-section-bs {
   --primary-color: #00d9ff;
@@ -1085,17 +955,16 @@ export default {
     box-shadow 0.25s, 
     border-color 0.25s,
     filter 0.25s;
-  cursor: pointer;
+  /* cursor: pointer; REMOVED - click targets are more specific now */
   color: var(--text-light);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
-  /* Efek glassmorphism */
   backdrop-filter: blur(2.5px) saturate(1.2);
   background-clip: padding-box;
 }
-.card-bs:hover, .card-bs:focus-visible {
+.card-bs:hover, .card-bs:focus-within { /* focus-within for keyboard nav */
   transform: translateY(-8px) scale(1.025) rotate(-0.5deg);
   box-shadow: 0 12px 38px 0 rgba(0,217,255,0.22), 0 2px 12px 0 rgba(143,92,255,0.18), 0 0 0 4px #00d9ff33;
   border-color: #00d9ff;
@@ -1112,7 +981,7 @@ export default {
   transition: opacity 0.2s;
   z-index: 1;
 }
-.card-bs:hover::before, .card-bs:focus-visible::before {
+.card-bs:hover::before, .card-bs:focus-within::before {
   opacity: 1;
   filter: brightness(1.15) drop-shadow(0 0 8px #00d9ff88);
 }
@@ -1133,7 +1002,6 @@ export default {
   position: relative;
   z-index: 2;
 }
-/* Efek animasi masuk untuk card */
 .card-bs {
   opacity: 0;
   transform: translateY(30px) scale(0.98);
@@ -1151,7 +1019,12 @@ export default {
 .col.d-flex.align-items-stretch:nth-child(4) .card-bs { animation-delay: 0.25s; }
 .col.d-flex.align-items-stretch:nth-child(5) .card-bs { animation-delay: 0.32s; }
 .col.d-flex.align-items-stretch:nth-child(6) .card-bs { animation-delay: 0.39s; }
-/* Responsive: bunga lebih kecil di mobile */
+
+.card-img-wrapper-bs, .card-title-bs, .card-text-desc-bs, .card-text-price-bs {
+    cursor: pointer; /* Apply pointer to elements that open modal */
+}
+
+
 @media (max-width: 575.98px) {
   .card-bs::after, .card-bs::before {
     width: 32px;
@@ -1165,7 +1038,6 @@ export default {
     border-radius: 9px;
   }
 }
-/* Card inner shadow untuk depth */
 .card-bs .card-body {
   box-shadow: 0 2px 12px 0 rgba(0,217,255,0.07) inset;
   border-radius: 0 0 12px 12px;
@@ -1202,7 +1074,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   min-height: calc(0.85rem * 1.5 * 2);
-  text-align: center; /* Added to center description text */
+  text-align: center; 
 }
 .card-text-price-bs {
   font-size: 1.05rem;
@@ -1210,14 +1082,13 @@ export default {
   color: #fff;
   letter-spacing: 0.2px;
   text-shadow: 0 1px 8px #00eaff33;
-  text-align: center; /* Added to center price text */
+  text-align: center;
 }
 .card-text-price-bs strong {
   color: #00ffe7;
   margin-right: 0.25rem;
   text-shadow: 0 0 8px #00ffe755;
 }
-/* Efek hover pada gambar */
 .card-img-wrapper-bs {
   background: linear-gradient(120deg, #11192b 60%, #00d9ff22 100%);
   padding: 12px;
@@ -1228,12 +1099,10 @@ export default {
   border-bottom: 1px solid var(--border-color-soft);
   transition: background 0.2s, box-shadow 0.3s;
   position: relative;
-  /* Neon border effect */
   box-shadow: 0 0 0 0 #00ffe7, 0 0 0 0 #8f5cff;
 }
 .card-bs:hover .card-img-wrapper-bs {
   background: linear-gradient(120deg, #11192b 40%, #00ffe7 100%);
-  /* Neon glow on hover */
   box-shadow:
     0 0 18px 4px #00ffe7,
     0 0 24px 8px #8f5cff,
@@ -1254,7 +1123,6 @@ export default {
       0 8px 32px #00eaff88;
   }
 }
-/* Neon border for image */
 .card-img-bs {
   max-width: 100%;
   max-height: 100%;
@@ -1275,7 +1143,6 @@ export default {
   border: 1.5px solid #00ffe7;
   filter: brightness(1.08) saturate(1.15);
 }
-/* Neon flicker effect for image border */
 @media (prefers-reduced-motion: no-preference) {
   .card-bs:hover .card-img-bs {
     animation: neon-flicker 1.7s infinite alternate;
@@ -1304,24 +1171,24 @@ export default {
   box-shadow: 0 7px 25px rgba(var(--primary-color-rgb-val), 0.55);
   border: 1px solid var(--border-color-strong);
   color: var(--text-light);
-  animation: scaleUpModal-bs 0.3s ease-out forwards; /* Forwards agar state akhir tetap */
+  animation: scaleUpModal-bs 0.3s ease-out forwards; 
   opacity: 0;
 }
 .modal-header-bs {
   background-color: var(--background-card);
   border-bottom: 1px solid var(--border-color-medium);
-  padding: 0.9rem 1.1rem; /* Disesuaikan */
+  padding: 0.9rem 1.1rem; 
 }
-.modal-pc-title-bs { /* Ganti nama agar lebih spesifik */
+.modal-pc-title-bs { 
   font-family: 'Orbitron', sans-serif;
   color: var(--primary-color);
-  font-size: 1.25rem; /* Disesuaikan */
+  font-size: 1.25rem; 
   text-shadow: 0 0 4px var(--primary-color);
 }
 .modal-close-button-bs {
   background: transparent !important;
   border: none !important;
-  font-size: 1.6rem !important; /* Disesuaikan */
+  font-size: 1.6rem !important; 
   font-weight: bold !important;
   color: var(--primary-color) !important;
   opacity: 0.8 !important;
@@ -1356,12 +1223,12 @@ export default {
   text-align: left;
 }
 .modal-info-group p {
-  margin-bottom: 0.5rem; /* Disesuaikan */
-  font-size: 0.875rem; /* Disesuaikan */
+  margin-bottom: 0.5rem; 
+  font-size: 0.875rem; 
 }
 .modal-info-group strong {
   color: var(--primary-color);
-  min-width: 70px; /* Disesuaikan */
+  min-width: 70px; 
   display: inline-block;
 }
 .specs-section-bs {
@@ -1373,19 +1240,19 @@ export default {
   font-family: 'Orbitron', sans-serif;
   color: var(--primary-color);
   margin-bottom: 0.5rem;
-  font-size: 1rem; /* Disesuaikan */
+  font-size: 1rem; 
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 .specs-section-bs ul {
   list-style: disc;
-  padding-left: 1.1rem; /* Disesuaikan */
+  padding-left: 1.1rem; 
   margin-bottom: 0;
 }
 .specs-section-bs li {
-  margin-bottom: 0.35rem; /* Disesuaikan */
-  font-size: 0.825rem; /* Disesuaikan */
+  margin-bottom: 0.35rem; 
+  font-size: 0.825rem; 
 }
 .text-stock-ready-bs {
   color: #28f57a !important;
@@ -1403,22 +1270,18 @@ export default {
   to { transform: scale(1) translateY(0); opacity: 1; }
 }
 
-/* Responsive Adjustments */
-@media (min-width: 768px) { /* md ke atas */
-  /* .card-bs .card-body {
-    text-align: left; 
-  } */ /* Commented out to allow individual text-center to work */
+@media (min-width: 768px) { 
   .card-title-bs {
-    justify-content: flex-start; /* Title text aligns left on md+ */
+    justify-content: flex-start; 
   }
   .card-text-desc-bs {
-     text-align: left; /* Description text aligns left on md+ */
+     text-align: left; 
   }
   .card-text-price-bs {
-     text-align: left; /* Price text aligns left on md+ */
+     text-align: left; 
   }
 }
-@media (max-width: 767.98px) { /* Di bawah md */
+@media (max-width: 767.98px) { 
   .filters-bs .col-md, .filters-bs .col-md-auto {
     flex-basis: 100%;
   }
@@ -1451,16 +1314,16 @@ export default {
   .card-title-bs {
     font-size: 0.9rem;
     min-height: calc(0.9rem * 1.35 * 2);
-    justify-content: center !important; /* Ensure title text is centered on small screens */
+    justify-content: center !important; 
   }
   .card-text-desc-bs {
     font-size: 0.75rem;
     min-height: calc(0.75rem * 1.4 * 2);
-    text-align: center !important; /* Ensure desc text is centered on small screens */
+    text-align: center !important; 
   }
    .card-text-price-bs {
     font-size: 0.85rem;
-    text-align: center !important; /* Ensure price text is centered on small screens */
+    text-align: center !important; 
   }
   .card-bs .card-body {
     padding: 0.75rem;
@@ -1491,13 +1354,12 @@ export default {
   .specs-section-bs h4 {
     font-size: 0.9rem;
   }
-  .row.g-3.g-lg-4 { /* Sesuaikan gap di mobile */
+  .row.g-3.g-lg-4 { 
     --bs-gutter-x: 0.8rem;
     --bs-gutter-y: 0.8rem;
   }
 }
 
-/* Animasi untuk menu simulasi */
 .simulasi-form-bs {
   background: #11192b;
   border: 1px solid #00d9ff33;
@@ -1554,7 +1416,6 @@ export default {
   animation: fadeInSimulasi 0.7s cubic-bezier(.4,2,.6,1);
 }
 
-/* Efek tambahan untuk tombol dan elemen interaktif */
 .pembelian-paket-highlight {
   position: relative;
   z-index: 2;
@@ -1563,11 +1424,6 @@ export default {
 @keyframes paket-glow-efek {
   0% { filter: drop-shadow(0 0 0px #00ffe7); }
   100% { filter: drop-shadow(0 0 6px #00ffe7aa) drop-shadow(0 0 2px #00c6ff88); }
-}
-
-/* Ganti lingkaran dengan logo JWR Comp */
-.paket-logo-jwr {
-  display: none !important;
 }
 
 .paket-pointer-efek {
@@ -1590,26 +1446,8 @@ export default {
   100% { opacity: 0.7; filter: blur(0.5px); }
 }
 
-/* Keranjang Shopee Style */
-.cart-shopee-bs {
-  background: #11192b; /* Dark background */
-  border: 1px solid #00d9ff33; /* Neon border */
-  color: var(--text-light);
-}
-.cart-shopee-bs .table {
-  color: var(--text-light); /* Ensure table text is light */
-}
-.cart-shopee-bs .table th,
-.cart-shopee-bs .table td {
-  border-color: #00d9ff55; /* Neon border for table cells */
-}
-.cart-shopee-bs .table thead th {
-  background-color: #1a243a; /* Darker header for table */
-  color: var(--primary-color);
-}
-.cart-shopee-bs .form-control-sm {
-  background-color: var(--background-card);
-  color: var(--text-light);
-  border-color: var(--border-color-medium);
+.modal-footer {
+    background-color: var(--background-card);
+    border-top: 1px solid var(--border-color-medium);
 }
 </style>
