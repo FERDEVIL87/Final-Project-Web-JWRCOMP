@@ -98,6 +98,37 @@ const onSlideChange = (data) => {
   }
 };
 
+// Placeholder data for news items
+const techNews = ref([
+  {
+    id: 1,
+    title: "CPU Prices Experiencing Upward Trend",
+    excerpt: "Analysts report a noticeable increase in CPU prices across various manufacturers, citing supply chain issues and heightened demand. Gamers and PC builders should anticipate these changes when planning their next upgrades.",
+    date: "October 26, 2023",
+    source: "TechWire Daily",
+    imageUrl: "https://placehold.co/600x350/1F2937/9CA3AF/png?text=CPU+Market+Update",
+    readMoreUrl: "#"
+  },
+  {
+    id: 2,
+    title: "Next-Gen Graphics Cards: What to Expect",
+    excerpt: "Rumors and official teasers point towards a significant leap in performance for the upcoming generation of GPUs. Expect advancements in ray tracing, AI-powered features, and higher VRAM capacities.",
+    date: "October 24, 2023",
+    source: "PixelPushers News",
+    imageUrl: "https://placehold.co/600x350/1F2937/9CA3AF/png?text=GPU+Advancements",
+    readMoreUrl: "#"
+  },
+  {
+    id: 3,
+    title: "The Future of RAM: DDR6 on the Horizon",
+    excerpt: "Industry insiders suggest that the DDR6 memory standard is nearing finalization, promising substantial bandwidth improvements over current DDR5 technology. Early adoption is expected in high-end systems.",
+    date: "October 22, 2023",
+    source: "ComponentChronicle",
+    imageUrl: "https://placehold.co/600x350/1F2937/9CA3AF/png?text=RAM+Evolution",
+    readMoreUrl: "#"
+  }
+]);
+
 </script>
 
 <template>
@@ -131,7 +162,6 @@ const onSlideChange = (data) => {
       >
         <Slide v-for="product in products" :key="product.id">
           <div class="carousel__item" :style="{ background: product.backgroundColor }">
-            <!-- IMPORTANT: Remove .container class here if you haven't -->
             <div class="product-slide-content">
               <div class="product-text-info">
                 <h3 class="product-brand" :style="{ color: product.accentColor }">{{ product.brand }}</h3>
@@ -171,6 +201,30 @@ const onSlideChange = (data) => {
         </template>
       </Carousel>
     </section>
+
+    <!-- Tech News Section -->
+    <section class="tech-news-section">
+      <div class="tech-news-container">
+        <h2 class="section-title tech-news-title">Tech Bytes & Insights</h2>
+        <p class="section-subtitle tech-news-subtitle">
+          Catch up on the latest trends, announcements, and shifts in the world of computer hardware.
+        </p>
+        <div class="news-grid">
+          <article v-for="news in techNews" :key="news.id" class="news-item">
+            <img :src="news.imageUrl" :alt="news.title" class="news-image">
+            <div class="news-content">
+              <h3 class="news-item-title">{{ news.title }}</h3>
+              <p class="news-item-excerpt">{{ news.excerpt }}</p>
+              <div class="news-item-footer">
+                <span class="news-item-meta">{{ news.date }} | {{ news.source }}</span>
+                <a :href="news.readMoreUrl" class="news-read-more" target="_blank" rel="noopener noreferrer">Read More »</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <!-- End of Tech News Section -->
 
     <section class="store-info-section">
       <div class="store-info-container">
@@ -594,6 +648,124 @@ html {
   transform: scale(1.3);
 }
 
+/* Tech News Section */
+.tech-news-section {
+  padding: 70px 0;
+  background-color: #0f0f11; /* Slightly different dark shade from product slider */
+  color: #D1D5DB;
+  font-family: 'Roboto', sans-serif;
+  border-top: 1px solid #1f2937;
+  border-bottom: 1px solid #1f2937;
+}
+
+.tech-news-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.tech-news-title { /* Uses .section-title for some base styles if defined globally */
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: #E5E7EB;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.tech-news-subtitle { /* Uses .section-subtitle for some base styles */
+  text-align: center;
+  font-size: clamp(0.9rem, 2vw, 1.15rem);
+  color: #9CA3AF;
+  margin-bottom: 50px;
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.news-item {
+  background-color: #18181b;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #27272a;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.news-item:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+}
+
+.news-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  /* border-bottom: 3px solid #4B5563; */ /* Optional border for accent */
+}
+
+.news-content {
+  padding: 20px 25px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.news-item-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  color: #E5E7EB;
+  margin-bottom: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.news-item-excerpt {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #B0BCC8;
+  margin-bottom: 15px;
+  flex-grow: 1;
+}
+
+.news-item-footer {
+  margin-top: auto; /* Pushes footer to the bottom of the card */
+  padding-top: 10px;
+  border-top: 1px solid #2a2a2e; /* Subtle separator */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.news-item-meta {
+  font-size: 0.75rem;
+  color: #6B7280;
+}
+
+.news-read-more {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #9CA3AF;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.news-read-more:hover {
+  color: #E5E7EB;
+  text-decoration: underline;
+}
+
 
 /* Store Information Section */
 .icon-store::before { content: "🏢 "; }
@@ -609,7 +781,7 @@ html {
 
 .store-info-section {
   padding: 80px 0;
-  background: linear-gradient(180deg, #000000 0%, #111827 100%);
+  background: linear-gradient(180deg, #111827 0%, #000000 100%); /* Reversed gradient for transition */
   color: #D1D5DB;
   font-family: 'Roboto', sans-serif;
 }
@@ -827,6 +999,26 @@ html {
   }
 }
 
+@media (max-width: 768px) {
+  .news-grid {
+    grid-template-columns: 1fr; /* Stack news items on smaller screens */
+  }
+  .tech-news-title {
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+  }
+  .tech-news-subtitle {
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    margin-bottom: 30px;
+  }
+  .news-item-title {
+    font-size: 1.15rem;
+  }
+  .news-item-excerpt {
+    font-size: 0.88rem;
+  }
+}
+
+
 @media (max-width: 576px) {
   .video-hero-section {
     padding-bottom: 8vh; /* fallback */
@@ -889,6 +1081,31 @@ html {
     width: 7px;
     height: 7px;
   }
+
+  .tech-news-section {
+    padding: 50px 0 40px;
+  }
+  .tech-news-title {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+  .tech-news-subtitle {
+    font-size: clamp(0.8rem, 3vw, 0.9rem);
+  }
+  .news-item-title {
+    font-size: 1.05rem;
+  }
+  .news-item-excerpt {
+    font-size: 0.82rem;
+  }
+  .news-content {
+    padding: 15px 20px;
+  }
+  .news-item-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
 
   .section-title.store-section-title {
     font-size: clamp(1.6rem, 6vw, 2rem);
