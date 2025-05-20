@@ -1,16 +1,16 @@
 <template>
   <section class="container py-4">
-    <h2 class="text-center fw-bold mb-4" style="font-family:'Orbitron',sans-serif;color:#fff;">
+    <h1 class="text-center fw-bold mb-4" style="font-family:'Orbitron',sans-serif;color:#fff;min-height:2.5em;">
       🎮 ULTIMATE GAME CONSOLES HUB 🚀
-    </h2>
+    </h1>
 
     <!-- Tombol Checkout Global -->
     <div class="text-center my-4 py-3 border-top border-bottom border-secondary">
-        <h4 class="mb-3" style="font-family:'Orbitron',sans-serif;color:#fff;">Keranjang Belanja Global</h4>
-        <p v-if="cartStore.items.length > 0" class="mb-2 text-light">
-          Total Item: {{ cartStore.items.reduce((acc, item) => acc + item.qty, 0) }} | Total Harga: <span class="text-success fw-bold">{{ formatPrice(cartStore.totalPrice) }}</span>
+        <h2 class="mb-3" style="font-family:'Orbitron',sans-serif;color:#fff;">Keranjang Belanja Global</h2>
+        <p v-if="cartStore.items.length > 0" class="mb-2" style="color:#1aff6b;">
+          Total Item: {{ cartStore.items.reduce((acc, item) => acc + item.qty, 0) }} | Total Harga: <span style="color:#1aff6b;font-weight:bold;">{{ formatPrice(cartStore.totalPrice) }}</span>
         </p>
-        <p v-else class="text-muted mb-2">Keranjang belanja utama masih kosong.</p>
+        <p v-else class="mb-2" style="color:#b0b0b0;">Keranjang belanja utama masih kosong.</p>
         <button class="btn btn-success btn-lg px-5" @click="goToCheckout" style="font-family:'Orbitron',sans-serif;">
            <i class="bi bi-cart-check-fill me-2"></i> Lihat Keranjang & Checkout
         </button>
@@ -23,20 +23,21 @@
         :key="index"
         class="btn btn-outline-info px-3 py-1 fw-bold"
         :class="{ active: selectedCategory && selectedCategory.title === card.title }"
-        style="font-family:'Orbitron',sans-serif;"
+        style="font-family:'Orbitron',sans-serif;background-color:#0a2233;color:#fff;border-color:#00d9ff;"
+        :style="selectedCategory && selectedCategory.title === card.title ? 'background-color:#00d9ff;color:#181c22;border-color:#00d9ff;' : ''"
         @click="selectCategory(card)"
       >
         {{ card.title }}
       </button>
     </div>
 
-    <div v-if="selectedCategory" class="bg-dark bg-opacity-75 rounded-3 p-3 mb-4">
-      <h3 class="text-center fw-bold mb-3" style="font-family:'Orbitron',sans-serif;color:#fff;">
+    <div v-if="selectedCategory" class="bg-dark bg-opacity-85 rounded-3 p-3 mb-4" style="background:#181c22 !important;min-height:350px;transition:min-height 0.2s cubic-bezier(.4,0,.2,1);">
+      <h2 class="text-center fw-bold mb-3" style="font-family:'Orbitron',sans-serif;color:#fff;">
         {{ selectedCategory.title }}
-      </h3>
+      </h2>
       <div class="row g-2 align-items-center mb-2">
         <div class="col-12 col-md-6">
-          <label for="searchConsoleInput" class="visually-hidden">Search Console</label>
+          <label for="searchConsoleInput" class="form-label visually-hidden">Search Console</label>
           <input
             type="text"
             id="searchConsoleInput"
@@ -44,11 +45,12 @@
             placeholder="Search console..."
             class="form-control bg-secondary bg-opacity-25 text-light border-info"
             autocomplete="off"
+            aria-label="Cari konsol"
           />
         </div>
         <div class="col-12 col-md-6">
-          <label for="brandSelect" class="visually-hidden">Select Brand</label>
-          <select id="brandSelect" v-model="selectedBrand" class="form-select bg-secondary bg-opacity-25 text-light border-info">
+          <label for="brandSelect" class="form-label visually-hidden">Select Brand</label>
+          <select id="brandSelect" v-model="selectedBrand" class="form-select bg-secondary bg-opacity-25 text-light border-info" aria-label="Pilih brand">
             <option value="">All Brands</option>
             <option v-for="brand in brands" :key="brand" :value="brand">{{ brand }}</option>
           </select>
@@ -57,7 +59,7 @@
 
       <!-- Price Range Filter -->
       <div class="mb-3">
-        <label class="form-label text-light fw-bold d-block mb-1">Rentang Harga</label>
+        <label class="form-label text-light fw-bold d-block mb-1" for="minPriceRange">Rentang Harga</label>
         <div class="d-flex align-items-center mb-1">
           <span class="me-2 text-light" style="min-width:100px;">{{ formatPrice(minPriceIDR) }}</span>
           <input
@@ -69,6 +71,7 @@
             class="form-range"
             style="accent-color:#00d9ff;"
             id="minPriceRange"
+            aria-label="Harga minimum"
             @input="maxPriceIDR = Math.max(minPriceIDR, maxPriceIDR)"
           />
         </div>
@@ -83,6 +86,7 @@
             class="form-range"
             style="accent-color:#00d9ff;"
             id="maxPriceRange"
+            aria-label="Harga maksimum"
             @input="minPriceIDR = Math.min(minPriceIDR, maxPriceIDR)"
           />
         </div>
@@ -92,7 +96,7 @@
         </div>
       </div>
 
-      <div v-if="loading" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-2">
+      <div v-if="loading" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-2" style="min-height:320px;">
         <div v-for="n in 8" :key="n" class="col">
           <div class="card placeholder-card h-100 bg-secondary bg-opacity-50 border-info text-light">
             <div class="placeholder-img mb-2"></div>
@@ -105,7 +109,7 @@
           </div>
         </div>
       </div>
-      <div v-else-if="filteredConsoles.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-2">
+      <div v-else-if="filteredConsoles.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-2" style="min-height:320px;">
         <div v-for="consoleItem in filteredConsoles" :key="consoleItem.id" class="col">
           <div
             class="card h-100 bg-secondary bg-opacity-75 border-info text-light d-flex flex-column"
@@ -147,7 +151,7 @@
           </div>
         </div>
       </div>
-      <div v-else class="text-center text-info py-4" style="font-family:'Orbitron',sans-serif;">
+      <div v-else class="text-center text-info py-4" style="font-family:'Orbitron',sans-serif;min-height:120px;">
         <p>No consoles match your current filters.</p>
       </div>
     </div>
@@ -441,7 +445,7 @@ export default {
 
 <style scoped>
 .bg-dark { background: #181c22 !important; }
-.card { border-radius: 10px; border-width: 1.5px; }
+.card { border-radius: 10px; border-width: 1.5px; background: #232b36 !important; color: #fff !important; }
 .card-img-top { border-radius: 10px 10px 0 0; }
 .visually-hidden {
   position: absolute !important;
@@ -483,10 +487,21 @@ export default {
   100% { background-position: 200% 0; }
 }
 
-.btn-outline-info.active {
-    background-color: var(--bs-info);
-    color: #fff;
+.btn-outline-info.active,
+.btn-outline-info:active,
+.btn-outline-info:focus {
+  background-color: #00d9ff !important;
+  color: #181c22 !important;
+  border-color: #00d9ff !important;
 }
+.text-success, .fw-bold.text-success, span.text-success.fw-bold {
+  color: #1aff6b !important;
+  font-weight: bold !important;
+}
+.text-muted, .mb-2.text-muted, p.text-muted.mb-2 {
+  color: #b0b0b0 !important;
+}
+.bg-opacity-85 { opacity: 0.85; }
 .modal-footer {
     border-top-color: var(--bs-secondary); /* Using Bootstrap variables */
 }
