@@ -3,10 +3,6 @@ import { ref, computed, onMounted } from 'vue';
 import 'vue3-carousel/dist/carousel.css';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 
-// Ensure these paths are correct for your Vite/project setup.
-// If 'src' is aliased to '@', it might be '@/img home/slc.jpg'
-// Or relative: '../../img home/slc.jpg' if assets are outside src
-// For this example, I'm assuming your build tool can resolve '/src/...'
 import slcImage from "/src/img home/slc.jpg";
 import tufImage from "/src/img home/tuf.png";
 import k70Image from "/src/img home/k70avif.avif";
