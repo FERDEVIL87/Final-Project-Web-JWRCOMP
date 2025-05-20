@@ -1,7 +1,12 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import 'vue3-carousel/dist/carousel.css';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
+
+import slcImage from "/src/img home/slc.jpg";
+import tufImage from "/src/img home/tuf.png";
+import k70Image from "/src/img home/k70avif.avif";
+import doomVideoPoster from "/src/img home/video/doom.mp4"; // Make sure this poster image exists and is optimized
 
 const products = ref([
   {
@@ -9,7 +14,9 @@ const products = ref([
     brand: "ROG RYUO IV",
     name: "SLC 360 ARGB",
     slogan: "A NEW VISION OF COOLING",
-    imageSrc: "src/img home/slc.jpg",
+    imageSrc: slcImage,
+    imageWidth: 600,
+    imageHeight: 450,
     features: [
       "High-Performance Pump",
       "Extraordinary Visuals",
@@ -31,7 +38,9 @@ const products = ref([
     brand: "ASUS TUF Gaming",
     name: "TUF Gaming A15 (2024)",
     slogan: "GEARED FOR SERIOUS GAMING AND REAL-WORLD DURABILITY",
-    imageSrc: "src/img home/tuf.png",
+    imageSrc: tufImage,
+    imageWidth: 700,
+    imageHeight: 500,
     features: [
       "Latest AMD Ryzen CPU & NVIDIA GPU",
       "Blazing-Fast NVMe SSD",
@@ -55,7 +64,9 @@ const products = ref([
     brand: "Corsair",
     name: "K70 RGB MK.2",
     slogan: "BUILT TO LAST. PERFORM LIKE A LEGEND.",
-    imageSrc: "src/img home/k70avif.avif",
+    imageSrc: k70Image,
+    imageWidth: 650,
+    imageHeight: 380,
     features: [
       "Genuine Cherry MX Switches",
       "Dynamic Per-Key RGB Backlighting",
@@ -78,17 +89,11 @@ const products = ref([
 const carouselSettings = {
   itemsToShow: 1,
   snapAlign: 'center',
-  transition: 500, // Durasi transisi slide
+  transition: 500,
 };
 const carouselBreakpoints = {
-  700: {
-    itemsToShow: 1,
-    snapAlign: 'center',
-  },
-  1024: {
-    itemsToShow: 1,
-    snapAlign: 'start',
-  },
+  700: { itemsToShow: 1, snapAlign: 'center' },
+  1024: { itemsToShow: 1, snapAlign: 'start' },
 };
 
 const currentSlideAccentColor = ref(products.value[0].accentColor);
@@ -98,7 +103,6 @@ const onSlideChange = (data) => {
   }
 };
 
-// Placeholder data for news items
 const techNews = ref([
   {
     id: 1,
@@ -129,15 +133,26 @@ const techNews = ref([
   }
 ]);
 
+onMounted(() => {
+  // Logic for HomePage component
+});
+
 </script>
 
 <template>
-  <div class="page-wrapper">
+  <div class="page-wrapper home-page-content"> <!-- Added a class for potential specific styling -->
 
     <section class="video-hero-section">
       <div class="video-overlay top-gradient"></div>
-      <video autoplay muted loop playsinline class="hero-background-video" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAABAAACwAAAAAAQABAAACAkQBADs=">
-        <!-- MODIFIED LINE BELOW -->
+      <video
+        autoplay
+        muted
+        loop
+        playsinline
+        class="hero-background-video"
+        :poster="doomVideoPoster"
+        preload="metadata"
+      >
         <source src="/src/img home/video/doom.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
@@ -161,7 +176,7 @@ const techNews = ref([
         @slide-start="onSlideChange"
         :style="{'--slide-accent-color': currentSlideAccentColor }"
       >
-        <Slide v-for="product in products" :key="product.id">
+        <Slide v-for="(product, index) in products" :key="product.id">
           <div class="carousel__item" :style="{ background: product.backgroundColor }">
             <div class="product-slide-content">
               <div class="product-text-info">
@@ -179,7 +194,15 @@ const techNews = ref([
               </div>
 
               <div class="product-image-container">
-                <img :src="product.imageSrc" :alt="product.name" class="product-image" />
+                <img
+                  :src="product.imageSrc"
+                  :alt="product.name"
+                  class="product-image"
+                  :loading="index === 0 ? 'eager' : 'lazy'"
+                  :fetchpriority="index === 0 ? 'high' : 'auto'"
+                  :width="product.imageWidth"
+                  :height="product.imageHeight"
+                />
               </div>
 
               <div class="product-badges-container">
@@ -203,7 +226,6 @@ const techNews = ref([
       </Carousel>
     </section>
 
-    <!-- Tech News Section -->
     <section class="tech-news-section">
       <div class="tech-news-container">
         <h2 class="section-title tech-news-title">Tech Bytes & Insights</h2>
@@ -212,7 +234,13 @@ const techNews = ref([
         </p>
         <div class="news-grid">
           <article v-for="news in techNews" :key="news.id" class="news-item">
-            <img :src="news.imageUrl" :alt="news.title" class="news-image">
+            <img
+              :src="news.imageUrl"
+              :alt="news.title"
+              class="news-image"
+              loading="lazy"
+              width="600" height="350"
+            >
             <div class="news-content">
               <h3 class="news-item-title">{{ news.title }}</h3>
               <p class="news-item-excerpt">{{ news.excerpt }}</p>
@@ -225,7 +253,6 @@ const techNews = ref([
         </div>
       </div>
     </section>
-    <!-- End of Tech News Section -->
 
     <section class="store-info-section">
       <div class="store-info-container">
@@ -236,26 +263,26 @@ const techNews = ref([
 
         <div class="info-grid">
           <div class="info-block">
-            <h3><i class="icon-store"></i>About Us</h3>
+            <h3><i class="icon-store" role="img" aria-label="Store icon"></i>About Us</h3>
             <p>We are a team of passionate tech enthusiasts and gamers dedicated to bringing you the best components, peripherals, and custom-built systems. Our mission is to empower your digital life, whether for gaming, creation, or professional work.</p>
           </div>
 
           <div class="info-block">
-            <h3><i class="icon-pin"></i>Visit Our Store</h3>
+            <h3><i class="icon-pin" role="img" aria-label="Location pin icon"></i>Visit Our Store</h3>
             <p><strong>Address:</strong> 123 Tech Nebula Drive, Silicon City, TX 75001</p>
             <p><strong>Phone:</strong> <a href="tel:+1555TECHNOW">(555) 832-4669</a></p>
             <p><strong>Email:</strong> <a href="mailto:support@yourtechhaven.com">support@yourtechhaven.com</a></p>
           </div>
 
           <div class="info-block">
-            <h3><i class="icon-clock"></i>Opening Hours</h3>
+            <h3><i class="icon-clock" role="img" aria-label="Clock icon"></i>Opening Hours</h3>
             <p><strong>Monday - Friday:</strong> 9:00 AM - 8:00 PM</p>
             <p><strong>Saturday:</strong> 10:00 AM - 7:00 PM</p>
             <p><strong>Sunday:</strong> 12:00 PM - 5:00 PM</p>
           </div>
 
           <div class="info-block">
-            <h3><i class="icon-services"></i>Our Services</h3>
+            <h3><i class="icon-services" role="img" aria-label="Tools icon for services"></i>Our Services</h3>
             <ul>
               <li>Custom PC Building</li>
               <li>Hardware Upgrades & Installation</li>
@@ -268,18 +295,18 @@ const techNews = ref([
 
         <div class="map-social-container">
           <div class="map-placeholder">
-            <h4><i class="icon-map"></i>Our Location</h4>
+            <h4><i class="icon-map" role="img" aria-label="Map icon"></i>Our Location</h4>
             <div class="map-embed-placeholder">
               <span>Interactive Map (Placeholder)</span>
               <p>Find us easily in the heart of Silicon City!</p>
             </div>
           </div>
           <div class="social-links">
-              <h4><i class="icon-connect"></i>Connect With Us</h4>
-              <a href="#" aria-label="Facebook"><i class="icon-facebook"></i></a>
-              <a href="#" aria-label="Twitter"><i class="icon-twitter"></i></a>
-              <a href="#" aria-label="Instagram"><i class="icon-instagram"></i></a>
-              <a href="#" aria-label="Discord"><i class="icon-discord"></i></a>
+              <h4><i class="icon-connect" role="img" aria-label="Connect icon"></i>Connect With Us</h4>
+              <a href="#" aria-label="Facebook"><i class="icon-facebook" role="img" aria-hidden="true"></i><span class="visually-hidden">Facebook</span></a>
+              <a href="#" aria-label="Twitter"><i class="icon-twitter" role="img" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+              <a href="#" aria-label="Instagram"><i class="icon-instagram" role="img" aria-hidden="true"></i><span class="visually-hidden">Instagram</span></a>
+              <a href="#" aria-label="Discord"><i class="icon-discord" role="img" aria-hidden="true"></i><span class="visually-hidden">Discord</span></a>
           </div>
         </div>
 
@@ -290,23 +317,58 @@ const techNews = ref([
 </template>
 
 <style scoped>
+/* Styles for HomePage.vue component - these are the same as before */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap');
 
-/* General Page Styles */
-.page-wrapper {
+/* Visually Hidden class for accessibility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* General Page Styles for this component */
+.page-wrapper.home-page-content { /* Be more specific if needed */
   background-color: #000000;
-  overflow-x: hidden;
+  overflow-x: hidden; /* Should be on a higher level if possible, but okay here too */
   width: 100%;
 }
 
-html {
-  scroll-behavior: smooth;
+/* Performance Hints: Use sparingly and test */
+.product-slide-content,
+.news-item,
+.info-block,
+.shop-now-button,
+.social-links a {
+  will-change: transform, opacity;
 }
+:deep(.carousel__slide) {
+  will-change: opacity, transform;
+}
+
+/* Text rendering optimization */
+.hero-text-container h1,
+.hero-text-container p,
+.product-brand,
+.product-name,
+.product-slogan,
+.news-item-title,
+.section-title { /* This applies to section titles within HomePage.vue */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 
 /* Video Hero Section */
 .video-hero-section {
   position: relative;
-  height: 100vh; /* Fallback */
+  height: 100vh;
   height: 100dvh;
   width: 100%;
   overflow: hidden;
@@ -316,7 +378,7 @@ html {
   align-items: center;
   text-align: center;
   background-color: #000000;
-  padding-bottom: 10vh; /* Fallback */
+  padding-bottom: 10vh;
   padding-bottom: 10dvh;
 }
 
@@ -342,14 +404,14 @@ html {
 
 .video-overlay.top-gradient {
   top: 0;
-  height: 20vh; /* Fallback */
+  height: 20vh;
   height: 20dvh;
   background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 70%, #000000 100%);
 }
 
 .video-overlay.bottom-gradient {
   bottom: 0;
-  height: 30vh; /* Fallback */
+  height: 30vh;
   height: 30dvh;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000000 90%);
 }
@@ -414,12 +476,11 @@ html {
   outline: none;
 }
 
-
 /* Product Hero Slider */
 .product-hero-slider {
   width: 100%;
   box-sizing: border-box;
-  height: 100vh; /* Fallback */
+  height: 100vh;
   height: 100dvh;
   font-family: 'Roboto', sans-serif;
   background-color: #000000;
@@ -448,7 +509,7 @@ html {
   overflow: hidden;
 }
 
-.product-slide-content { /* Assuming .container class was removed from its div in HTML */
+.product-slide-content {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   grid-template-rows: auto 1fr auto;
@@ -459,7 +520,7 @@ html {
   align-items: center;
   gap: 20px 40px;
   height: 100%;
-  max-height: 90vh; /* Fallback */
+  max-height: 90vh;
   max-height: 90dvh;
   box-sizing: border-box;
   width: 100%;
@@ -489,7 +550,7 @@ html {
 .product-text-info {
   grid-area: text;
   text-align: left;
-  padding-right: 30px; /* Only on desktop grid */
+  padding-right: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -549,11 +610,12 @@ html {
 }
 
 .product-image {
+  display: block;
   max-width: 100%;
+  height: auto;
   max-height: clamp(40dvh, 45vw, 60dvh);
   object-fit: contain;
   filter: drop-shadow(0 10px 25px rgba(0,0,0,0.4));
-  display: block;
 }
 
 .product-badges-container {
@@ -652,7 +714,7 @@ html {
 /* Tech News Section */
 .tech-news-section {
   padding: 70px 0;
-  background-color: #0f0f11; /* Slightly different dark shade from product slider */
+  background-color: #0f0f11;
   color: #D1D5DB;
   font-family: 'Roboto', sans-serif;
   border-top: 1px solid #1f2937;
@@ -667,7 +729,7 @@ html {
   box-sizing: border-box;
 }
 
-.tech-news-title { /* Uses .section-title for some base styles if defined globally */
+.tech-news-title { /* This is a .section-title within HomePage.vue */
   text-align: center;
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(1.8rem, 4vw, 2.8rem);
@@ -676,7 +738,7 @@ html {
   font-weight: 700;
 }
 
-.tech-news-subtitle { /* Uses .section-subtitle for some base styles */
+.tech-news-subtitle {
   text-align: center;
   font-size: clamp(0.9rem, 2vw, 1.15rem);
   color: #9CA3AF;
@@ -710,10 +772,12 @@ html {
 }
 
 .news-image {
+  display: block;
   width: 100%;
-  height: 200px;
+  height: auto;
+  max-height: 200px;
   object-fit: cover;
-  /* border-bottom: 3px solid #4B5563; */ /* Optional border for accent */
+  background-color: #1F2937;
 }
 
 .news-content {
@@ -741,9 +805,9 @@ html {
 }
 
 .news-item-footer {
-  margin-top: auto; /* Pushes footer to the bottom of the card */
+  margin-top: auto;
   padding-top: 10px;
-  border-top: 1px solid #2a2a2e; /* Subtle separator */
+  border-top: 1px solid #2a2a2e;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -767,7 +831,6 @@ html {
   text-decoration: underline;
 }
 
-
 /* Store Information Section */
 .icon-store::before { content: "🏢 "; }
 .icon-pin::before { content: "📍 "; }
@@ -775,14 +838,14 @@ html {
 .icon-services::before { content: "🛠️ "; }
 .icon-map::before { content: "🗺️ "; }
 .icon-connect::before { content: "🔗 "; }
-.icon-facebook::before { content: "📘 "; font-size: 1em; }
-.icon-twitter::before { content: "🐦 "; font-size: 1em; }
-.icon-instagram::before { content: "📸 "; font-size: 1em; }
-.icon-discord::before { content: "💬 "; font-size: 1em; }
+.icon-facebook::before { content: "📘"; }
+.icon-twitter::before { content: "🐦"; }
+.icon-instagram::before { content: "📸"; }
+.icon-discord::before { content: "💬"; }
 
 .store-info-section {
   padding: 80px 0;
-  background: linear-gradient(180deg, #111827 0%, #000000 100%); /* Reversed gradient for transition */
+  background: linear-gradient(180deg, #111827 0%, #000000 100%);
   color: #D1D5DB;
   font-family: 'Roboto', sans-serif;
 }
@@ -795,7 +858,7 @@ html {
   box-sizing: border-box;
 }
 
-.section-title.store-section-title {
+.section-title.store-section-title { /* This is a .section-title within HomePage.vue */
   text-align: center;
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(2rem, 5vw, 3rem);
@@ -849,6 +912,7 @@ html {
   font-size: 1em;
   color: #9CA3AF;
   font-style: normal;
+  display: inline-block;
 }
 
 .info-block p, .info-block li {
@@ -919,6 +983,7 @@ html {
     font-size: 1em;
     color: #9CA3AF;
     font-style: normal;
+    display: inline-block;
 }
 
 .map-embed-placeholder {
@@ -940,7 +1005,8 @@ html {
 }
 
 .social-links a {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     margin-right: 15px;
     color: #9CA3AF;
     font-size: 1.8rem;
@@ -957,10 +1023,10 @@ html {
 .social-links a i {
   font-size: 1em;
   font-style: normal;
+  line-height: 1;
 }
 
-
-/* Responsive Adjustments */
+/* Responsive Adjustments for HomePage.vue */
 @media (max-width: 992px) {
   .product-slide-content {
     grid-template-columns: 1fr;
@@ -971,14 +1037,14 @@ html {
       "badges";
     text-align: center;
     gap: 20px;
-    padding: clamp(30px, 5dvh, 50px) 15px clamp(60px, 8dvh, 70px); /* Adjusted mobile padding */
+    padding: clamp(30px, 5dvh, 50px) 15px clamp(60px, 8dvh, 70px);
     max-width: 100%;
     margin-left: 0;
     margin-right: 0;
     max-height: none;
   }
   .product-text-info {
-    padding-right: 0; /* No right padding when stacked */
+    padding-right: 0;
     text-align: center;
     align-items: center;
   }
@@ -986,8 +1052,8 @@ html {
   .product-features li {
     margin-left: auto;
     margin-right: auto;
-    max-width: 350px; /* Max width for feature text */
-    text-align: left; /* Keep text aligned left within the centered block */
+    max-width: 350px;
+    text-align: left;
   }
   .product-image {
     max-height: clamp(30dvh, 45vw, 40dvh);
@@ -1002,9 +1068,9 @@ html {
 
 @media (max-width: 768px) {
   .news-grid {
-    grid-template-columns: 1fr; /* Stack news items on smaller screens */
+    grid-template-columns: 1fr;
   }
-  .tech-news-title {
+  .tech-news-title { /* Affects .section-title.tech-news-title */
     font-size: clamp(1.6rem, 5vw, 2.2rem);
   }
   .tech-news-subtitle {
@@ -1022,7 +1088,7 @@ html {
 
 @media (max-width: 576px) {
   .video-hero-section {
-    padding-bottom: 8vh; /* fallback */
+    padding-bottom: 8vh;
     padding-bottom: 8dvh;
   }
   .hero-text-container h1 {
@@ -1086,7 +1152,7 @@ html {
   .tech-news-section {
     padding: 50px 0 40px;
   }
-  .tech-news-title {
+  .tech-news-title { /* Affects .section-title.tech-news-title */
     font-size: clamp(1.5rem, 6vw, 2rem);
   }
   .tech-news-subtitle {
@@ -1108,7 +1174,7 @@ html {
   }
 
 
-  .section-title.store-section-title {
+  .section-title.store-section-title { /* Affects .section-title.store-section-title */
     font-size: clamp(1.6rem, 6vw, 2rem);
   }
   .section-subtitle.store-section-subtitle {

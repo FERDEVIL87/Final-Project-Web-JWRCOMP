@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
 import { ref, onMounted, onUnmounted } from 'vue';
-import { Offcanvas } from 'bootstrap';
+import { Offcanvas } from 'bootstrap'; // Pastikan bootstrap sudah diinstal: npm install bootstrap
 
 const items = [
   { to: '/', name: 'Tentang', color: '#00bcd4' },
@@ -10,7 +10,7 @@ const items = [
   { to: '/consolehh', name: 'Console and Handheld PC', color: '#00bcd4' },
   { to: '/hardware', name: 'PC Parts', color: '#00bcd4' },
   { to: '/cs', name: 'Customer Service', color: '#00bcd4' },
-  { to: '/Checkout', name: 'Checkout', color: '#00bcd4' }
+  { to: '/Checkout', name: 'Checkout', color: '#00bcd4' } // Pastikan 'to' ini cocok dengan path di router
 ];
 
 const sidebarOffcanvasRef = ref(null);
@@ -185,7 +185,7 @@ const closeSidebar = () => {
 }
 
 .content-bs {
-  padding-top: 70px;
+  padding-top: 70px; /* Sesuaikan dengan tinggi navbar Anda */
   color: white;
 }
 
@@ -273,10 +273,10 @@ const closeSidebar = () => {
   position: absolute;
   width: 10px;
   height: 2px;
-  background: black;
+  background: black; /* Seharusnya #000 atau warna background agar tidak terlihat */
   border: 2px solid var(--clr);
   transition: 0.3s;
-  z-index: 2;
+  z-index: 2; /* Pastikan ini di atas span jika ada overlay */
 }
 
 .animated-btn-bs i::before { left: 80%; top: -2px; }
@@ -299,6 +299,7 @@ const closeSidebar = () => {
 /* --- SIDEBAR (OFFCANVAS) --- */
 .sidebar-bs {
   width: 260px;
+  z-index: 1050; /* Pastikan lebih tinggi dari navbar jika ada overlap potensi */
 }
 .sidebar-bs .offcanvas-header {
   border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -356,7 +357,7 @@ const closeSidebar = () => {
 /* --- RESPONSIVE OVERRIDES --- */
 @media (max-width: 991.98px) {
   .navbar .navbar-collapse .navbar-nav {
-    display: none;
+    display: none; /* Navbar items disembunyikan, akan muncul di sidebar */
   }
   .navbar .navbar-toggler {
     border-color: rgba(255,255,255,0.1);
@@ -365,7 +366,7 @@ const closeSidebar = () => {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
   }
   .content-bs {
-    padding-top: 60px;
+    padding-top: 60px; /* Sesuaikan jika tinggi navbar berubah di mobile */
   }
 }
 </style>
