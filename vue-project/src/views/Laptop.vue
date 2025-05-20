@@ -11,40 +11,22 @@ export default {
   },
   data() {
     return {
-      laptops: [
-        { id: 1, name: "Acer Aspire 3", category: "Low-End", price: 5000000, image: "/public/img/Acer Aspire 3.webp", description: "AMD Ryzen 3 3250U, RAM 4GB, SSD 256GB, Layar 15.6\" FHD, Radeon Graphics", stock: 12 },
-        { id: 2, name: "HP 14s", category: "Low-End", price: 6000000, image: "/public/img/Hp 14s.webp", description: "Intel Core i3-1115G4, RAM 8GB, SSD 512GB, Layar 14\" FHD, Intel UHD Graphics", stock: 0 },
-        { id: 3, name: "ASUS VivoBook 15", category: "Mid-Range", price: 8000000, image: "/public/img/Asus Vivobook 15.webp", description: "Intel Core i5-1135G7, RAM 8GB, SSD 512GB, Layar 15.6\" FHD, Intel Iris Xe Graphics", stock: 10 },
-        { id: 4, name: "Lenovo IdeaPad 5", category: "Mid-Range", price: 10000000, image: "/public/img/Lenovo IdeaPad 5.webp", description: "AMD Ryzen 5 5500U, RAM 8GB, SSD 512GB, Layar 14\" FHD, Radeon Graphics", stock: 0 },
-        { id: 5, name: "Dell Inspiron 15", category: "Mid-Range", price: 12000000, image: "/public/img/Dell Inspiron 15.webp", description: "Intel Core i7-1165G7, RAM 16GB, SSD 512GB, Layar 15.6\" FHD, Intel Iris Xe Graphics", stock: 9 },
-        { id: 6, name: "MacBook Air M1", category: "High-End", price: 15000000, image: "/public/img/MacBook Air M1.webp", description: "Apple M1, RAM 8GB, SSD 256GB, Layar 13.3\" Retina, GPU 7-core/8-core", stock: 0 },
-        { id: 7, name: "ASUS ROG Zephyrus G14", category: "High-End", price: 20000000, image: "/public/img/ASUSROGZephyrusG14.webp", description: "AMD Ryzen 7 4800HS, RAM 16GB, SSD 512GB, Layar 14\" FHD 120Hz, NVIDIA GTX 1650/RTX 2060", stock: 4 },
-        { id: 8, name: "Dell XPS 13", category: "High-End", price: 25000000, image: "/public/img/Dell XPS 13.webp", description: "Intel Core i7-1165G7, RAM 16GB, SSD 1TB, Layar 13.4\" FHD+, Intel Iris Xe Graphics", stock: 0 },
-        { id: 9, name: "MacBook Pro 16-inch", category: "High-End", price: 30000000, image: "/public/img/MacBook Pro 16-inch.webp", description: "Apple M1 Pro, RAM 16GB, SSD 512GB, Layar 16.2\" Liquid Retina XDR, GPU 16-core", stock: 3 },
-        { id: 10, name: "Razer Blade 15", category: "High-End", price: 35000000, image: "/public/img/Razer Blade 15.webp", description: "Intel Core i7-11800H, RAM 16GB, SSD 1TB, Layar 15.6\" FHD 144Hz, NVIDIA RTX 3060", stock: 0 },
-      ],
+      laptops: [], // Initialize as empty, will be fetched
       searchQuery: "",
       selectedCategoryFilter: "",
       selectedLaptopForModal: null,
       bootstrapLaptopModal: null,
       minPrice: 0,
-      maxPrice: 0,
-      priceSlider: [0, 0],
+      maxPrice: 100000000, // Default max, will be updated
+      priceSlider: [0, 100000000], // Default, will be updated
       checkoutQty: 1,
-      loading: true,
+      loading: true, // For loading state
     };
   },
-  created() {
-    if (this.laptops.length > 0) {
-      const prices = this.laptops.map(l => l.price);
-      this.minPrice = Math.min(...prices);
-      this.maxPrice = Math.max(...prices);
-      this.priceSlider = [this.minPrice, this.maxPrice];
-    } else {
-      this.minPrice = 0;
-      this.maxPrice = 100000000;
-      this.priceSlider = [0, 100000000];
-    }
+  async created() { // Changed to async for fetch
+    await this.fetchLaptops(); // Call fetch method
+    this.updatePriceSliderBounds();
+    this.loading = false;
   },
   mounted() {
     const modalElement = this.$refs.laptopDetailModalRef;
@@ -62,6 +44,7 @@ export default {
   },
   computed: {
     filteredLaptops() {
+      if (this.loading) return []; // Return empty if still loading
       return this.laptops.filter((laptop) => {
         const matchesSearch = laptop.name.toLowerCase().includes(this.searchQuery.toLowerCase());
         const matchesCategory = this.selectedCategoryFilter ? laptop.category === this.selectedCategoryFilter : true;
@@ -70,6 +53,7 @@ export default {
       });
     },
     categoriesWithLaptops() {
+      if (this.loading) return [];
       const uniqueCategories = ["Low-End", "Mid-Range", "High-End"];
       const categoryData = uniqueCategories.map(categoryName => {
         const laptopsInCategory = this.filteredLaptops.filter(laptop => laptop.category === categoryName);
@@ -86,6 +70,60 @@ export default {
     },
   },
   methods: {
+    async fetchLaptops() {
+        this.loading = true;
+        try {
+            const response = await fetch('/data/laptop.json'); // Path to your JSON file
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            this.laptops = data.map(laptop => ({
+                ...laptop,
+                id: String(laptop.id), // Ensure ID is a string
+                // Brand should ideally be in the JSON, but fallback if not
+                brand: laptop.brand || this.getBrandFromName(laptop.name),
+                // Image path correction (remove /public/ if present)
+                image: laptop.image.startsWith("/public/") ? laptop.image.replace("/public/", "/") : laptop.image,
+                stock: Number(laptop.stock) || 0 // Ensure stock is a number
+            }));
+        } catch (error) {
+            console.error("Could not fetch laptop data:", error);
+            this.laptops = []; // Set to empty array on error
+        } finally {
+            this.loading = false;
+        }
+    },
+    getBrandFromName(name) { // Helper to guess brand
+        const lowerName = name.toLowerCase();
+        if (lowerName.includes("acer")) return "Acer";
+        if (lowerName.includes("hp")) return "HP";
+        if (lowerName.includes("asus")) return "ASUS";
+        if (lowerName.includes("lenovo")) return "Lenovo";
+        if (lowerName.includes("dell")) return "Dell";
+        if (lowerName.includes("macbook")) return "Apple";
+        if (lowerName.includes("razer")) return "Razer";
+        return "Other"; // Default brand
+    },
+    updatePriceSliderBounds() {
+        if (this.laptops.length > 0) {
+            const prices = this.laptops.map(l => l.price);
+            this.minPrice = Math.min(...prices, 0); // Ensure min is at least 0
+            this.maxPrice = Math.max(...prices, 1000000); // Ensure max is at least a sensible value
+            // Reset slider to new bounds if it was at default or out of new range
+            if (this.priceSlider[0] < this.minPrice || this.priceSlider[0] === 0 && this.priceSlider[1] === 100000000) {
+                 this.priceSlider = [this.minPrice, this.maxPrice];
+            } else {
+                 this.priceSlider = [Math.max(this.minPrice, this.priceSlider[0]), Math.min(this.maxPrice, this.priceSlider[1])];
+            }
+
+        } else {
+            // Defaults if no laptops loaded
+            this.minPrice = 0;
+            this.maxPrice = 100000000;
+            this.priceSlider = [0, 100000000];
+        }
+    },
     formatPrice(value) {
       if (typeof value !== "number" || isNaN(value)) {
         return 'Rp 0';
@@ -104,12 +142,30 @@ export default {
         this.bootstrapLaptopModal.hide();
       }
     },
-    checkout(laptop) {
-      if (!laptop || this.checkoutQty < 1 || this.checkoutQty > laptop.stock) {
-        console.error("Checkout tidak valid:", laptop, this.checkoutQty);
+    addItemToCart(laptop) { // Method to add item to cart
+      if (!laptop || this.checkoutQty < 1 ) {
+        alert("Invalid quantity.");
         return;
       }
-      console.log(`Checkout laptop: ${laptop.name}, Kategori: ${laptop.category}, Harga: ${this.formatPrice(laptop.price)}, Qty: ${this.checkoutQty}`);
+      if (laptop.stock <= 0 || this.checkoutQty > laptop.stock) {
+        alert(`Quantity (x${this.checkoutQty}) exceeds available stock (${laptop.stock}) or item is out of stock.`);
+        return;
+      }
+
+      const laptopItem = {
+        id: String(laptop.id), // Ensure ID is a string
+        source: 'laptop', // Source identifier for Checkout.vue
+        name: laptop.name,
+        price: laptop.price,
+        qty: this.checkoutQty,
+        category: laptop.category,
+        brand: laptop.brand, // Assumes brand is now populated
+        image: laptop.image,
+        specification: laptop.description // Full description as specification
+      };
+
+      cartStore.addItem(laptopItem);
+      alert(`${laptop.name} (x${this.checkoutQty}) berhasil ditambahkan ke keranjang!`);
       this.closeModal();
     },
     goToCheckout() {
@@ -118,6 +174,23 @@ export default {
         return;
       }
       this.router.push('/checkout');
+    }
+  },
+  watch: {
+    laptops: { // Watch for changes in the laptops array (e.g., after fetching)
+        handler() {
+            this.updatePriceSliderBounds();
+        },
+        deep: true // Important if laptops array itself is replaced
+    },
+    priceSlider: { // Prevent min from exceeding max and vice-versa for the slider itself
+        handler(newVal) {
+            if (newVal[0] > newVal[1]) {
+                // This can create a loop if not careful. A better way is to adjust in the @input event.
+                // For now, let's assume the @input handlers on the range inputs manage this.
+            }
+        },
+        deep: true
     }
   }
 };
@@ -130,12 +203,12 @@ export default {
 
       <!-- Tombol Checkout Global -->
       <div class="text-center my-4 py-3 border-top border-bottom border-secondary">
-        <h4 class="mb-3">Keranjang Belanja Global</h4>
-        <p v-if="cartStore.items.length > 0" class="mb-2">
+        <h4 class="mb-3" style="font-family: 'Orbitron', sans-serif; color: #fff;">Keranjang Belanja Global</h4>
+        <p v-if="cartStore.items.length > 0" class="mb-2 text-light">
           Total Item: {{ cartStore.items.reduce((acc, item) => acc + item.qty, 0) }} | Total Harga: <span class="text-success fw-bold">{{ formatPrice(cartStore.totalPrice) }}</span>
         </p>
         <p v-else class="text-muted mb-2">Keranjang belanja utama masih kosong.</p>
-        <button class="btn btn-success btn-lg px-5" @click="goToCheckout">
+        <button class="btn btn-success btn-lg px-5" @click="goToCheckout" style="font-family: 'Orbitron', sans-serif;">
            <i class="bi bi-cart-check-fill me-2"></i> Lihat Keranjang & Checkout
         </button>
       </div>
@@ -170,18 +243,18 @@ export default {
               <!-- Price Range Slider -->
               <div class="row mt-3 align-items-center">
                 <div class="col-12">
-                  <div class="slider-harga-bs d-flex flex-column flex-md-row align-items-center gap-3 p-2 rounded-3">
+                  <div class="slider-harga-bs d-flex flex-column flex-md-row align-items-center gap-md-3 p-2 rounded-3">
                     <label for="minPriceSlider" class="form-label mb-0 price-range-label-bs">Rentang Harga (Rp):</label>
-                    <div class="slider-range-group d-flex align-items-center flex-grow-1"> <!-- Flex grow for group -->
-                        <span class="harga-min-bs me-2" style="min-width: 100px;">{{ formatPrice(priceSlider[0]) }}</span>
+                    <div class="slider-range-group d-flex align-items-center flex-grow-1 w-100">
+                        <span class="harga-min-bs me-2" style="min-width: 100px; font-size:0.9em;">{{ formatPrice(priceSlider[0]) }}</span>
                         <input
                           id="minPriceSlider"
                           type="range"
                           v-model.number="priceSlider[0]"
                           :min="minPrice"
                           :max="maxPrice" 
-                          :step="minPrice > 1000000 ? 100000 : 50000"
-                          class="form-range slider-min-bs flex-grow-1 mx-2"
+                          :step="Math.max(100000, (maxPrice - minPrice) / 100)"
+                          class="form-range slider-min-bs flex-grow-1 mx-md-2"
                           aria-label="Slider harga minimum"
                           @input="priceSlider[1] = Math.max(priceSlider[0], priceSlider[1])"
                         />
@@ -191,12 +264,12 @@ export default {
                           v-model.number="priceSlider[1]"
                           :min="minPrice" 
                           :max="maxPrice"
-                          :step="minPrice > 1000000 ? 100000 : 50000"
-                          class="form-range slider-max-bs flex-grow-1 mx-2"
+                          :step="Math.max(100000, (maxPrice - minPrice) / 100)"
+                          class="form-range slider-max-bs flex-grow-1 mx-md-2"
                           aria-label="Slider harga maksimum"
                            @input="priceSlider[0] = Math.min(priceSlider[0], priceSlider[1])"
                         />
-                        <span class="harga-max-bs ms-2" style="min-width: 100px;">{{ formatPrice(priceSlider[1]) }}</span>
+                        <span class="harga-max-bs ms-2" style="min-width: 100px; font-size:0.9em;">{{ formatPrice(priceSlider[1]) }}</span>
                     </div>
                   </div>
                 </div>
@@ -206,8 +279,26 @@ export default {
         </div>
       </transition>
 
+      <!-- Loading Placeholder -->
+      <div v-if="loading" class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-3 g-lg-4 justify-content-center">
+        <div v-for="n in 8" :key="`placeholder-${n}`" class="col d-flex align-items-stretch">
+            <div class="card h-100 card-bs w-100" style="background-color: #1a243a; border-color: #00d9ff33;">
+                <div class="card-img-wrapper-bs" style="background-color: #11192b; aspect-ratio: 4/3; display:flex; align-items:center; justify-content:center;">
+                    <div style="width: 80%; height: 60%; background-color: #232e4d; border-radius: 4px; animation: pulse-bg 1.5s infinite ease-in-out;"></div>
+                </div>
+                <div class="card-body p-3">
+                    <div style="height: 1.25em; width: 75%; background-color: #232e4d; border-radius: 4px; margin-bottom: 0.75rem; animation: pulse-bg 1.5s infinite ease-in-out 0.2s;"></div>
+                    <div style="height: 1em; width: 90%; background-color: #232e4d; border-radius: 4px; margin-bottom: 0.5rem; animation: pulse-bg 1.5s infinite ease-in-out 0.4s;"></div>
+                    <div style="height: 1em; width: 60%; background-color: #232e4d; border-radius: 4px; margin-bottom: 1rem; animation: pulse-bg 1.5s infinite ease-in-out 0.6s;"></div>
+                    <div style="height: 2.25em; width: 100%; background-color: #00d9ff44; border-radius: 4px; animation: pulse-bg 1.5s infinite ease-in-out 0.8s;"></div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+
       <!-- Laptop Categories and Cards -->
-      <transition-group name="fade-slide" tag="div" appear>
+      <transition-group name="fade-slide" tag="div" appear v-else>
         <div v-if="filteredLaptops.length > 0" key="laptop-list-container">
           <div v-for="categoryData in categoriesWithLaptops" :key="categoryData.name" class="category-section-bs mb-5">
             <div class="category-header-bs text-center">
@@ -222,34 +313,35 @@ export default {
                 <transition name="fade-slide" appear>
                   <div
                     class="card h-100 card-bs"
-                    @click="openModal(laptop)"
                     role="button"
                     tabindex="0"
                     :aria-label="`Lihat detail ${laptop.name}`"
                     @keydown.enter="openModal(laptop)"
                     @keydown.space="openModal(laptop)"
                   >
-                    <div class="card-img-wrapper-bs">
+                    <div class="card-img-wrapper-bs" @click="openModal(laptop)">
                       <img :src="laptop.image" :alt="`Gambar ${laptop.name}`" class="card-img-top card-img-bs" />
                     </div>
                     <div class="card-body d-flex flex-column p-3">
-                      <h4 class="card-title card-title-bs mb-2">{{ laptop.name }}</h4>
-                      <p class="card-text-desc-bs small mb-2">{{ laptop.description.split(',')[0] }}</p>
-                       <div class="mt-auto"> <!-- mt-auto on a new div to push price and button down -->
-                        <p class="card-text card-text-price-bs mb-2">
+                      <h4 class="card-title card-title-bs mb-2" @click="openModal(laptop)">{{ laptop.name }}</h4>
+                      <p class="card-text-desc-bs small mb-2" @click="openModal(laptop)">{{ laptop.description.split(',')[0] }}</p>
+                       <div class="mt-auto"> 
+                        <p class="card-text card-text-price-bs mb-2" @click="openModal(laptop)">
                             <strong>Harga:</strong> {{ formatPrice(laptop.price) }}
                         </p>
                         <button
                             v-if="laptop.stock > 0"
                             class="btn btn-sm btn-primary w-100"
                             @click.stop="openModal(laptop)" 
+                            style="font-family: 'Orbitron', sans-serif;"
                         >
-                            <i class="bi bi-cart-plus-fill me-1"></i> Pilih & Checkout
+                            <i class="bi bi-eye-fill me-1"></i> Lihat Detail & Beli
                         </button>
                         <button
                             v-else
                             class="btn btn-sm btn-secondary w-100"
                             disabled
+                            style="font-family: 'Orbitron', sans-serif;"
                         >
                             Stok Habis
                         </button>
@@ -301,7 +393,7 @@ export default {
                       </li>
                     </ul>
                     <!-- Checkout Section -->
-                    <div class="d-flex flex-column flex-md-row align-items-center gap-3 justify-content-center justify-content-lg-start mt-4">
+                    <div v-if="selectedLaptopForModal.stock > 0" class="d-flex flex-column flex-md-row align-items-center gap-3 justify-content-center justify-content-lg-start mt-4">
                       <div class="input-group checkout-qty-group-bs">
                         <label for="checkoutQtyInput" class="input-group-text">Qty:</label>
                         <input
@@ -320,9 +412,13 @@ export default {
                         class="btn btn-primary checkout-button-bs"
                         :disabled="selectedLaptopForModal.stock <= 0 || checkoutQty < 1 || (selectedLaptopForModal.stock > 0 && checkoutQty > selectedLaptopForModal.stock)"
                         @click="addItemToCart(selectedLaptopForModal)"
+                         style="font-family: 'Orbitron', sans-serif;"
                       >
                         <i class="bi bi-cart-plus-fill me-1"></i> Tambah ke Keranjang
                       </button>
+                    </div>
+                     <div v-else class="mt-4 text-center">
+                        <p class="text-danger fw-bold" style="font-family: 'Orbitron', sans-serif;">STOK HABIS</p>
                     </div>
                   </div>
                 </div>
@@ -332,7 +428,7 @@ export default {
               </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" @click="closeModal">Tutup</button>
+                <button type="button" class="btn btn-secondary" @click="closeModal" style="font-family: 'Orbitron', sans-serif;">Tutup</button>
             </div>
           </div>
         </div>
@@ -345,85 +441,121 @@ export default {
 /* Variabel Warna Lokal dan layout utama mirip PaketRakitan */
 .pc-list-section-bs {
   --primary-color: #00d9ff;
+  --secondary-color: #00c6ff; /* Added for consistency if used */
   --background-main: #0c101c;
-  color: #e8eff5;
+  --background-section: #11192b;
+  --background-card: #1a243a;
+  --background-modal: #0f1626;
+  --text-light: #e8eff5;
+  --text-muted-bs: #adb5bd; /* For consistency */
+  --text-title: #ffffff; /* For consistency */
+  --primary-color-rgb-val: 0, 217, 255; /* For consistency */
+  --border-color-soft: rgba(var(--primary-color-rgb-val), 0.2);
+  --border-color-medium: rgba(var(--primary-color-rgb-val), 0.35);
+  --border-color-strong: var(--primary-color);
+
+  font-family: 'Roboto', sans-serif;
   min-height: 100vh;
   background: var(--background-main);
+  color: var(--text-light);
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 .container {
+  width: 100%;
   max-width: 1200px;
-  margin: auto;
-  padding: 24px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem; /* Consistent padding */
+  padding-right: 1rem;
+  box-sizing: border-box;
 }
 .section-title-bs {
   font-family: 'Orbitron', sans-serif;
-  font-size: 2rem;
-  color: #fff;
-  margin-bottom: 2rem;
-  text-align: center;
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+  font-weight: 700;
+  color: var(--text-title);
+  text-shadow: 0 0 6px var(--text-title), 0 0 11px var(--primary-color), 0 0 16px var(--primary-color);
+  margin-bottom: 3rem !important;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
+.section-title-bs::after { /* Underline for title */
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 2.5px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  border-radius: 1.5px;
+  box-shadow: 0 0 8px var(--primary-color), 0 0 5px var(--secondary-color);
+}
+
 .filters-bs {
-  background: #11192b;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 2rem;
+  background-color: var(--background-section);
+  border: 1px solid var(--border-color-soft);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.18);
+  border-radius: 8px; /* Consistent border-radius */
 }
 .search-box-bs, .filter-select-bs {
-  background: #1a243a;
-  color: #e8eff5;
+  padding: 0.75rem 1.1rem;
+  border: 1px solid var(--border-color-medium);
   border-radius: 8px;
-  border: 1px solid #00d9ff33;
-  padding: 0.75rem 1rem;
+  background-color: var(--background-card);
+  color: var(--text-light);
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  height: auto; 
 }
+.search-box-bs::placeholder {
+  color: rgba(224, 224, 224, 0.5);
+}
+.search-box-bs:focus, .filter-select-bs:focus {
+  background-color: var(--background-section); 
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(var(--primary-color-rgb-val), 0.25);
+  color: #fff;
+}
+.filter-select-bs {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300d9ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
 .slider-harga-bs {
   background: var(--background-card);
   border: 1px solid var(--border-color-soft);
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-radius: 6px; /* Consistent border-radius */
 }
 .price-range-label-bs {
   color: var(--primary-color);
   font-weight: 500;
-  min-width: 140px; /* Ensure label width is consistent */
+  min-width: 140px; 
 }
 .slider-harga-bs .slider-range-group {
   display: flex;
-  flex-direction: column; /* Stack sliders vertically for better control */
-  align-items: stretch; /* Make sliders take full width available */
-  gap: 0.5rem; /* Space between sliders */
-  flex: 1 1 0%; /* Allow group to grow */
-  min-width: 180px; /* Minimum width for the slider group */
+  align-items: center; 
+  gap: 0.75rem; 
+  flex: 1 1 0%; 
+  min-width: 180px; 
 }
 .slider-harga-bs .form-range {
-  margin: 0.2rem 0;
-  width: 100%;
   accent-color: var(--primary-color);
+  flex-grow: 1; 
 }
 .harga-min-bs, .harga-max-bs {
   font-family: 'Orbitron', sans-serif;
   color: var(--primary-color);
   font-weight: 600;
-  font-size: 1rem;
-  text-align: center; /* Center price text */
-}
-
-@media (max-width: 767.98px) {
-  .slider-harga-bs {
-    flex-direction: column !important; /* Force column layout on smaller screens */
-    gap: 0.5rem !important;
-    padding: 0.7rem 0.5rem !important;
-  }
-  .price-range-label-bs {
-    min-width: unset; /* Remove min-width for label */
-    width: 100%;
-    text-align: left; /* Align label to left */
-  }
-  .slider-harga-bs .slider-range-group {
-    min-width: 100%; /* Group takes full width */
-  }
+  font-size: 0.95rem; 
+  text-align: center; 
+  flex-shrink: 0; 
 }
 
 .category-section-bs {
-  margin-bottom: 2.2rem !important; /* Consistent bottom margin */
+  margin-bottom: 2.2rem !important; 
 }
 .category-header-bs {
   position: relative;
@@ -451,14 +583,15 @@ export default {
   box-shadow: 0 2px 6px rgba(var(--primary-color-rgb-val), 0.15);
   border: 1px solid var(--border-color-soft);
   z-index: 2;
-  padding: 0.5rem 2.5rem; /* Generous padding */
-  margin: 0 auto; /* Center title */
+  padding: 0.5rem 2.5rem; 
+  margin: 0 auto; 
   display: inline-block;
-  min-width: 220px; /* Minimum width for title */
+  min-width: 220px; 
   text-align: center;
 }
+
 .row.row-cols-1.row-cols-sm-2.row-cols-lg-3.row-cols-xl-4.g-3.g-lg-4.justify-content-center {
-  --bs-gutter-x: 1.2rem; /* Custom gutter for card grid */
+  --bs-gutter-x: 1.2rem; 
   --bs-gutter-y: 1.2rem;
   margin-left: 0;
   margin-right: 0;
@@ -469,62 +602,64 @@ export default {
   justify-content: center !important;
 }
 .card-bs {
-  background: #1a243a;
+  background: var(--background-card);
   border-radius: 10px;
-  box-shadow: 0 5px 15px #0006;
-  color: #e8eff5;
-  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color-medium);
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, border-color 0.25s ease-out;
+  /* cursor: pointer; */ /* Clicks handled by inner elements or specific card sections */
+  color: var(--text-light);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  margin: 0 auto; /* Center card if col is wider */
+  margin: 0 auto; 
 }
-.card-bs:hover, .card-bs:focus-visible {
+.card-bs:hover, .card-bs:focus-within { /* focus-within for keyboard nav on card */
   transform: translateY(-5px) scale(1.015);
   box-shadow: 0 7px 22px rgba(var(--primary-color-rgb-val), 0.4);
   border-color: var(--border-color-strong);
   outline: none;
 }
-.card-bs:focus-visible:not(:hover) { /* Style for focus without hover */
-  outline: 2px solid var(--primary-color);
-  outline-offset: 1px;
-}
 
-/* === PERUBAHAN DI SINI === */
 .card-img-wrapper-bs {
-  background: #11192b;
+  background-color: var(--background-section);
   padding: 10px;
-  width: 100%; /* Mengikuti lebar card content area */
-  aspect-ratio: 4 / 3; /* Menetapkan rasio aspek, misal 4:3. Sesuaikan jika perlu (misal 16/10, 1/1) */
+  width: 100%; 
+  aspect-ratio: 4 / 3; 
   display: flex;
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid var(--border-color-soft);
-  box-sizing: border-box; /* Pastikan padding & border masuk dalam perhitungan width/height */
-  min-height: 190px; /* Tambahkan tinggi minimum agar semua card sama tinggi, termasuk ASUS ROG Zephyrus G14 */
+  box-sizing: border-box; 
+  cursor: pointer; /* Make image wrapper clickable for modal */
 }
+
 .card-img-bs {
-  max-width: 100%; /* Gambar akan mengisi sebanyak mungkin wrapper sambil menjaga rasio aspek */
+  max-width: 100%; 
   max-height: 100%;
-  object-fit: contain; /* Memastikan seluruh gambar terlihat, menjaga rasio aspek */
+  object-fit: contain; 
   border-radius: 4px;
 }
-/* === AKHIR PERUBAHAN === */
 
 .card-bs .card-body {
   padding: 1rem;
-  text-align: center; /* Default text align */
-  flex-grow: 1; /* Allow body to take remaining space */
+  text-align: center; 
+  flex-grow: 1; 
+  display: flex; 
+  flex-direction: column; 
 }
 .card-title-bs {
   font-family: 'Orbitron', sans-serif;
   font-size: 1rem;
-  color: #00d9ff;
+  font-weight: 500;
+  color: var(--primary-color);
   margin-bottom: 0.5rem;
   line-height: 1.35;
-  min-height: calc(1rem * 1.35 * 2); /* Ensure 2 lines of text height */
+  min-height: calc(1rem * 1.35 * 2); 
   display: flex;
   align-items: center;
-  justify-content: center; /* Center title text */
+  justify-content: center; 
+  cursor: pointer; /* Make title clickable for modal */
 }
 .card-text-desc-bs {
   font-size: 0.8rem;
@@ -532,52 +667,102 @@ export default {
   line-height: 1.4;
   margin-bottom: 0.75rem !important;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-line-clamp: 2; 
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: calc(0.8rem * 1.4 * 2); /* Ensure 2 lines height */
+  min-height: calc(0.8rem * 1.4 * 2); 
+  cursor: pointer; /* Make description clickable for modal */
 }
 .card-text-price-bs {
   font-size: 0.95rem;
   font-weight: bold;
   color: #fff;
+  cursor: pointer; /* Make price clickable for modal */
 }
+.card-text-price-bs strong {
+  color: var(--primary-color);
+  margin-right: 0.25rem;
+}
+
 .no-results-bs {
   margin-top: 30px;
   font-size: 1.1rem;
-  color: #00d9ff;
+  color: var(--primary-color);
+  font-family: 'Orbitron', sans-serif;
 }
+
 .modal-content-bs {
-  background: #0f1626;
+  background: var(--background-modal);
   border-radius: 10px;
-  color: #e8eff5;
+  box-shadow: 0 7px 25px rgba(var(--primary-color-rgb-val), 0.55);
+  border: 1px solid var(--border-color-strong);
+  color: var(--text-light);
+  animation: scaleUpModal-bs 0.3s ease-out forwards;
+  opacity: 0; 
 }
 .modal-header-bs {
-  background: #1a243a;
-  border-bottom: 1px solid #00d9ff33;
+  background-color: var(--background-card);
+  border-bottom: 1px solid var(--border-color-medium);
+  padding: 0.9rem 1.1rem;
 }
 .modal-pc-title-bs {
   font-family: 'Orbitron', sans-serif;
-  color: #00d9ff;
+  color: var(--primary-color);
   font-size: 1.25rem;
+  text-shadow: 0 0 4px var(--primary-color);
 }
 .modal-close-button-bs {
-  background: transparent;
-  border: none;
-  font-size: 1.6rem;
-  color: #00d9ff;
+  background: transparent !important;
+  border: none !important;
+  font-size: 1.6rem !important;
+  font-weight: bold !important;
+  color: var(--primary-color) !important;
+  opacity: 0.8 !important;
+  text-shadow: none !important;
+  padding: 0.35rem !important; 
+  transition: color 0.2s, transform 0.2s;
+}
+.modal-close-button-bs:hover {
+  color: #fff !important;
+  transform: scale(1.1);
+  opacity: 1 !important;
+}
+.modal-close-button-bs:focus {
+  box-shadow: none !important; 
+  outline: 1px solid var(--primary-color); 
+}
+.modal-body-bs {
+  padding: 1.25rem;
 }
 .modal-image-bs {
   width: 100%;
-  max-width: 280px;
-  max-height: 220px;
+  max-width: 280px; 
+  max-height: 220px; 
   object-fit: contain;
   border-radius: 6px;
-  background: #1a243a;
-  border: 1px solid #00d9ff33;
-  padding: 8px;
+  margin-bottom: 1.25rem;
+  background-color: var(--background-card); 
+  border: 1px solid var(--border-color-medium);
+  padding: 8px; 
+}
+.modal-details-text {
+  text-align: left; 
+}
+.modal-info-group p {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+.modal-info-group strong {
+  color: var(--primary-color);
+  min-width: 70px; 
+  display: inline-block; 
+}
+.specs-section-bs {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border-color-soft);
 }
 .specs-section-bs h4 {
   font-family: 'Orbitron', sans-serif;
@@ -589,7 +774,7 @@ export default {
   text-transform: uppercase;
 }
 .specs-section-bs ul {
-  list-style: disc; /* Standard disc bullets */
+  list-style: disc; 
   padding-left: 1.1rem;
   margin-bottom: 0;
 }
@@ -597,11 +782,11 @@ export default {
   margin-bottom: 0.35rem;
   font-size: 0.825rem;
   color: var(--text-light);
-  text-shadow: none; /* Remove any inherited text-shadow */
-  font-style: normal; /* Ensure normal font style */
+  text-shadow: none; 
+  font-style: normal; 
 }
 .text-stock-ready-bs {
-  color: #28f57a !important; /* Use !important carefully */
+  color: #28f57a !important; 
   font-weight: bold;
   text-shadow: 0 0 3px #28f57a80;
 }
@@ -615,26 +800,54 @@ export default {
 }
 .checkout-qty-group-bs .form-control {
   min-width: 60px;
-  text-align: center; /* Center quantity text */
+  text-align: center; 
+  background-color: var(--background-section); /* Match theme */
+  color: var(--text-light);
+  border-color: var(--border-color-medium);
 }
+.checkout-qty-group-bs .input-group-text {
+  background-color: var(--background-card);
+  color: var(--primary-color);
+  border-color: var(--border-color-medium);
+}
+
 .checkout-button-bs {
-  background: #00d9ff;
+  background: var(--primary-color);
   border: none;
-  color: var(--background-main);
+  color: var(--background-main); /* Ensure contrast */
   font-weight: 600;
   min-width: 140px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+.checkout-button-bs:hover:not(:disabled) {
+  background: var(--secondary-color);
+  transform: scale(1.03);
 }
 .checkout-button-bs:disabled {
-  background: #555;
+  background: #555; 
   cursor: not-allowed;
+  opacity: 0.7; /* Visual cue for disabled */
 }
+.modal-footer {
+    background-color: var(--background-card);
+    border-top: 1px solid var(--border-color-medium);
+    padding: 0.75rem 1rem; /* Standard modal footer padding */
+}
+.modal-footer .btn-secondary {
+    background-color: #4a5568; /* A neutral dark gray */
+    border-color: #4a5568;
+}
+.modal-footer .btn-secondary:hover {
+    background-color: #2d3748; /* Darker gray on hover */
+    border-color: #2d3748;
+}
+
 
 @keyframes scaleUpModal-bs {
   from { transform: scale(0.92) translateY(12px); opacity: 0; }
   to { transform: scale(1) translateY(0); opacity: 1; }
 }
 
-/* Transitions for list items and sections */
 .fade-slide-enter-active, .fade-slide-leave-active {
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -647,19 +860,17 @@ export default {
   transform: translateY(0) scale(1);
 }
 
-/* Responsive Adjustments */
-@media (min-width: 768px) {
-  .card-bs .card-body {
-    text-align: left; /* Align card body text to left on md and up */
-  }
-  .card-title-bs {
-    justify-content: flex-start; /* Align title to left */
-  }
+@keyframes pulse-bg {
+  0% { background-color: #232e4d; }
+  50% { background-color: #2c3a57; }
+  100% { background-color: #232e4d; }
 }
 
+
+/* Responsive Adjustments */
 @media (max-width: 767.98px) {
   .filters-bs .col-md, .filters-bs .col-md-auto {
-    flex-basis: 100%; /* Stack filter inputs */
+    flex-basis: 100%; 
   }
   .section-title-bs {
     font-size: clamp(1.6rem, 4vw, 2.2rem);
@@ -672,31 +883,39 @@ export default {
     margin-bottom: 1.5rem;
     padding: 0.6rem 0;
   }
-  .modal-body-bs .row > div { /* Center content in modal on small screens */
+  .modal-body-bs .row > div { 
     text-align: center !important;
   }
   .modal-details-text {
-    text-align: center; /* Ensure details text is also centered if content above it is */
+    text-align: center; 
   }
   .specs-section-bs h4 {
-    text-align: center !important; /* Center specs title */
+    text-align: center !important; 
   }
   .specs-section-bs ul {
-    padding-left: 1.5rem; /* Adjust padding for centered list */
-    display: inline-block; /* Allows text-align:center on parent to work for ul */
-    text-align: left; /* Re-align list items to left */
+    padding-left: 1.5rem; 
+    display: inline-block; 
+    text-align: left; 
+  }
+  .slider-harga-bs .slider-range-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .slider-harga-bs .form-range {
+    width: 100%; /* Ensure sliders take full width when stacked */
+    margin: 0.5rem 0; /* Add some vertical spacing */
+  }
+  .harga-min-bs, .harga-max-bs {
+    text-align: left;
+    margin-bottom: 0.25rem; /* Space below price text when stacked */
   }
 }
 
 @media (max-width: 575.98px) {
   .pc-list-section-bs .container {
-    padding-left: 10px; /* Slightly more padding on very small screens */
-    padding-right: 10px;
+    padding-left: 0.75rem; 
+    padding-right: 0.75rem;
   }
-  /* Hapus pengaturan height eksplisit untuk card-img-wrapper-bs di sini karena sudah diatur oleh aspect-ratio */
-  /* .card-img-wrapper-bs {
-    height: 170px;
-  } */
   .card-title-bs {
     font-size: 0.9rem;
     min-height: calc(0.9rem * 1.35 * 2);
@@ -709,21 +928,21 @@ export default {
     font-size: 0.85rem;
   }
   .card-bs .card-body {
-    padding: 0.75rem; /* Reduce card body padding */
+    padding: 0.75rem; 
   }
   .section-title-bs {
     font-size: clamp(1.4rem, 4.5vw, 1.8rem);
   }
   .category-title-bs {
     font-size: clamp(1rem, 2.8vw, 1.4rem);
-    padding: 0.5rem 0.7rem; /* Reduce padding */
+    padding: 0.5rem 0.7rem; 
   }
   .filters-bs {
-    padding: 0.7rem; /* Reduce filter padding */
+    padding: 0.7rem; 
   }
   .search-box-bs, .filter-select-bs {
     font-size: 0.85rem;
-    padding: 0.6rem 0.9rem; /* Adjust input padding */
+    padding: 0.6rem 0.9rem; 
   }
   .modal-pc-title-bs {
     font-size: 1.1rem;
@@ -732,21 +951,21 @@ export default {
     font-size: 0.75rem;
   }
   .modal-image-bs {
-    max-height: 170px; /* Adjust modal image height */
+    max-height: 170px; 
   }
   .specs-section-bs h4 {
     font-size: 0.9rem;
   }
-  .row.g-3.g-lg-4 { /* Reduce gutter on small screens */
+  .row.g-3.g-lg-4 { 
     --bs-gutter-x: 0.8rem;
     --bs-gutter-y: 0.8rem;
   }
   .checkout-qty-group-bs {
-    width: 100%; /* Make Qty input group full width */
+    width: 100%; 
     max-width: none;
   }
   .checkout-button-bs {
-    width: 100%; /* Make checkout button full width */
+    width: 100%; 
   }
 }
 </style>
