@@ -50,7 +50,7 @@ const closeSidebar = () => {
     <nav class="navbar navbar-expand-lg navbar-dark bg-black fixed-top shadow-sm">
       <div class="container-fluid">
         <RouterLink class="navbar-brand logo-bs" to="/">
-          <img src="/logo.png" alt="JWR Comp Logo" />
+          <img src="/logo.webp" alt="JWR Comp Logo" />
         </RouterLink>
         <button
           class="navbar-toggler"
@@ -90,7 +90,7 @@ const closeSidebar = () => {
     >
       <div class="offcanvas-header">
         <h5 class="offcanvas-title logo-bs-sidebar" id="sidebarNavLabel">
-            <img src="/logo.png" alt="JWR Comp Logo Sidebar" />
+            <img src="/logo.webp" alt="JWR Comp Logo Sidebar" />
         </h5>
         <button
           type="button"
