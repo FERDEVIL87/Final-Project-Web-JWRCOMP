@@ -1,22 +1,27 @@
 <script>
-// ... (JavaScript Anda tetap sama) ...
 import { Modal } from 'bootstrap';
+import { cartStore } from '@/store/cartStore'; // Import global cart store
+import { useRouter } from 'vue-router'; // Import for navigation
 
 export default {
   name: "LaptopListSection",
+  setup() {
+    const router = useRouter(); // Initialize router
+    return { router, cartStore }; // Expose to template
+  },
   data() {
     return {
       laptops: [
-        { id: 1, name: "Acer Aspire 3", category: "Low-End", price: 5000000, image: "/public/img/Acer Aspire 3.webp", description: "AMD Ryzen 3 3250U, RAM 4GB, SSD 256GB, Layar 15.6\" FHD, Radeon Graphics", stock: 12 },
-        { id: 2, name: "HP 14s", category: "Low-End", price: 6000000, image: "/public/img/Hp 14s.webp", description: "Intel Core i3-1115G4, RAM 8GB, SSD 512GB, Layar 14\" FHD, Intel UHD Graphics", stock: 0 },
-        { id: 3, name: "ASUS VivoBook 15", category: "Mid-Range", price: 8000000, image: "/public/img/Asus Vivobook 15.webp", description: "Intel Core i5-1135G7, RAM 8GB, SSD 512GB, Layar 15.6\" FHD, Intel Iris Xe Graphics", stock: 10 },
-        { id: 4, name: "Lenovo IdeaPad 5", category: "Mid-Range", price: 10000000, image: "/public/img/Lenovo IdeaPad 5.webp", description: "AMD Ryzen 5 5500U, RAM 8GB, SSD 512GB, Layar 14\" FHD, Radeon Graphics", stock: 0 },
-        { id: 5, name: "Dell Inspiron 15", category: "Mid-Range", price: 12000000, image: "/public/img/Dell Inspiron 15.webp", description: "Intel Core i7-1165G7, RAM 16GB, SSD 512GB, Layar 15.6\" FHD, Intel Iris Xe Graphics", stock: 9 },
-        { id: 6, name: "MacBook Air M1", category: "High-End", price: 15000000, image: "/public/img/MacBook Air M1.webp", description: "Apple M1, RAM 8GB, SSD 256GB, Layar 13.3\" Retina, GPU 7-core/8-core", stock: 0 },
-        { id: 7, name: "ASUS ROG Zephyrus G14", category: "High-End", price: 20000000, image: "/public/img/ASUSROGZephyrusG14.webp", description: "AMD Ryzen 7 4800HS, RAM 16GB, SSD 512GB, Layar 14\" FHD 120Hz, NVIDIA GTX 1650/RTX 2060", stock: 4 },
-        { id: 8, name: "Dell XPS 13", category: "High-End", price: 25000000, image: "/public/img/Dell XPS 13.webp", description: "Intel Core i7-1165G7, RAM 16GB, SSD 1TB, Layar 13.4\" FHD+, Intel Iris Xe Graphics", stock: 0 },
-        { id: 9, name: "MacBook Pro 16-inch", category: "High-End", price: 30000000, image: "/public/img/MacBook Pro 16-inch.webp", description: "Apple M1 Pro, RAM 16GB, SSD 512GB, Layar 16.2\" Liquid Retina XDR, GPU 16-core", stock: 3 },
-        { id: 10, name: "Razer Blade 15", category: "High-End", price: 35000000, image: "/public/img/Razer Blade 15.webp", description: "Intel Core i7-11800H, RAM 16GB, SSD 1TB, Layar 15.6\" FHD 144Hz, NVIDIA RTX 3060", stock: 0 },
+        { id: 1, name: "Acer Aspire 3", category: "Low-End", price: 5000000, image: "/img/Acer Aspire 3.webp", description: "AMD Ryzen 3 3250U, RAM 4GB, SSD 256GB, Layar 15.6\" FHD, Radeon Graphics", stock: 12, brand: "Acer" },
+        { id: 2, name: "HP 14s", category: "Low-End", price: 6000000, image: "/img/Hp 14s.webp", description: "Intel Core i3-1115G4, RAM 8GB, SSD 512GB, Layar 14\" FHD, Intel UHD Graphics", stock: 0, brand: "HP" },
+        { id: 3, name: "ASUS VivoBook 15", category: "Mid-Range", price: 8000000, image: "/img/Asus Vivobook 15.webp", description: "Intel Core i5-1135G7, RAM 8GB, SSD 512GB, Layar 15.6\" FHD, Intel Iris Xe Graphics", stock: 10, brand: "ASUS" },
+        { id: 4, name: "Lenovo IdeaPad 5", category: "Mid-Range", price: 10000000, image: "/img/Lenovo IdeaPad 5.webp", description: "AMD Ryzen 5 5500U, RAM 8GB, SSD 512GB, Layar 14\" FHD, Radeon Graphics", stock: 0, brand: "Lenovo" },
+        { id: 5, name: "Dell Inspiron 15", category: "Mid-Range", price: 12000000, image: "/img/Dell Inspiron 15.webp", description: "Intel Core i7-1165G7, RAM 16GB, SSD 512GB, Layar 15.6\" FHD, Intel Iris Xe Graphics", stock: 9, brand: "Dell" },
+        { id: 6, name: "MacBook Air M1", category: "High-End", price: 15000000, image: "/img/MacBook Air M1.webp", description: "Apple M1, RAM 8GB, SSD 256GB, Layar 13.3\" Retina, GPU 7-core/8-core", stock: 0, brand: "Apple" },
+        { id: 7, name: "ASUS ROG Zephyrus G14", category: "High-End", price: 20000000, image: "/img/ASUSROGZephyrusG14.webp", description: "AMD Ryzen 7 4800HS, RAM 16GB, SSD 512GB, Layar 14\" FHD 120Hz, NVIDIA GTX 1650/RTX 2060", stock: 4, brand: "ASUS" },
+        { id: 8, name: "Dell XPS 13", category: "High-End", price: 25000000, image: "/img/Dell XPS 13.webp", description: "Intel Core i7-1165G7, RAM 16GB, SSD 1TB, Layar 13.4\" FHD+, Intel Iris Xe Graphics", stock: 0, brand: "Dell" },
+        { id: 9, name: "MacBook Pro 16-inch", category: "High-End", price: 30000000, image: "/img/MacBook Pro 16-inch.webp", description: "Apple M1 Pro, RAM 16GB, SSD 512GB, Layar 16.2\" Liquid Retina XDR, GPU 16-core", stock: 3, brand: "Apple" },
+        { id: 10, name: "Razer Blade 15", category: "High-End", price: 35000000, image: "/img/Razer Blade 15.webp", description: "Intel Core i7-11800H, RAM 16GB, SSD 1TB, Layar 15.6\" FHD 144Hz, NVIDIA RTX 3060", stock: 0, brand: "Razer" },
       ],
       searchQuery: "",
       selectedCategoryFilter: "",
@@ -29,6 +34,26 @@ export default {
     };
   },
   created() {
+    // Ensure image paths start with / if they are in the public folder directly
+    // Or adjust if they are in public/img
+    this.laptops = this.laptops.map(laptop => {
+        if (laptop.image && laptop.image.startsWith("/public/")) {
+            laptop.image = laptop.image.replace("/public/", "/");
+        }
+        // Add brand if missing, based on name
+        if (!laptop.brand) {
+            if (laptop.name.toLowerCase().includes("acer")) laptop.brand = "Acer";
+            else if (laptop.name.toLowerCase().includes("hp")) laptop.brand = "HP";
+            else if (laptop.name.toLowerCase().includes("asus")) laptop.brand = "ASUS";
+            else if (laptop.name.toLowerCase().includes("lenovo")) laptop.brand = "Lenovo";
+            else if (laptop.name.toLowerCase().includes("dell")) laptop.brand = "Dell";
+            else if (laptop.name.toLowerCase().includes("macbook")) laptop.brand = "Apple";
+            else if (laptop.name.toLowerCase().includes("razer")) laptop.brand = "Razer";
+            else laptop.brand = "Lainnya";
+        }
+        return laptop;
+    });
+
     if (this.laptops.length > 0) {
       const prices = this.laptops.map(l => l.price);
       this.minPrice = Math.min(...prices);
@@ -36,7 +61,7 @@ export default {
       this.priceSlider = [this.minPrice, this.maxPrice];
     } else {
       this.minPrice = 0;
-      this.maxPrice = 100000000;
+      this.maxPrice = 100000000; // A high default max
       this.priceSlider = [0, 100000000];
     }
   },
@@ -64,14 +89,14 @@ export default {
       });
     },
     categoriesWithLaptops() {
-      const uniqueCategories = ["Low-End", "Mid-Range", "High-End"];
+      const uniqueCategories = ["Low-End", "Mid-Range", "High-End"]; // Define order
       const categoryData = uniqueCategories.map(categoryName => {
         const laptopsInCategory = this.filteredLaptops.filter(laptop => laptop.category === categoryName);
         return {
           name: categoryName,
           laptops: laptopsInCategory,
         };
-      }).filter(category => category.laptops.length > 0);
+      }).filter(category => category.laptops.length > 0); // Only show categories with laptops after filtering
 
       if (this.selectedCategoryFilter) {
         return categoryData.filter(cat => cat.name === this.selectedCategoryFilter);
@@ -84,11 +109,11 @@ export default {
       if (typeof value !== "number" || isNaN(value)) {
         return 'Rp 0';
       }
-      return `Rp ${new Intl.NumberFormat('id-ID').format(value)}`;
+      return `Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)}`;
     },
     openModal(laptop) {
       this.selectedLaptopForModal = laptop;
-      this.checkoutQty = 1;
+      this.checkoutQty = 1; // Reset quantity on modal open
       if (this.bootstrapLaptopModal) {
         this.bootstrapLaptopModal.show();
       }
@@ -98,23 +123,55 @@ export default {
         this.bootstrapLaptopModal.hide();
       }
     },
-    checkout(laptop) {
-      if (!laptop || this.checkoutQty < 1 || this.checkoutQty > laptop.stock) {
-        console.error("Checkout tidak valid:", laptop, this.checkoutQty);
+    addItemToCart(laptop) { // Renamed from checkout
+      if (!laptop || this.checkoutQty < 1 || (laptop.stock > 0 && this.checkoutQty > laptop.stock) || laptop.stock <= 0) {
+        alert("Jumlah tidak valid atau stok habis.");
         return;
       }
-      console.log(`Checkout laptop: ${laptop.name}, Kategori: ${laptop.category}, Harga: ${this.formatPrice(laptop.price)}, Qty: ${this.checkoutQty}`);
+
+      const laptopItem = {
+        id: laptop.id,
+        source: 'laptop', // Source identifier for Checkout.vue
+        name: laptop.name,
+        price: laptop.price,
+        qty: this.checkoutQty,
+        category: laptop.category,
+        brand: laptop.brand || (laptop.name.split(" ")[0]), // Use provided brand or guess from name
+        image: laptop.image,
+        specification: laptop.description // Full description as specification
+      };
+
+      cartStore.addItem(laptopItem);
+      alert(`${laptop.name} (x${this.checkoutQty}) berhasil ditambahkan ke keranjang!`);
       this.closeModal();
+    },
+    goToCheckout() {
+      if (cartStore.items.length === 0) {
+        alert("Keranjang belanja Anda kosong. Silakan tambahkan produk terlebih dahulu.");
+        return;
+      }
+      this.router.push('/checkout');
     }
   }
 };
 </script>
 
 <template>
-  <!-- ... (Template Anda tetap sama) ... -->
   <section class="pc-list-section-bs">
     <div class="container py-4 py-md-5">
-      <h2 class="section-title-bs text-center">List Laptop</h2>
+      <h2 class="section-title-bs text-center">Toko Laptop</h2>
+
+      <!-- Tombol Checkout Global -->
+      <div class="text-center my-4 py-3 border-top border-bottom border-secondary">
+        <h4 class="mb-3">Keranjang Belanja Global</h4>
+        <p v-if="cartStore.items.length > 0" class="mb-2">
+          Total Item: {{ cartStore.items.reduce((acc, item) => acc + item.qty, 0) }} | Total Harga: <span class="text-success fw-bold">{{ formatPrice(cartStore.totalPrice) }}</span>
+        </p>
+        <p v-else class="text-muted mb-2">Keranjang belanja utama masih kosong.</p>
+        <button class="btn btn-success btn-lg px-5" @click="goToCheckout">
+           <i class="bi bi-cart-check-fill me-2"></i> Lihat Keranjang & Checkout
+        </button>
+      </div>
 
       <!-- Filter Section -->
       <transition name="fade-slide" appear>
@@ -148,29 +205,31 @@ export default {
                 <div class="col-12">
                   <div class="slider-harga-bs d-flex flex-column flex-md-row align-items-center gap-3 p-2 rounded-3">
                     <label for="minPriceSlider" class="form-label mb-0 price-range-label-bs">Rentang Harga (Rp):</label>
-                    <div class="slider-range-group">
-                      <span class="harga-min-bs" style="min-width: 90px;">{{ formatPrice(priceSlider[0]) }}</span>
-                      <input
-                        id="minPriceSlider"
-                        type="range"
-                        v-model.number="priceSlider[0]"
-                        :min="minPrice"
-                        :max="priceSlider[1]"
-                        step="100000"
-                        class="form-range slider-min-bs"
-                        aria-label="Slider harga minimum"
-                      />
-                      <input
-                        id="maxPriceSlider"
-                        type="range"
-                        v-model.number="priceSlider[1]"
-                        :min="priceSlider[0]"
-                        :max="maxPrice"
-                        step="100000"
-                        class="form-range slider-max-bs"
-                        aria-label="Slider harga maksimum"
-                      />
-                      <span class="harga-max-bs" style="min-width: 90px;">{{ formatPrice(priceSlider[1]) }}</span>
+                    <div class="slider-range-group d-flex align-items-center flex-grow-1"> <!-- Flex grow for group -->
+                        <span class="harga-min-bs me-2" style="min-width: 100px;">{{ formatPrice(priceSlider[0]) }}</span>
+                        <input
+                          id="minPriceSlider"
+                          type="range"
+                          v-model.number="priceSlider[0]"
+                          :min="minPrice"
+                          :max="maxPrice" 
+                          :step="minPrice > 1000000 ? 100000 : 50000"
+                          class="form-range slider-min-bs flex-grow-1 mx-2"
+                          aria-label="Slider harga minimum"
+                          @input="priceSlider[1] = Math.max(priceSlider[0], priceSlider[1])"
+                        />
+                        <input
+                          id="maxPriceSlider"
+                          type="range"
+                          v-model.number="priceSlider[1]"
+                          :min="minPrice" 
+                          :max="maxPrice"
+                          :step="minPrice > 1000000 ? 100000 : 50000"
+                          class="form-range slider-max-bs flex-grow-1 mx-2"
+                          aria-label="Slider harga maksimum"
+                           @input="priceSlider[0] = Math.min(priceSlider[0], priceSlider[1])"
+                        />
+                        <span class="harga-max-bs ms-2" style="min-width: 100px;">{{ formatPrice(priceSlider[1]) }}</span>
                     </div>
                   </div>
                 </div>
@@ -209,9 +268,25 @@ export default {
                     <div class="card-body d-flex flex-column p-3">
                       <h4 class="card-title card-title-bs mb-2">{{ laptop.name }}</h4>
                       <p class="card-text-desc-bs small mb-2">{{ laptop.description.split(',')[0] }}</p>
-                      <p class="card-text card-text-price-bs mt-auto mb-0">
-                        <strong>Harga:</strong> {{ formatPrice(laptop.price) }}
-                      </p>
+                       <div class="mt-auto"> <!-- mt-auto on a new div to push price and button down -->
+                        <p class="card-text card-text-price-bs mb-2">
+                            <strong>Harga:</strong> {{ formatPrice(laptop.price) }}
+                        </p>
+                        <button
+                            v-if="laptop.stock > 0"
+                            class="btn btn-sm btn-primary w-100"
+                            @click.stop="openModal(laptop)" 
+                        >
+                            <i class="bi bi-cart-plus-fill me-1"></i> Pilih & Checkout
+                        </button>
+                        <button
+                            v-else
+                            class="btn btn-sm btn-secondary w-100"
+                            disabled
+                        >
+                            Stok Habis
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </transition>
@@ -242,6 +317,7 @@ export default {
                 <div class="col-lg-7 modal-details-text">
                   <div class="modal-info-group mb-3">
                     <p><strong>Kategori:</strong> {{ selectedLaptopForModal.category }}</p>
+                    <p><strong>Brand:</strong> {{ selectedLaptopForModal.brand }}</p>
                     <p><strong>Harga:</strong> {{ formatPrice(selectedLaptopForModal.price) }}</p>
                     <p>
                       <strong>Status Stok:</strong>
@@ -275,10 +351,10 @@ export default {
                       <button
                         type="button"
                         class="btn btn-primary checkout-button-bs"
-                        :disabled="selectedLaptopForModal.stock <= 0 || checkoutQty < 1 || checkoutQty > selectedLaptopForModal.stock"
-                        @click="checkout(selectedLaptopForModal)"
+                        :disabled="selectedLaptopForModal.stock <= 0 || checkoutQty < 1 || (selectedLaptopForModal.stock > 0 && checkoutQty > selectedLaptopForModal.stock)"
+                        @click="addItemToCart(selectedLaptopForModal)"
                       >
-                        Checkout
+                        <i class="bi bi-cart-plus-fill me-1"></i> Tambah ke Keranjang
                       </button>
                     </div>
                   </div>
@@ -287,6 +363,9 @@ export default {
               <div v-else class="text-center">
                 <p>Silakan pilih laptop untuk melihat detail.</p>
               </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @click="closeModal">Tutup</button>
             </div>
           </div>
         </div>
@@ -405,28 +484,29 @@ export default {
 }
 .slider-harga-bs .slider-range-group {
   display: flex;
-  flex-direction: column; /* Stack sliders vertically for better control */
-  align-items: stretch; /* Make sliders take full width available */
-  gap: 0.5rem; /* Space between sliders */
+  align-items: center; /* Align items vertically in the center */
+  gap: 0.75rem; /* Space between sliders and text */
   flex: 1 1 0%; /* Allow group to grow */
   min-width: 180px; /* Minimum width for the slider group */
 }
 .slider-harga-bs .form-range {
-  margin: 0.2rem 0;
-  width: 100%;
+  /* margin: 0.2rem 0; */
+  /* width: 100%; Remove fixed width, let flexbox handle it */
   accent-color: var(--primary-color);
+  flex-grow: 1; /* Allow sliders to take available space */
 }
 .harga-min-bs, .harga-max-bs {
   font-family: 'Orbitron', sans-serif;
   color: var(--primary-color);
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.95rem; /* Slightly smaller for better fit */
   text-align: center; /* Center price text */
+  flex-shrink: 0; /* Prevent price text from shrinking */
 }
 
 @media (max-width: 767.98px) {
   .slider-harga-bs {
-    flex-direction: column !important; /* Force column layout on smaller screens */
+    /* flex-direction: column !important; */ /* Already handled by Bootstrap's row/col */
     gap: 0.5rem !important;
     padding: 0.7rem 0.5rem !important;
   }
@@ -434,9 +514,16 @@ export default {
     min-width: unset; /* Remove min-width for label */
     width: 100%;
     text-align: left; /* Align label to left */
+    margin-bottom: 0.5rem; /* Add some space below label */
   }
   .slider-harga-bs .slider-range-group {
+    flex-direction: column; /* Stack sliders vertically on small screens */
     min-width: 100%; /* Group takes full width */
+    align-items: stretch; /* Make sliders take full width */
+  }
+  .harga-min-bs, .harga-max-bs {
+    text-align: left; /* Align price text left when stacked */
+    margin-bottom: 0.25rem;
   }
 }
 
@@ -510,32 +597,32 @@ export default {
   outline-offset: 1px;
 }
 
-/* === PERUBAHAN DI SINI === */
 .card-img-wrapper-bs {
   background-color: var(--background-section);
   padding: 10px;
-  width: 100%; /* Mengikuti lebar card content area */
-  aspect-ratio: 4 / 3; /* Menetapkan rasio aspek, misal 4:3. Sesuaikan jika perlu (misal 16/10, 1/1) */
+  width: 100%; 
+  aspect-ratio: 4 / 3; 
   display: flex;
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid var(--border-color-soft);
-  box-sizing: border-box; /* Pastikan padding & border masuk dalam perhitungan width/height */
-  min-height: 190px; /* Tambahkan tinggi minimum agar semua card sama tinggi, termasuk ASUS ROG Zephyrus G14 */
+  box-sizing: border-box; 
+  /* min-height: 190px;  Consider removing if aspect-ratio is sufficient */
 }
 
 .card-img-bs {
-  max-width: 100%; /* Gambar akan mengisi sebanyak mungkin wrapper sambil menjaga rasio aspek */
+  max-width: 100%; 
   max-height: 100%;
-  object-fit: contain; /* Memastikan seluruh gambar terlihat, menjaga rasio aspek */
+  object-fit: contain; 
   border-radius: 4px;
 }
-/* === AKHIR PERUBAHAN === */
 
 .card-bs .card-body {
   padding: 1rem;
-  text-align: center; /* Default text align */
-  flex-grow: 1; /* Allow body to take remaining space */
+  text-align: center; 
+  flex-grow: 1; 
+  display: flex; /* Added for flex column layout */
+  flex-direction: column; /* Added */
 }
 .card-title-bs {
   font-family: 'Orbitron', sans-serif;
@@ -544,10 +631,10 @@ export default {
   color: var(--primary-color);
   margin-bottom: 0.5rem;
   line-height: 1.35;
-  min-height: calc(1rem * 1.35 * 2); /* Ensure 2 lines of text height */
+  min-height: calc(1rem * 1.35 * 2); 
   display: flex;
   align-items: center;
-  justify-content: center; /* Center title text */
+  justify-content: center; 
 }
 .card-text-desc-bs {
   font-size: 0.8rem;
@@ -555,12 +642,12 @@ export default {
   line-height: 1.4;
   margin-bottom: 0.75rem !important;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-line-clamp: 2; 
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: calc(0.8rem * 1.4 * 2); /* Ensure 2 lines height */
+  min-height: calc(0.8rem * 1.4 * 2); 
 }
 .card-text-price-bs {
   font-size: 0.95rem;
@@ -687,10 +774,19 @@ export default {
 .checkout-qty-group-bs .form-control {
   min-width: 60px;
   text-align: center; /* Center quantity text */
+  background-color: var(--background-section);
+  color: var(--text-light);
+  border-color: var(--border-color-medium);
+}
+.checkout-qty-group-bs .input-group-text {
+  background-color: var(--background-card);
+  color: var(--primary-color);
+  border-color: var(--border-color-medium);
 }
 .checkout-button-bs {
   background: var(--primary-color);
   border: none;
+  color: var(--background-main);
   font-weight: 600;
   min-width: 140px;
   transition: background-color 0.2s, transform 0.1s;
@@ -702,7 +798,22 @@ export default {
 .checkout-button-bs:disabled {
   background: #555; /* Darker background for disabled state */
   cursor: not-allowed;
+  opacity: 0.7;
 }
+.modal-footer {
+    background-color: var(--background-card);
+    border-top: 1px solid var(--border-color-medium);
+    padding: 0.75rem 1rem;
+}
+.modal-footer .btn-secondary {
+    background-color: #4a5568; /* Bootstrap gray-600 equivalent */
+    border-color: #4a5568;
+}
+.modal-footer .btn-secondary:hover {
+    background-color: #2d3748; /* Bootstrap gray-700 equivalent */
+    border-color: #2d3748;
+}
+
 
 @keyframes scaleUpModal-bs {
   from { transform: scale(0.92) translateY(12px); opacity: 0; }
@@ -725,16 +836,16 @@ export default {
 /* Responsive Adjustments */
 @media (min-width: 768px) {
   .card-bs .card-body {
-    text-align: left; /* Align card body text to left on md and up */
+    text-align: left; 
   }
   .card-title-bs {
-    justify-content: flex-start; /* Align title to left */
+    justify-content: flex-start; 
   }
 }
 
 @media (max-width: 767.98px) {
   .filters-bs .col-md, .filters-bs .col-md-auto {
-    flex-basis: 100%; /* Stack filter inputs */
+    flex-basis: 100%; 
   }
   .section-title-bs {
     font-size: clamp(1.6rem, 4vw, 2.2rem);
@@ -747,31 +858,27 @@ export default {
     margin-bottom: 1.5rem;
     padding: 0.6rem 0;
   }
-  .modal-body-bs .row > div { /* Center content in modal on small screens */
+  .modal-body-bs .row > div { 
     text-align: center !important;
   }
   .modal-details-text {
-    text-align: center; /* Ensure details text is also centered if content above it is */
+    text-align: center; 
   }
   .specs-section-bs h4 {
-    text-align: center !important; /* Center specs title */
+    text-align: center !important; 
   }
   .specs-section-bs ul {
-    padding-left: 1.5rem; /* Adjust padding for centered list */
-    display: inline-block; /* Allows text-align:center on parent to work for ul */
-    text-align: left; /* Re-align list items to left */
+    padding-left: 1.5rem; 
+    display: inline-block; 
+    text-align: left; 
   }
 }
 
 @media (max-width: 575.98px) {
   .pc-list-section-bs .container {
-    padding-left: 10px; /* Slightly more padding on very small screens */
+    padding-left: 10px; 
     padding-right: 10px;
   }
-  /* Hapus pengaturan height eksplisit untuk card-img-wrapper-bs di sini karena sudah diatur oleh aspect-ratio */
-  /* .card-img-wrapper-bs {
-    height: 170px;
-  } */
   .card-title-bs {
     font-size: 0.9rem;
     min-height: calc(0.9rem * 1.35 * 2);
@@ -784,21 +891,21 @@ export default {
     font-size: 0.85rem;
   }
   .card-bs .card-body {
-    padding: 0.75rem; /* Reduce card body padding */
+    padding: 0.75rem; 
   }
   .section-title-bs {
     font-size: clamp(1.4rem, 4.5vw, 1.8rem);
   }
   .category-title-bs {
     font-size: clamp(1rem, 2.8vw, 1.4rem);
-    padding: 0.5rem 0.7rem; /* Reduce padding */
+    padding: 0.5rem 0.7rem; 
   }
   .filters-bs {
-    padding: 0.7rem; /* Reduce filter padding */
+    padding: 0.7rem; 
   }
   .search-box-bs, .filter-select-bs {
     font-size: 0.85rem;
-    padding: 0.6rem 0.9rem; /* Adjust input padding */
+    padding: 0.6rem 0.9rem; 
   }
   .modal-pc-title-bs {
     font-size: 1.1rem;
@@ -807,21 +914,21 @@ export default {
     font-size: 0.75rem;
   }
   .modal-image-bs {
-    max-height: 170px; /* Adjust modal image height */
+    max-height: 170px; 
   }
   .specs-section-bs h4 {
     font-size: 0.9rem;
   }
-  .row.g-3.g-lg-4 { /* Reduce gutter on small screens */
+  .row.g-3.g-lg-4 { 
     --bs-gutter-x: 0.8rem;
     --bs-gutter-y: 0.8rem;
   }
   .checkout-qty-group-bs {
-    width: 100%; /* Make Qty input group full width */
+    width: 100%; 
     max-width: none;
   }
   .checkout-button-bs {
-    width: 100%; /* Make checkout button full width */
+    width: 100%; 
   }
 }
 </style>
