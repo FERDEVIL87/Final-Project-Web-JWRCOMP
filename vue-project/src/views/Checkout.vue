@@ -1,186 +1,154 @@
 <template>
-  <div class="checkout-container">
-    <h2>Checkout</h2>
-    <form @submit.prevent="handleCheckout">
-      <table class="checkout-table">
-        <thead>
-          <tr>
-            <th>Nama Pesanan</th>
-            <th>Harga</th>
-            <th>Kategori</th>
-            <th>Deskripsi</th>
-            <th>Spesifikasi</th>
-            <th>Jumlah</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, idx) in formItems" :key="item.id">
-            <td>
-              <input
-                v-model="item.name"
-                type="text"
-                required
-                placeholder="Nama Pesanan"
-                class="form-control"
-              />
-            </td>
-            <td>
-              <input
-                v-model.number="item.price"
-                type="number"
-                min="0"
-                required
-                placeholder="Harga"
-                class="form-control"
-              />
-            </td>
-            <td>
-              <select v-model="item.category" required class="form-control">
-                <option disabled value="">Pilih Kategori</option>
-                <option>PC Rakitan</option>
-                <option>Laptop</option>
-                <option>Console</option>
-                <option>Hardware</option>
+  <section class="checkout-bs">
+    <div class="container py-4 py-md-5">
+      <h2 class="section-title-bs text-center">Checkout</h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-7">
+          <form class="admin-card-bs p-4" @submit.prevent="submitForm">
+            <div class="mb-3">
+              <label class="form-label">Nama Pesanan</label>
+              <input v-model="nama" type="text" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Harga</label>
+              <input v-model="harga" type="number" class="form-control" required min="0" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Kategori</label>
+              <select v-model="kategori" class="form-select" required>
+                <option value="">Pilih Kategori</option>
+                <option value="Paket Rakitan PC">Paket Rakitan PC</option>
+                <option value="Laptop">Laptop</option>
+                <option value="Console and Handheld">Console and Handheld</option>
+                <option value="PC Part">PC Part</option>
               </select>
-            </td>
-            <td>
-              <input
-                v-model="item.description"
-                type="text"
-                required
-                placeholder="Deskripsi"
-                class="form-control"
-              />
-            </td>
-            <td>
-              <input
-                v-model="item.specification"
-                type="text"
-                required
-                placeholder="Spesifikasi"
-                class="form-control"
-              />
-            </td>
-            <td>
-              <input
-                v-model.number="item.qty"
-                type="number"
-                min="1"
-                required
-                class="form-control"
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <p><strong>Total: Rp{{ totalPrice.toLocaleString() }}</strong></p>
-      <button type="submit" :disabled="formItems.length === 0">Bayar Sekarang</button>
-    </form>
-  </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Spesifikasi</label>
+              <input v-model="spesifikasi" type="text" class="form-control" required min="0" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Deskripsi</label>
+              <textarea v-model="deskripsi" class="form-control" rows="3" required></textarea>
+            </div>
+            <button class="login-btn-bs w-100" type="submit">Bayar Sekarang</button>
+            <p v-if="success" class="success-bs mt-3">Anda Sudah Memesan Barang Pesanan!</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
-<script>
-export default {
-  name: "Checkout",
-  data() {
-    return {
-      formItems: [
-        {
-          id: 1,
-          name: " ",
-          jumlah: 0,
-          price: 0,
-          category: " ",
-          description: " ",
-          specification: " "
-        }
-      ]
-    };
-  },
-  computed: {
-    totalPrice() {
-      return this.formItems.reduce((sum, item) => sum + item.price * item.jumlah, 0);
-    }
-  },
-  methods: {
-    handleCheckout() {
-      if (
-        this.formItems.length === 0 ||
-        this.formItems.some(
-          item =>
-            !item.name ||
-            !item.category ||
-            !item.description ||
-            !item.specification ||
-            !item.qty ||
-            !item.price
-        )
-      ) {
-        alert("Semua kolom pesanan harus diisi dengan benar!");
-        return;
-      }
-      // Simulasi pembayaran
-      alert(
-        "Pembayaran berhasil!\nTotal: Rp" +
-          this.totalPrice.toLocaleString() +
-          "\n\nDetail Pesanan:\n" +
-          this.formItems
-            .map(
-              (item) =>
-                `\nNama Pesanan: (${item.name})\nKategori: (${item.category})\nDeskripsi: ${item.description}\nSpesifikasi: ${item.specification}\nJumlah: ${item.qty}\nHarga: Rp${item.price.toLocaleString()}`
-            )
-            .join("\n\n")
-      );
-      this.formItems = [];
-    }
-  }
-};
+<script setup>
+import { ref } from 'vue'
+const nama = ref('')
+const harga = ref('')
+const spesifikasi = ref('')
+const kategori = ref('')
+const deskripsi = ref('')
+const success = ref(false)
+function submitForm() {
+ 
+  success.value = true
+  setTimeout(() => success.value = false, 2000)
+  nama.value = ''
+  harga.value = ''
+  spesifikasi.value = ''
+  kategori.value = ''
+  deskripsi.value = ''
+}
 </script>
 
 <style scoped>
-.checkout-container {
-  max-width: 900px;
-  margin: 40px auto;
-  background: #222;
+.checkout-bs {
+  --primary-color: #00d9ff;
+  --secondary-color: #00c6ff;
+  --background-main: #0c101c;
+  --background-section: #11192b;
+  --background-card: #1a243a;
+  --text-light: #e8eff5;
+  min-height: 100vh;
+  background: var(--background-main);
+  color: var(--text-light);
+  font-family: 'Roboto', sans-serif;
+}
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-sizing: border-box;
+}
+.section-title-bs {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 700;
   color: #fff;
-  padding: 24px;
+  text-shadow: 0 0 6px #fff, 0 0 11px var(--primary-color), 0 0 16px var(--primary-color);
+  margin-bottom: 2.5rem !important;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.section-title-bs::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 2.5px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  border-radius: 1.5px;
+  box-shadow: 0 0 8px var(--primary-color), 0 0 5px var(--secondary-color);
+}
+.admin-card-bs {
+  background: var(--background-card);
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  border: 1px solid var(--primary-color);
+  color: var(--text-light);
+}
+.form-label {
+  color: #e8eff5;
+  font-weight: 500;
+}
+.form-control, .form-select {
+  background: #11192b;
+  color: #e8eff5;
+  border: 1.5px solid #22304a;
   border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
 }
-.checkout-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 16px;
-}
-.checkout-table th,
-.checkout-table td {
-  border: 1px solid #444;
-  padding: 8px 12px;
-  text-align: left;
-}
-.checkout-table th {
-  background: #333;
-}
-input,
-select {
-  width: 100%;
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid #555;
-  background: #333;
+.form-control:focus, .form-select:focus {
+  border: 1.5px solid #00d9ff;
+  background: #1a243a;
   color: #fff;
 }
-button {
-  margin-top: 16px;
-  padding: 10px 24px;
-  background: #00bcd4;
+.login-btn-bs {
+  width: 100%;
+  padding: 0.95rem 0;
+  background: #00d9ff;
   color: #fff;
   border: none;
-  border-radius: 4px;
-  font-weight: bold;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
   cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+  box-shadow: 0 1px 4px 0 rgba(0,217,255,0.08);
 }
-button:disabled {
-  background: #888;
-  cursor: not-allowed;
+.login-btn-bs:hover {
+  background: #00bcd4;
+}
+.success-bs {
+  color: #00e676;
+  font-weight: 500;
+  text-align: center;
 }
 </style>
