@@ -5,7 +5,7 @@
     "price": 10000000,
     "brand": "Intel",
     "category": "PROCESSOR INTEL",
-    "image": "/imgpart/Intel Processor Core  i9-13900K LGA 1700_11zon.webp",
+    "image": "/imgpart/Intel Processor Core i9-13900KF_11zon.webp",
     "specs": ["24 Cores", "32 Threads", "5.80 GHz Base Clock"],
     "stock": "Ready"
   },
@@ -15,7 +15,7 @@
     "price": 1500000,
     "brand": "Intel",
     "category": "PROCESSOR INTEL",
-    "image": "/imgpart/Intel Processor Core I5 12400F (LGA 1700) - I5 12400F_11zon.webp",
+    "image": "/imgpart/Intel Processor Core I5 12400F (LGA 1700) - I5 12400F_11zon_11zon.webp",
     "specs": ["6 Cores", "12 Threads", "4.40 GHz Base Clock"],
     "stock": "Kosong"
   },
@@ -25,7 +25,7 @@
     "price": 500000,
     "brand": "Intel",
     "category": "PROCESSOR INTEL",
-    "image": "/imgpart/Intel Processor Core i5-6500_11zon.webp",
+    "image": "/imgpart/Intel Processor Core i5-6500_11zon_11zon.webp",
     "specs": ["6 Cores", "Cache 6 MB Intel Smart Cache", " 3.20 GHz Base Clock"],
     "stock": "Ready"
   },
@@ -35,7 +35,7 @@
     "price": 5000000,
     "brand": "Intel",
     "category": "PROCESSOR INTEL",
-    "image": "/imgpart/INTEL CORE i7 10700KF_23_11zon.webp",
+    "image": "/imgpart/INTEL CORE i7 10700KF_23_11zon_11zon.webp",
     "specs": ["8 Cores", "16Threads", "5.10 GHz Base Clock"],
     "stock": "Kosong"
   },
@@ -45,7 +45,7 @@
     "price": 10000000,
     "brand": "Intel",
     "category": "PROCESSOR INTEL",
-    "image": "/imgpart/Intel Processor Core i9-13900KF.webp",
+    "image": "/imgpart/Intel Processor Core  i9-13900K LGA 1700_11zon_11zon.webp",
     "specs": ["24 Cores", "32 Threads", " 5.80 GHz Base Clock"],
     "stock": "Kosong"
   },
@@ -95,7 +95,7 @@
     "price": 80000000,
     "brand": "AMD",
     "category": "PROCESSOR AMD",
-    "image": "/imgpart/AMD Ryzen Threadripper 3990X_11zon.webp",
+    "image": "/imgpart/AMD Ryzen Threadripper 3990X_11zon_11zon.webp",
     "specs": ["64 Cores", "128 Threads", "4.3 GHz Boost Clock"],
     "stock": "Kosong"
   },
@@ -125,7 +125,7 @@
     "price": 7500000,
     "brand": "Gigabyte",
     "category": "MAINBOARD",
-    "image": "/imgpart/Gigabyte AORUS X570 Master_11zon.webp",
+    "image": "/imgpart/Gigabyte AORUS X570 Master_22_11zon.webp",
     "specs": ["ATX Form Factor", "PCIe 4.0", "Triple M.2 Slots"],
     "stock": "Kosong"
   },
@@ -155,7 +155,7 @@
     "price": 750000,
     "brand": "Corsair",
     "category": "MEMORY",
-    "image": "/imgpart/Corsair Vengeance LPX 16GB_11zon.webp",
+    "image": "/imgpart/Corsair Vengeance LPX 16GB_21_11zon.webp",
     "specs": ["16GB DDR4", "3200 MHz", "CL16"],
     "stock": "Kosong"
   },
@@ -165,7 +165,7 @@
     "price": 1200000,
     "brand": "G.Skill",
     "category": "MEMORY",
-    "image": "/imgpart/Corsair Vengeance LPX 16GB_11zon.webp",
+    "image": "/imgpart/G.Skill Trident Z RGB 32GB_11zon.webp",
     "specs": ["32GB DDR4", "3600 MHz", "RGB Lighting"],
     "stock": "Kosong"
   },
@@ -195,7 +195,7 @@
     "price": 7000000,
     "brand": "Crucial",
     "category": "MEMORY",
-    "image": "/imgpart/Crucial Ballistix 32GB_11zon.webp",
+    "image": "/imgpart/Crucial Ballistix 32GB_20_11zon.webp",
     "specs": ["32GB DDR4", "3600 MHz", "CL16"],
     "stock": "Kosong"
   },
@@ -235,7 +235,7 @@
     "price": 15500000,
     "brand": "MSI",
     "category": "VGA",
-    "image": "/imgpart/MSI Gaming Radeon RX 6700 XT_11zon.webp",
+    "image": "/imgpart/MSI Gaming Radeon RX 6700 XT_19_11zon.webp",
     "specs": ["12GB GDDR6", "PCIe 4.0", "Ray Tracing"],
     "stock": "Ready"
   },
@@ -295,7 +295,7 @@
     "price": 3000000,
     "brand": "Western Digital",
     "category": "HDD",
-    "image": "/imgpart/Western Digital Black 6TB_11zon.webp",
+    "image": "/imgpart/Western Digital Black 6TB_11zon_11zon.webp",
     "specs": ["6TB", "7200 RPM", "SATA III"],
     "stock": "Ready"
   },
@@ -325,7 +325,7 @@
     "price": 1500000,
     "brand": "Samsung",
     "category": "SSD",
-    "image": "/imgpart/Samsung 970 EVO Plus 1TB SSD_11zon.webp",
+    "image": "/imgpart/Samsung 970 EVO Plus 1TB SSD_17_11zon.webp",
     "specs": ["1TB NVMe M.2", "3500 MB/s Read", "3300 MB/s Write"],
     "stock": "Ready"
   },
@@ -375,7 +375,7 @@
     "price": 2000000,
     "brand": "EVGA",
     "category": "PSU",
-    "image": "/imgpart/EVGA SuperNOVA 750 G5 PSU_11zon.webp",
+    "image": "/imgpart/EVGA SuperNOVA 750 G5 PSU_16_11zon.webp",
     "specs": ["750W", "80+ Gold", "Fully Modular"],
     "stock": "Ready"
   },
@@ -395,7 +395,7 @@
     "price": 1700000,
     "brand": "Cooler Master",
     "category": "PSU",
-    "image": "/imgpart/Cooler Master MWE Gold 750 PSU_11zon.webp",
+    "image": "/imgpart/Cooler Master MWE Gold 750 PSU_15_11zon.webp",
     "specs": ["750W", "80+ Gold", "Semi Modular"],
     "stock": "Ready"
   },
@@ -415,7 +415,7 @@
     "price": 700000,
     "brand": "NZXT",
     "category": "CASE",
-    "image": "/imgpart/NZXT H510_11zon.webp",
+    "image": "/imgpart/NZXT H510_14_11zon.webp",
     "specs": ["Mid Tower", "Tempered Glass", "Cable Management"],
     "stock": "Ready"
   },
@@ -425,7 +425,7 @@
     "price": 1500000,
     "brand": "Fractal Design",
     "category": "CASE",
-    "image": "/imgpart/Fractal Design Meshify C_11zon.webp",
+    "image": "/imgpart/Fractal Design Meshify C_11zon_11zon.webp",
     "specs": ["Mid Tower", "Mesh Front Panel", "Good Airflow"],
     "stock": "Ready"
   },
@@ -445,7 +445,7 @@
     "price": 1500000,
     "brand": "Corsair",
     "category": "CASE",
-    "image": "/imgpart/Corsair 4000D Airflow_11zon.webp",
+    "image": "/imgpart/Corsair 4000D Airflow_13_11zon.webp",
     "specs": ["Mid Tower", "High Airflow", "Cable Management"],
     "stock": "Ready"
   },
@@ -505,7 +505,7 @@
     "price": 1000000,
     "brand": "Logitech",
     "category": "MOUSE",
-    "image": "/imgpart/Logitech G502 HERO_11zon.webp",
+    "image": "/imgpart/Logitech G502 HERO_11_11zon.webp",
     "specs": ["16,000 DPI", "RGB Lighting", "11 Programmable Buttons"],
     "stock": "Ready"
   },
@@ -515,7 +515,7 @@
     "price": 1500000,
     "brand": "Razer",
     "category": "MOUSE",
-    "image": "/imgpart/Razer DeathAdder V2_11zon.webp",
+    "image": "/imgpart/Razer DeathAdder V2_10_11zon.webp",
     "specs": ["20,000 DPI", "Ergonomic Design", "Razer Optical Switches"],
     "stock": "Kosong"
   },
@@ -525,7 +525,7 @@
     "price": 2000000,
     "brand": "SteelSeries",
     "category": "MOUSE",
-    "image": "/imgpart/SteelSeries Rival 600_11zon.webp",
+    "image": "/imgpart/SteelSeries Rival 600_9_11zon.webp",
     "specs": ["12,000 DPI", "Dual Sensor System", "Customizable Weight"],
     "stock": "Ready"
   },
@@ -545,7 +545,7 @@
     "price": 1500000,
     "brand": "HyperX",
     "category": "MOUSE",
-    "image": "/imgpart/HyperX Pulsefire FPS Pro_11zon.webp",
+    "image": "/imgpart/HyperX Pulsefire FPS Pro.webp",
     "specs": ["16,000 DPI", "RGB Lighting", "Omron Switches"],
     "stock": "Ready"
   },
@@ -565,7 +565,7 @@
     "price": 2500000,
     "brand": "Razer",
     "category": "KEYBOARD",
-    "image": "/imgpart/Razer Huntsman Elite_11zon.webp",
+    "image": "/imgpart/Razer Huntsman Elite_8_11zon.webp",
     "specs": ["Opto-Mechanical", "RGB Lighting", "Wrist Rest"],
     "stock": "Kosong"
   },
@@ -625,7 +625,7 @@
     "price": 700000,
     "brand": "Razer",
     "category": "MOUSEPAD",
-    "image": "/imgpart/Razer Goliathus Extended Chroma_11zon.webp",
+    "image": "/imgpart/Razer Goliathus Extended Chroma_7_11zon.webp",
     "specs": ["920 x 294 mm (Extended)", "Soft micro-textured cloth", "Rubber anti-slip"],
     "stock": "Kosong"
   },
@@ -645,7 +645,7 @@
     "price": 400000,
     "brand": "Logitech",
     "category": "MOUSEPAD",
-    "image": "/imgpart/Logitech G640_11zon.webp",
+    "image": "/imgpart/Logitech G640_6_11zon.webp",
     "specs": ["460 x 400 mm", "Karet natural", "3 mm"],
     "stock": "Kosong"
   },
@@ -685,7 +685,7 @@
     "price": 300000,
     "brand": "Xiaomi",
     "category": "WEBCAM",
-    "image": "/imgpart/Xiaomi IMILAB 1080p Webcam W88S_11zon.webp",
+    "image": "/imgpart/Xiaomi IMILAB 1080p Webcam W88S_5_11zon.webp",
     "specs": ["1080p @ 30 fps", "Fixed focus", "FOV: 90°"],
     "stock": "Kosong"
   },
@@ -705,7 +705,7 @@
     "price": 150000,
     "brand": "UGREEN",
     "category": "CABLE",
-    "image": "/imgpart/UGREEN USB-C to USB-C PD 100W Cable_11zon.webp",
+    "image": "/imgpart/UGREEN USB-C to USB-C PD 100W Cable_4_11zon.webp",
     "specs": ["USB Type-C to Type-C", "1 meter", "Up to 480 Mbps (USB 2.0)"],
     "stock": "Kosong"
   },
@@ -725,7 +725,7 @@
     "price": 120000,
     "brand": "Anker",
     "category": "CABLE",
-    "image": "/imgpart/Anker PowerLine Micro USB Cable_11zon.webp",
+    "image": "/imgpart/Anker PowerLine Micro USB Cable_3_11zon.webp",
     "specs": ["USB-A to Micro USB", "0.9 meter", "Tahan lebih dari 10.000x tekukan, fast charge"],
     "stock": "Kosong"
   },
@@ -805,7 +805,7 @@
     "price": 500000,
     "brand": "Logitech",
     "category": "SPEAKER",
-    "image": "/imgpart/Logitech Z313 Speaker System_11zon.webp",
+    "image": "/imgpart/Logitech Z313 Speaker System_2_11zon.webp",
     "specs": ["2.1 Speaker (2 satelit + 1 subwoofer)", "25W RMS", "3.5mm jack"],
     "stock": "Kosong"
   },
@@ -905,7 +905,7 @@
     "price": 1800000,
     "brand": "Canon",
     "category": "PRINTER",
-    "image": "/imgpart/Canon PIXMA G2020_11zon.webp",
+    "image": "/imgpart/Canon PIXMA G2020_1_11zon.webp",
     "specs": ["Ink Tank All-in-One (Print, Scan, Copy)", "Inkjet", "Resolusi Cetak Hingga 4800 x 1200 dpi"],
     "stock": "Kosong"
   },

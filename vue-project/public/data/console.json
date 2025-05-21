@@ -5,7 +5,7 @@
     "price": 499,
     "brand": "Sony",
     "category": "🎮 PlayStation Powerhouse",
-    "image": "https://media.dinomarket.com/docs/imgTD/2024-02/DM_CA961EB8D9C88E81647BBFE7417EB9C0_210224140212_ll.jpg",
+    "image": "/imgconsole/PlayStation 5.webp",
     "specs": ["8-core AMD Zen 2", "825GB SSD", "4K Gaming"],
     "stock": "Ready"
   },
@@ -15,7 +15,7 @@
     "price": 499,
     "brand": "Microsoft",
     "category": "🟩 Xbox Universe",
-    "image": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/3/31/3452a01b-0074-481c-9f97-3ae89748f356.jpg",
+    "image": "/imgconsole/Xbox Series S.webp",
     "specs": ["12 TFLOPS GPU", "1TB SSD", "4K Gaming"],
     "stock": "Ready"
   },
@@ -25,7 +25,7 @@
     "price": 349,
     "brand": "Nintendo",
     "category": "🍄 Nintendo Magic",
-    "image": "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//106/MTA-29636638/no_brand_nintendo_switch_-oled_model-_white_set_full01_h7q23tmg.jpg",
+    "image": "/imgconsole/Nintendo Switch OLED.webp",
     "specs": ["7-inch OLED", "Portable/TV Mode", "Joy-Con Controllers"],
     "stock": "Ready"
   },
@@ -35,7 +35,7 @@
     "price": 399,
     "brand": "Valve",
     "category": "💻 Handheld PC Heroes",
-    "image": "https://jnewsonline.com/wp-content/uploads/2021/07/Image_from_iOS.0.jpg",
+    "image": "/imgconsole/Steam Deck.webp",
     "specs": ["7-inch Touchscreen", "AMD APU", "SteamOS"],
     "stock": "Ready"
   },
@@ -45,7 +45,7 @@
     "price": 799,
     "brand": "ASUS",
     "category": "💻 Handheld PC Heroes",
-    "image": "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full/catalog-image/106/MTA-181590765/asus_asus_rog_ally_x_rc72la_amd_ryzen_z1_extreme_24gb_1tb_7-_ips_120hz_w11_-_z1_extreme_full02_v2s6kpyo.jpg",
+    "image": "/imgconsole/ROG Ally X.webp",
     "specs": ["AMD Ryzen Z1 Extreme", "120Hz Display", "Windows 11"],
     "stock": "Ready"
   },
@@ -55,7 +55,7 @@
     "price": 299,
     "brand": "Sony",
     "category": "🎮 PlayStation Powerhouse",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Sony-PlayStation-4-PS4-wDualShock-4.jpg/330px-Sony-PlayStation-4-PS4-wDualShock-4.jpg",
+    "image": "/imgconsole/PlayStation 4.webp",
     "specs": ["8-core Jaguar CPU", "500GB/1TB HDD", "1080p Gaming"],
     "stock": "Ready"
   },
@@ -65,7 +65,7 @@
     "price": 399,
     "brand": "Sony",
     "category": "🎮 PlayStation Powerhouse",
-    "image": "https://img.antaranews.com/cache/1200x800/2018/08/PS4-Pro.jpg.webp",
+    "image": "/imgconsole/PlayStation 4 Pro.webp",
     "specs": ["4.2 TFLOPS GPU", "1TB HDD", "4K Upscaling"],
     "stock": "Ready"
   },
@@ -75,7 +75,7 @@
     "price": 399,
     "brand": "Sony",
     "category": "🎮 PlayStation Powerhouse",
-    "image": "https://akcdn.detik.net.id/community/media/visual/2024/09/12/ps5_169.webp?w=700&q=90",
+    "image": "/imgconsole/PlayStation 5 Digital Edition.webp",
     "specs": ["No Disc Drive", "825GB SSD", "4K Gaming"],
     "stock": "Ready"
   },
@@ -85,7 +85,7 @@
     "price": 199,
     "brand": "Sony",
     "category": "🎮 PlayStation Powerhouse",
-    "image": "https://i0.wp.com/www.gamezone.co.id/wp-content/uploads/2017/11/ps_vita_new_slim_wi-fi-1.jpg?fit=760%2C473&ssl=1",
+    "image": "/imgconsole/PlayStation Vita.webp",
     "specs": ["5-inch OLED", "Touchscreen", "Remote Play"],
     "stock": "Kosong"
   },
@@ -95,7 +95,7 @@
     "price": 149,
     "brand": "Sony",
     "category": "🎮 PlayStation Powerhouse",
-    "image": "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//108/MTA-38389437/no_brand_sony_playstation_portable_3000_-_psp_3000_16_gb_-_psp_16gb_____________________________________________________________________________________________full01_qmq6qc3.jpg",
+    "image": "/imgconsole/PlayStation Portable (PSP).webp",
     "specs": ["4.3-inch LCD", "UMD Drive", "Multimedia Features"],
     "stock": "Kosong"
   },
@@ -105,7 +105,7 @@
     "price": 499,
     "brand": "Microsoft",
     "category": "🟩 Xbox Universe",
-    "image": "https://imageio.forbes.com/blogs-images/erikkain/files/2017/11/xbox-one-x.jpg?format=jpg&height=900&width=1600&fit=bounds",
+    "image": "/imgconsole/Xbox One X.webp",
     "specs": ["6 TFLOPS GPU", "1TB HDD", "4K UHD Blu-ray"],
     "stock": "Ready"
   },
@@ -115,7 +115,7 @@
     "price": 299,
     "brand": "Microsoft",
     "category": "🟩 Xbox Universe",
-    "image": "https://images-cdn.ubuy.co.id/66aafaba562fd2552837a847-pre-owned-microsoft-xbox-one-s-1tb.jpg",
+    "image": "/imgconsole/Xbox One S.webp",
     "specs": ["1TB HDD", "1080p Gaming", "4K UHD Blu-ray"],
     "stock": "Ready"
   },
@@ -125,7 +125,7 @@
     "price": 299,
     "brand": "Microsoft",
     "category": "🟩 Xbox Universe",
-    "image": "https://i.insider.com/5fa3eee9f7d1cb0019e39edd?width=1018&format=jpeg",
+    "image": "/imgconsole/Xbox Series S.webp",
     "specs": ["4 TFLOPS GPU", "512GB SSD", "1440p Gaming"],
     "stock": "Ready"
   },
@@ -135,7 +135,7 @@
     "price": 199,
     "brand": "Microsoft",
     "category": "🟩 Xbox Universe",
-    "image": "https://images-cdn.ubuy.co.id/65e978f5455678301d52711a-pre-owned-microsoft-xbox-360-60gb-pro.jpg",
+    "image": "/imgconsole/Xbox 360.webp",
     "specs": ["512MB RAM", "20GB HDD", "720p Gaming"],
     "stock": "Kosong"
   }
