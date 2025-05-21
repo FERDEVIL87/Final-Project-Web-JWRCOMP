@@ -485,4 +485,28 @@ export default {
 .btn-close-white {
     filter: invert(1) grayscale(100%) brightness(200%);
 }
+h2.text-center.fw-bold.mb-4 {
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+h2.text-center.fw-bold.mb-4::after {
+  content: '';
+  display: block;
+  margin: 0 auto;
+  margin-top: 10px;
+  width: 80px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #00d9ff 0%, #007bff 100%);
+}
+@media (max-width: 575.98px) {
+  h2.text-center.fw-bold.mb-4::after {
+    width: 50px;
+    height: 3px;
+    margin-top: 7px;
+  }
+}
 </style>

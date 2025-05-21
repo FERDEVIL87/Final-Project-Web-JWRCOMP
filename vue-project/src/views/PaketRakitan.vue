@@ -523,23 +523,34 @@ export default {
   font-size: clamp(1.8rem, 4.5vw, 2.8rem); 
   font-weight: 700;
   color: var(--text-title);
-  text-shadow: 0 0 6px var(--text-title), 0 0 11px var(--primary-color), 0 0 16px var(--primary-color);
+  text-shadow: none;
   margin-bottom: 3rem !important;
   position: relative;
   text-transform: uppercase;
   letter-spacing: 1px;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  /* Tambahkan agar tidak menunggu animasi lain, percepat paint */
+  will-change: auto;
 }
 .section-title-bs::after {
   content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50px; 
-  height: 2.5px; 
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-  border-radius: 1.5px;
-  box-shadow: 0 0 8px var(--primary-color), 0 0 5px var(--secondary-color);
+  display: block;
+  margin: 0 auto;
+  margin-top: 10px;
+  width: 80px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #00d9ff 0%, #007bff 100%);
+}
+@media (max-width: 575.98px) {
+  .section-title-bs::after {
+    width: 50px;
+    height: 3px;
+    margin-top: 7px;
+  }
 }
 
 .filters-bs {
@@ -1121,11 +1132,13 @@ export default {
 .pembelian-paket-highlight {
   position: relative;
   z-index: 2;
-  animation: paket-glow-efek 2.5s infinite alternate;
+  /* animation: paket-glow-efek 2.5s infinite alternate; */
+  filter: none; /* Ensure no filter is applied */
+  box-shadow: 0 0 6px #00ffe7aa, 0 0 2px #00c6ff88; /* Add box-shadow for glow effect */
 }
 @keyframes paket-glow-efek {
-  0% { filter: drop-shadow(0 0 0px #00ffe7); }
-  100% { filter: drop-shadow(0 0 6px #00ffe7aa) drop-shadow(0 0 2px #00c6ff88); }
+  0% { box-shadow: 0 0 0px #00ffe7; }
+  100% { box-shadow: 0 0 6px #00ffe7aa, 0 0 2px #00c6ff88; }
 }
 
 .paket-pointer-efek {
@@ -1141,7 +1154,7 @@ export default {
   filter: blur(2px) opacity(0.45);
   margin-top: -2px;
   pointer-events: none;
-  animation: paket-pointer-blink 1.7s infinite alternate;
+  /* animation: paket-pointer-blink 1.7s infinite alternate; */
 }
 @keyframes paket-pointer-blink {
   0% { opacity: 0.45; }

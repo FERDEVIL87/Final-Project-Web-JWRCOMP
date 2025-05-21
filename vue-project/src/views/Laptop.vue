@@ -113,6 +113,21 @@ export default {
         return;
       }
       this.router.push('/checkout');
+    },
+    addItemToCart(laptop) {
+      if (laptop && this.checkoutQty > 0 && this.checkoutQty <= laptop.stock) {
+        cartStore.addItem({
+          id: laptop.id,
+          name: laptop.name,
+          price: laptop.price,
+          qty: this.checkoutQty,
+          image: laptop.image,
+        });
+        laptop.stock -= this.checkoutQty;
+        this.closeModal();
+      } else {
+        alert("Jumlah yang Anda masukkan tidak valid atau stok tidak mencukupi.");
+      }
     }
   }
 };
@@ -121,7 +136,9 @@ export default {
 <template>
   <section class="pc-list-section-bs">
     <div class="container py-4 py-md-5">
-      <h2 class="section-title-bs text-center">Toko Laptop</h2>
+      <div class="hardware-title-wrapper text-center mb-4">
+        <h1 class="hardware-title-bs">Toko Laptop</h1>
+      </div>
 
       
       <div class="text-center my-4 py-3 border-top border-bottom border-secondary">
@@ -656,25 +673,7 @@ export default {
     margin-bottom: 2rem !important;
   }
   .category-title-bs {
-    font-size: clamp(1.1rem, 2.8vw, 1.6rem);
-  }
-  .category-header-bs {
-    margin-bottom: 1.5rem;
-    padding: 0.6rem 0;
-  }
-  .modal-body-bs .row > div {
-    text-align: center !important;
-  }
-  .modal-details-text {
-    text-align: center;
-  }
-  .specs-section-bs h4 {
-    text-align: center !important;
-  }
-  .specs-section-bs ul {
-    padding-left: 1.5rem;
-    display: inline-block;
-    text-align: left;
+    justify-content: flex-start;
   }
 }
 
@@ -734,5 +733,35 @@ export default {
   .checkout-button-bs {
     width: 100%;
   }
+}
+
+.hardware-title-wrapper {
+  margin-bottom: 2.5rem;
+}
+.hardware-title-bs {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  color: #fff; /* putih polos */
+  text-shadow: none; /* hilangkan efek neon/glow */
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  line-height: 1.1;
+  position: relative;
+  display: inline-block;
+}
+.hardware-title-bs::after {
+  content: '';
+  display: block;
+  margin: 0 auto;
+  margin-top: 10px;
+  width: 80px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #00d9ff 0%, #007bff 100%);
+}
+.hardware-title-wrapper {
+  text-align: center;
 }
 </style>
