@@ -499,13 +499,16 @@ export default {
 }
 h1.text-center.fw-bold.mb-4 {
   position: relative;
-  display: inline-block;
+  display: flex; /* Use flexbox for centering */
+  flex-direction: column; /* Stack text and underline vertically */
+  justify-content: center; /* Center vertically */
+  align-items: center; /* Center horizontally */
+  text-align: center;
 }
 h1.text-center.fw-bold.mb-4::after {
   content: '';
   display: block;
-  margin: 0 auto;
-  margin-top: 10px;
+  margin-top: 10px; /* Space between text and underline */
   width: 80px;
   height: 4px;
   border-radius: 2px;
@@ -513,7 +516,7 @@ h1.text-center.fw-bold.mb-4::after {
 }
 @media (max-width: 575.98px) {
   h1.text-center.fw-bold.mb-4::after {
-    width: 50px;
+    width: 50px; /* Adjust width for smaller screens */
     height: 3px;
     margin-top: 7px;
   }
