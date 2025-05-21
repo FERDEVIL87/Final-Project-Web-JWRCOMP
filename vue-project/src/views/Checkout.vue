@@ -113,7 +113,9 @@
 import { cartStore } from '@/store/cartStore';
 
 export default {
-  name: "Checkout",
+  setup() {
+    return { cartStore };
+  },
   data() {
     return {
       isLoadingPayment: false,
@@ -121,11 +123,6 @@ export default {
       paymentSuccess: false,
       selectedPaymentMethod: 'cc', 
     };
-  },
-  computed: {
-    cartStore() {
-      return cartStore;
-    }
   },
   methods: {
     getSourceDisplayName(sourceKey) {
@@ -243,7 +240,13 @@ export default {
       } finally {
         this.isLoadingPayment = false;
       }
-    }
+    },
+    formatPrice(value) {
+      if (typeof value !== "number" || isNaN(value)) {
+        return 'Rp 0';
+      }
+      return `Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)}`;
+    },
   }
 };
 </script>

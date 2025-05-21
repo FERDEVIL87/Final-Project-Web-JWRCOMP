@@ -1,7 +1,7 @@
 <template>
   <section class="container py-4">
-    <h1 class="text-center fw-bold mb-4" style="font-family:'Orbitron',sans-serif;color:#fff;min-height:2.5em;">
-      🎮 ULTIMATE GAME CONSOLES HUB 🚀
+    <h1 class="text-center fw-bold mb-4" style="font-family:'Orbitron',sans-serif;color:#fff;min-height:2.5em;will-change: transform;">
+      ULTIMATE GAME CONSOLES HUB
     </h1>
 
     
@@ -23,8 +23,6 @@
         :key="index"
         class="btn btn-outline-info px-3 py-1 fw-bold"
         :class="{ active: selectedCategory && selectedCategory.title === card.title }"
-        style="font-family:'Orbitron',sans-serif;background-color:#0a2233;color:#fff;border-color:#00d9ff;"
-        :style="selectedCategory && selectedCategory.title === card.title ? 'background-color:#00d9ff;color:#181c22;border-color:#00d9ff;' : ''"
         @click="selectCategory(card)"
       >
         {{ card.title }}
@@ -498,5 +496,26 @@ export default {
 }
 .btn-close-white {
     filter: invert(1) grayscale(100%) brightness(200%);
+}
+h1.text-center.fw-bold.mb-4 {
+  position: relative;
+  display: inline-block;
+}
+h1.text-center.fw-bold.mb-4::after {
+  content: '';
+  display: block;
+  margin: 0 auto;
+  margin-top: 10px;
+  width: 80px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #00d9ff 0%, #007bff 100%);
+}
+@media (max-width: 575.98px) {
+  h1.text-center.fw-bold.mb-4::after {
+    width: 50px;
+    height: 3px;
+    margin-top: 7px;
+  }
 }
 </style>
