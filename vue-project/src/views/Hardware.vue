@@ -4,7 +4,7 @@
       KOMPONEN HARDWARE
     </h2>
 
-    <!-- Tombol Checkout Global -->
+    
     <div class="text-center my-4 py-3 border-top border-bottom border-secondary">
         <h4 class="mb-3" style="font-family:'Orbitron',sans-serif;color:#fff;">Keranjang Belanja Global</h4>
         <p v-if="cartStore.items.length > 0" class="mb-2 text-light">
@@ -70,7 +70,7 @@
           </div>
         </div>
         
-        <!-- MODIFIED PRICE RANGE SLIDERS -->
+        
         <div class="row align-items-center mb-3">
           <div class="col-12">
             <label class="form-label text-white d-block">Rentang Harga</label>
@@ -165,7 +165,7 @@
         <p>✨ Please select a category above to explore our hardware components! ✨</p>
       </div>
       
-      <!-- MODAL -->
+      
       <div class="modal fade" id="hardwareDetailModal" tabindex="-1" aria-labelledby="hardwareDetailModalLabel" aria-hidden="true" ref="hardwareModalRef">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content bg-dark text-light">
@@ -254,8 +254,8 @@ export default {
       selectedCategory: null,
       searchQuery: "",
       selectedBrand: "",
-      minPriceFilter: 0, // New: for min price slider
-      maxPriceFilter: 0, // New: for max price slider
+      minPriceFilter: 0,
+      maxPriceFilter: 0,
       selectedProduct: null,
       bootstrapModalInstance: null,
       sortBy: 'lowToHigh',
@@ -271,8 +271,8 @@ export default {
   computed: {
     priceStep() {
       const range = this.maxPriceInCategory - this.minPriceInCategory;
-      if (range <= 0) return 50000; // Default step if no range
-      return Math.max(50000, Math.floor(range / 100 / 50000) * 50000 || 50000); // Ensure step is multiple of 50k
+      if (range <= 0) return 50000;
+      return Math.max(50000, Math.floor(range / 100 / 50000) * 50000 || 50000);
     },
     filteredBrands() {
       if (!this.selectedCategory || !this.allHardware.length) return [];
@@ -290,7 +290,7 @@ export default {
         const itemsInCategory = this.allHardware.filter(item => item.category === this.selectedCategory.title);
         if (itemsInCategory.length === 0) return 10000000;
         const max = Math.max(...itemsInCategory.map(item => Number(item.price) || 0), 0);
-        return max > 0 ? max : 10000000; // Ensure it's not 0 if actual max is 0
+        return max > 0 ? max : 10000000;
     },
     filteredHardware() {
       if (!this.selectedCategory || !this.allHardware.length) return [];
@@ -305,7 +305,7 @@ export default {
       if (this.selectedBrand) {
         filtered = filtered.filter(item => item.brand === this.selectedBrand);
       }
-      // MODIFIED: Filter by min and max price
+      
       filtered = filtered.filter(item => 
         (Number(item.price) || 0) >= this.minPriceFilter &&
         (Number(item.price) || 0) <= this.maxPriceFilter
@@ -321,7 +321,6 @@ export default {
   },
   methods: {
     async fetchHardwareData() {
-        // ... (fetchHardwareData remains the same)
         this.loading = true;
         try {
             const res = await fetch('/data/hardware.json'); 
@@ -348,12 +347,11 @@ export default {
       this.selectedBrand = "";
       this.sortBy = 'lowToHigh';
       this.$nextTick(() => {
-        this.minPriceFilter = this.minPriceInCategory; // MODIFIED
-        this.maxPriceFilter = this.maxPriceInCategory; // MODIFIED
+        this.minPriceFilter = this.minPriceInCategory;
+        this.maxPriceFilter = this.maxPriceInCategory;
       });
     },
     formatPrice(price) {
-      // ... (formatPrice remains the same)
       if (typeof price !== 'number' || isNaN(price)) {
         return 'Rp 0';
       }
@@ -365,22 +363,18 @@ export default {
       }).format(price);
     },
     showDetails(item) {
-      // ... (showDetails remains the same)
       this.selectedProduct = item;
       this.modalQuantity = 1; 
       if (this.bootstrapModalInstance) this.bootstrapModalInstance.show();
     },
     closeDetails() {
-      // ... (closeDetails remains the same)
       if (this.bootstrapModalInstance) this.bootstrapModalInstance.hide();
     },
     getStockClass(stock) {
-      // ... (getStockClass remains the same)
       if (stock > 0 || stock === 'Ready') return 'fw-bold'; 
       return 'fw-bold'; 
     },
     addItemToCart(item, quantity) {
-        // ... (addItemToCart remains the same)
         if (!item || quantity < 1) {
             alert("Invalid item or quantity.");
             return;
@@ -406,23 +400,19 @@ export default {
         alert(`${item.name} (x${quantity}) added to cart!`);
     },
     addItemToCartFromCard(item) {
-        // ... (addItemToCartFromCard remains the same)
         this.addItemToCart(item, 1);
     },
     addItemToCartFromModal(item) {
-        // ... (addItemToCartFromModal remains the same)
         this.addItemToCart(item, this.modalQuantity);
         this.closeDetails();
     },
     goToCheckout() {
-      // ... (goToCheckout remains the same)
       if (cartStore.items.length === 0) {
         alert("Keranjang belanja Anda kosong. Silakan tambahkan produk terlebih dahulu.");
         return;
       }
       this.router.push('/checkout');
     },
-    // New methods to keep min/max sliders in check
     adjustMaxPriceFilter() {
         if (this.minPriceFilter > this.maxPriceFilter) {
             this.maxPriceFilter = this.minPriceFilter;
@@ -435,7 +425,6 @@ export default {
     }
   },
   async mounted() {
-    // ... (mounted remains largely the same, ensure fetchHardwareData is called)
     await this.fetchHardwareData(); 
     
     const modalElement = this.$refs.hardwareModalRef; 
@@ -451,16 +440,11 @@ export default {
     }
   },
    watch: {
-    // No need for watchers on min/maxPriceInCategory if sliders directly use them
-    // and are reset on category change.
-    // Watchers for minPriceFilter and maxPriceFilter can be added if more complex
-    // interaction is needed, but the @input handlers might be sufficient.
   }
 };
 </script>
 
 <style scoped>
-/* ... (styles remain the same) ... */
 .bg-dark { background: #181c22 !important; }
 .card { 
     border-radius: 10px; 

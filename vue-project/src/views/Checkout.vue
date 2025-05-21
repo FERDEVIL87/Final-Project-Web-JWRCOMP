@@ -1,15 +1,12 @@
-//CHECKOUT JGN DI EDIT MEK//
 <template>
   <div class="checkout-container">
     <h2>Checkout Pesanan</h2>
 
-    <!-- Payment Loading Overlay -->
     <div v-if="isLoadingPayment" class="payment-loading-overlay">
       <div class="spinner"></div>
       <p>Memproses pembayaran Anda...</p>
     </div>
 
-    <!-- Payment Status Message -->
     <div v-if="paymentStatusMessage" :class="['payment-status-message', paymentSuccess ? 'success' : 'error']">
       <p v-html="paymentStatusMessage.replace(/\n/g, '<br>')"></p> <!-- Allow line breaks in status -->
       <button v-if="paymentSuccess" @click="resetAndGoHome" class="btn-small-action">
@@ -20,7 +17,6 @@
       </button>
     </div>
 
-    <!-- Main Checkout Content (Cart or Empty Message) -->
     <div v-if="!isLoadingPayment && !paymentStatusMessage">
       <div v-if="cartStore.items.length === 0" class="empty-cart-message">
         <p>Keranjang belanja Anda kosong.</p>
@@ -32,7 +28,7 @@
             <thead>
               <tr>
                 <th>Gambar</th>
-                <th>Nama Pesanan & Asal</th> <!-- MODIFIED HEADER -->
+                <th>Nama Pesanan & Asal</th> 
                 <th>Kategori</th>
                 <th>Brand</th>
                 <th>Harga Satuan</th>
@@ -47,9 +43,9 @@
                   <img v-if="item.image" :src="item.image" :alt="item.name" class="checkout-item-image"/>
                   <span v-else class="no-image-placeholder">No Image</span>
                 </td>
-                <td data-label="Nama Pesanan & Asal"> <!-- MODIFIED DATA-LABEL -->
+                <td data-label="Nama Pesanan & Asal">
                   {{ item.name }}
-                  <div class="item-source-display"> <!-- NEW DIV FOR SOURCE -->
+                  <div class="item-source-display">
                     <small><em>Dari: {{ getSourceDisplayName(item.source) }}</em></small>
                   </div>
                   <div v-if="item.source === 'rakitan_kustom' && item.specification && typeof item.specification.parts === 'object'" class="specs-list-checkout">
@@ -123,7 +119,7 @@ export default {
       isLoadingPayment: false,
       paymentStatusMessage: '',
       paymentSuccess: false,
-      selectedPaymentMethod: 'cc', // Default payment method
+      selectedPaymentMethod: 'cc', 
     };
   },
   computed: {
@@ -144,14 +140,11 @@ export default {
     },
     updateQuantity(compositeId, newQuantity) {
       const qty = parseInt(newQuantity, 10);
-      if (!isNaN(qty) && qty >= 1) { // Ensure qty is at least 1
+      if (!isNaN(qty) && qty >= 1) { 
         cartStore.updateItemQuantity(compositeId, qty);
       } else if (!isNaN(qty) && qty < 1) {
-        // If user tries to set qty to 0 or less, reset to 1 or remove item
-        // For simplicity, let's reset to 1. Or you can call removeItem.
         const item = cartStore.items.find(i => `${i.source}-${i.id}` === compositeId);
-        if(item) item.qty = 1; // Force back to 1
-        // Alternatively, confirm removal: if (confirm("Hapus item ini dari keranjang?")) cartStore.removeItem(compositeId);
+        if(item) item.qty = 1;
       }
     },
     removeItem(compositeId) {
@@ -172,7 +165,7 @@ export default {
       return new Promise((resolve, reject) => {
         console.log("Mengirim ke Payment Gateway (Simulasi):", { orderDetails, paymentMethod });
         setTimeout(() => {
-          const isSuccess = Math.random() > 0.1; // 90% success rate
+          const isSuccess = Math.random() > 0.1;
           if (isSuccess) {
             resolve({
               transactionId: `TRX-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -216,14 +209,14 @@ export default {
           unitPrice: item.price,
           category: item.category,
           brand: item.brand,
-          image: item.image, // Include image for the payload
-          specification: item.specification // Include full specification
+          image: item.image,
+          specification: item.specification 
         })),
         totalAmount: cartStore.totalPrice,
         currency: 'IDR',
         customerInfo: {
-          name: 'Pelanggan JWR', // Placeholder, ideally from a form
-          email: 'customer@example.com', // Placeholder
+          name: 'Pelanggan JWR', 
+          email: 'customer@example.com', 
         },
         paymentMethod: this.selectedPaymentMethod,
         timestamp: new Date().toISOString()
@@ -232,7 +225,6 @@ export default {
       try {
         const paymentResponse = await this.mockPaymentGateway(orderPayload, this.selectedPaymentMethod);
         this.paymentSuccess = true;
-        // Construct a more detailed success message
         let successDetails = `ID Transaksi: ${paymentResponse.transactionId}\n`
         successDetails += `Metode Pembayaran: ${this.selectedPaymentMethod.replace('_', ' ').toUpperCase()}\n`
         successDetails += `Total Pembayaran: Rp${orderPayload.totalAmount.toLocaleString('id-ID')}\n\n`
@@ -257,7 +249,6 @@ export default {
 </script>
 
 <style scoped>
-/* Styles from previous Checkout.vue, slightly adapted */
 .checkout-container {
   max-width: 1100px;
   margin: 30px auto;
@@ -284,7 +275,7 @@ export default {
   padding: 50px 20px;
   font-size: 1.2rem;
   color: #adb5bd;
-  background-color: rgba(31, 41, 55, 0.5); /* Slightly more visible empty state */
+  background-color: rgba(31, 41, 55, 0.5);
   border-radius: 8px;
   border: 1px solid #2d3748;
 }
@@ -316,7 +307,7 @@ export default {
   font-weight: 600;
   font-size: 0.9rem;
   text-transform: uppercase;
-  white-space: nowrap; /* Prevent header text from wrapping too soon */
+  white-space: nowrap; 
 }
 
 .checkout-item-image {
@@ -345,7 +336,7 @@ export default {
   font-size: 0.8em;
   color: #89a5c1;
   margin-top: 4px;
-  display: block; /* Ensure it takes its own line */
+  display: block; 
 }
 .item-source-display em {
   font-style: normal;
@@ -387,14 +378,13 @@ export default {
   margin-top: 30px;
   padding-top: 25px;
   border-top: 1px solid #2d3748;
-  /* text-align: right; Align items within summary individually */
 }
 
 .payment-method-selection {
   margin-bottom: 25px;
   text-align: left;
   padding: 20px;
-  background-color: #1f2937; /* Slightly different bg for section */
+  background-color: #1f2937; 
   border-radius: 8px;
   border: 1px solid #2d3748;
 }
@@ -410,7 +400,7 @@ export default {
   padding: 10px 12px;
   border-radius: 6px;
   border: 1px solid #3a475b;
-  background: #161a27; /* Match main bg */
+  background: #161a27;
   color: #e0e0e0;
   font-size: 0.95rem;
 }
@@ -426,13 +416,13 @@ export default {
   font-weight: bold;
   color: #00d9ff;
   margin-bottom: 25px;
-  text-align: right; /* Keep total aligned right */
+  text-align: right;
 }
 .total-text strong {
   color: #fff;
 }
 
-.checkout-summary button[type="submit"] { /* Target only the submit button */
+.checkout-summary button[type="submit"] { 
   padding: 14px 35px;
   background: linear-gradient(45deg, #00d9ff, #00aaff);
   color: #111622;
@@ -445,9 +435,9 @@ export default {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   box-shadow: 0 4px 15px rgba(0, 170, 255, 0.2);
-  display: block; /* Make it block to use margin auto */
-  margin: 0 auto; /* Center the button */
-  min-width: 250px; /* Ensure decent width */
+  display: block; 
+  margin: 0 auto; 
+  min-width: 250px; 
 }
 .checkout-summary button[type="submit"]:disabled {
   background: #4a5568;
@@ -490,7 +480,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 1050; /* Ensure it's above other content, Bootstrap modals are often 1040/1050 */
+  z-index: 1050; 
   color: #e8eff5;
   backdrop-filter: blur(5px);
 }
@@ -575,8 +565,6 @@ export default {
 form {
     transition: opacity 0.3s ease-in-out;
 }
-/* Logic for hiding form elements when loading or status is shown is handled by v-if in the template */
-
 
 @media (max-width: 800px) {
   .checkout-container h2 {
@@ -601,7 +589,7 @@ form {
     justify-content: space-between;
     align-items: center;
     text-align: right;
-    padding: 10px 0; /* Adjusted padding */
+    padding: 10px 0;
     position: relative;
     border: none;
     border-bottom: 1px dotted #3a475b;
@@ -615,25 +603,25 @@ form {
     font-weight: bold;
     color: #00d9ff;
     margin-right: 10px;
-    flex-shrink: 0; /* Prevent label from shrinking too much */
-    min-width: 100px; /* Ensure label has some width */
+    flex-shrink: 0; 
+    min-width: 100px; 
   }
   .checkout-item-image, .no-image-placeholder {
     max-width: 50px;
     max-height: 50px;
   }
-  .item-source-display { /* Adjust source display for mobile card view */
-    text-align: right; /* Align with the value part of the "flex space-between" */
+  .item-source-display {
+    text-align: right; 
     margin-top: 0;
-    margin-left: 5px; /* Some space from the item name */
+    margin-left: 5px;
     font-size: 0.75em;
   }
   .checkout-table td[data-label="Nama Pesanan & Asal"] {
-    flex-wrap: wrap; /* Allow name and source to wrap if needed */
+    flex-wrap: wrap;
   }
   .checkout-table td[data-label="Nama Pesanan & Asal"] > .item-source-display {
-    width: 100%; /* Make source take full width below name on mobile */
-    text-align: right; /* Keep it aligned with values */
+    width: 100%;
+    text-align: right; 
     margin-top: 3px;
   }
 
@@ -645,6 +633,6 @@ form {
   .checkout-summary button[type="submit"] { font-size: 0.95rem; padding: 12px 25px; width: 100%; max-width: 300px; }
   .payment-method-selection { padding: 15px; }
   .payment-method-selection h4 { font-size: 1rem; }
-  .payment-select { max-width: none; } /* Allow full width on mobile */
+  .payment-select { max-width: none; } 
 }
 </style>

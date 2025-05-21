@@ -1,4 +1,3 @@
-// src/router/index.js - INI SUDAH BENAR UNTUK PATH /checkout
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Home from '@/views/Home.vue'
@@ -15,13 +14,11 @@ const routes = [
   { path: '/hardware', name: 'Hardware', component: Hardware },
   { path: '/paketrakitan',    name: 'PaketRakitan',   component: PaketRakitan },
   { path: '/cs',   name: 'CS',     component: CustomerService },
-  { path: '/checkout', name: 'Checkout', component: () => import('@/views/Checkout.vue')} // Path sudah benar '/checkout'
+  { path: '/checkout', name: 'Checkout', component: () => import('@/views/Checkout.vue')} 
 ]
 
 export default createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL), // Tambahkan import.meta.env.BASE_URL jika menggunakan Vite
-  // history: createWebHistory(process.env.BASE_URL), // Jika menggunakan Vue CLI
-  // history: createWebHistory(), // Jika base URL adalah '/' dan tidak ada prefix khusus
+  history: createWebHistory(import.meta.env.BASE_URL), 
   routes,
   scrollBehavior: () => ({ top: 0 })
 })

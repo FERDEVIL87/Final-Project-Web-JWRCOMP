@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
 import { ref, onMounted, onUnmounted } from 'vue';
-import { Offcanvas } from 'bootstrap'; // Pastikan bootstrap sudah diinstal: npm install bootstrap
+import { Offcanvas } from 'bootstrap';
 
 const items = [
   { to: '/', name: 'Tentang', color: '#00bcd4' },
@@ -10,7 +10,7 @@ const items = [
   { to: '/consolehh', name: 'Console and Handheld PC', color: '#00bcd4' },
   { to: '/hardware', name: 'PC Parts', color: '#00bcd4' },
   { to: '/cs', name: 'Customer Service', color: '#00bcd4' },
-  { to: '/Checkout', name: 'Checkout', color: '#00bcd4' } // Pastikan 'to' ini cocok dengan path di router
+  { to: '/Checkout', name: 'Checkout', color: '#00bcd4' } 
 ];
 
 const sidebarOffcanvasRef = ref(null);
@@ -46,7 +46,6 @@ const closeSidebar = () => {
 
 <template>
   <div class="layout-bs d-flex flex-column min-vh-100">
-    <!-- Navbar Bootstrap -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-black fixed-top shadow-sm">
       <div class="container-fluid">
         <RouterLink class="navbar-brand logo-bs" to="/">
@@ -80,7 +79,6 @@ const closeSidebar = () => {
       </div>
     </nav>
 
-    <!-- Sidebar Bootstrap (Offcanvas) -->
     <div
       class="offcanvas offcanvas-start bg-black text-white sidebar-bs"
       tabindex="-1"
@@ -117,7 +115,6 @@ const closeSidebar = () => {
       </div>
     </div>
 
-    <!-- Main Content -->
     <main class="content-bs flex-grow-1">
       <div class="container-fluid py-4 px-0">
         <transition name="fade-page" mode="out-in">
@@ -126,7 +123,6 @@ const closeSidebar = () => {
       </div>
     </main>
 
-    <!-- Footer -->
     <footer class="footer-bs bg-black text-white text-center py-3 mt-auto shadow-top-sm">
       © 2025 JWR Comp. All rights reserved.
     </footer>
@@ -134,58 +130,53 @@ const closeSidebar = () => {
 </template>
 
 <style scoped>
-/* --- GLOBAL CSS RESET & BASIC SETUP --- */
 :global(html), :global(body) {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow-x: hidden; /* Mencegah scroll horizontal yang tidak diinginkan */
+  overflow-x: hidden;
 }
 :global(body) {
-   background-color: black; /* Warna dasar body */
+   background-color: black; 
 }
 
-/* --- CUSTOM SCROLLBAR --- */
-/* Untuk browser berbasis WebKit (Chrome, Safari, Edge, Opera) */
 :global(body::-webkit-scrollbar),
 :global(html::-webkit-scrollbar) {
-  width: 8px; /* Lebar scrollbar */
-  height: 8px; /* Tinggi scrollbar (untuk scroll horizontal) */
+  width: 8px;
+  height: 8px;
 }
 
 :global(body::-webkit-scrollbar-track),
 :global(html::-webkit-scrollbar-track) {
-  background: #1a1a1a; /* Warna track (abu-abu sangat gelap) */
+  background: #1a1a1a; 
   border-radius: 4px;
 }
 
 :global(body::-webkit-scrollbar-thumb),
 :global(html::-webkit-scrollbar-thumb) {
-  background-color: #555555; /* Warna thumb (abu-abu sedang) */
+  background-color: #555555; 
   border-radius: 4px;
-  border: 2px solid #1a1a1a; /* Border dengan warna track untuk efek tipis */
+  border: 2px solid #1a1a1a; 
 }
 
 :global(body::-webkit-scrollbar-thumb:hover),
 :global(html::-webkit-scrollbar-thumb:hover) {
-  background-color: #777777; /* Warna thumb saat hover (abu-abu lebih terang) */
+  background-color: #777777; 
 }
 
-/* Untuk Firefox */
 :global(html) {
-  scrollbar-width: thin; /* Membuat scrollbar lebih tipis */
-  scrollbar-color: #555555 #1a1a1a; /* Warna thumb lalu warna track */
+  scrollbar-width: thin; 
+  scrollbar-color: #555555 #1a1a1a; 
 }
 
 
-/* --- GLOBAL & LAYOUT --- */
 .layout-bs {
   background-color: black;
 }
 
 .content-bs {
-  padding-top: 70px; /* Sesuaikan dengan tinggi navbar Anda */
+  padding-top: 70px;
   color: white;
 }
 
@@ -197,7 +188,6 @@ const closeSidebar = () => {
 }
 
 
-/* --- NAVBAR --- */
 .navbar-dark .navbar-brand {
   color: white;
 }
@@ -217,7 +207,6 @@ const closeSidebar = () => {
   list-style: none;
 }
 
-/* --- ANIMATED BUTTONS (NAVBAR & SIDEBAR) --- */
 .animated-btn-bs, .sidebar-btn-bs {
   position: relative;
   background: #444;
@@ -273,10 +262,10 @@ const closeSidebar = () => {
   position: absolute;
   width: 10px;
   height: 2px;
-  background: black; /* Seharusnya #000 atau warna background agar tidak terlihat */
+  background: black;
   border: 2px solid var(--clr);
   transition: 0.3s;
-  z-index: 2; /* Pastikan ini di atas span jika ada overlay */
+  z-index: 2;
 }
 
 .animated-btn-bs i::before { left: 80%; top: -2px; }
@@ -296,10 +285,9 @@ const closeSidebar = () => {
   padding: 0.4rem 0.8rem;
 }
 
-/* --- SIDEBAR (OFFCANVAS) --- */
 .sidebar-bs {
   width: 260px;
-  z-index: 1050; /* Pastikan lebih tinggi dari navbar jika ada overlap potensi */
+  z-index: 1050; 
 }
 .sidebar-bs .offcanvas-header {
   border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -354,10 +342,9 @@ const closeSidebar = () => {
   opacity: 0;
 }
 
-/* --- RESPONSIVE OVERRIDES --- */
 @media (max-width: 991.98px) {
   .navbar .navbar-collapse .navbar-nav {
-    display: none; /* Navbar items disembunyikan, akan muncul di sidebar */
+    display: none; 
   }
   .navbar .navbar-toggler {
     border-color: rgba(255,255,255,0.1);
@@ -366,7 +353,7 @@ const closeSidebar = () => {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
   }
   .content-bs {
-    padding-top: 60px; /* Sesuaikan jika tinggi navbar berubah di mobile */
+    padding-top: 60px; 
   }
 }
 </style>

@@ -3,10 +3,10 @@ import { ref, computed, onMounted } from 'vue';
 import 'vue3-carousel/dist/carousel.css';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 
-import slcImage from "/src/img home/slc.jpg";
-import tufImage from "/src/img home/tuf.png";
+import slcImage from "/src/img home/slc.webp";
+import tufImage from "/src/img home/tuf.webp";
 import k70Image from "/src/img home/k70avif.avif";
-import doomVideoPoster from "/src/img home/video/doom.mp4"; // Make sure this poster image exists and is optimized
+import doomVideoPoster from "/src/img home/video/doom.mp4";
 
 const products = ref([
   {
@@ -134,13 +134,12 @@ const techNews = ref([
 ]);
 
 onMounted(() => {
-  // Logic for HomePage component
 });
 
 </script>
 
 <template>
-  <div class="page-wrapper home-page-content"> <!-- Added a class for potential specific styling -->
+  <div class="page-wrapper home-page-content">
 
     <section class="video-hero-section">
       <div class="video-overlay top-gradient"></div>
@@ -154,6 +153,7 @@ onMounted(() => {
         preload="metadata"
       >
         <source src="/src/img home/video/doom.mp4" type="video/mp4">
+        <track kind="captions" src="" srclang="en" label="English captions" default>
         Your browser does not support the video tag.
       </video>
       <div class="video-overlay bottom-gradient"></div>
@@ -180,7 +180,7 @@ onMounted(() => {
           <div class="carousel__item" :style="{ background: product.backgroundColor }">
             <div class="product-slide-content">
               <div class="product-text-info">
-                <h3 class="product-brand" :style="{ color: product.accentColor }">{{ product.brand }}</h3>
+                <h2 class="product-brand" :style="{ color: product.accentColor }">{{ product.brand }}</h2>
                 <h1 class="product-name">{{ product.name }}</h1>
                 <p class="product-slogan">{{ product.slogan }}</p>
                 <ul class="product-features">
@@ -208,7 +208,7 @@ onMounted(() => {
               <div class="product-badges-container">
                 <div v-for="badge in product.badges" :key="badge.text + badge.subtext" class="product-badge">
                   <div v-if="badge.icon === 'fan'" class="badge-icon-fan">
-                    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-3.79V8.5c0-.28.22-.5.5-.5s.5.22.5.5v7.71c2.42-.95 4-3.27 4-5.96 0-.28-.22-.5-.5-.5s-.5.22-.5.5c0 2.21-1.79 4-4 4s-4-1.79-4-4c0-.28-.22-.5-.5-.5s-.5.22-.5.5c0 2.69 1.58 5.01 4 5.96zM8.75 12.5c.28 0 .5-.22.5-.5V8c0-2.21 1.79-4 4-4s4 1.79 4 4v4c0 .28-.22-.5-.5-.5s-.5-.22-.5-.5V8c0-1.65-1.35-3-3-3s-3 1.35-3 3v4c0 .28-.22-.5-.5-.5s-.5-.22-.5-.5z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-3.79V8.5c0-.28.22-.5.5-.5s.5.22.5.5v7.71c2.42-.95 4-3.27 4-5.96 0-.28-.22-.5-.5-.5s-.5.22-.5.5c0 2.21-1.79 4-4 4s-4-1.79-4-4c0-.28-.22-.5-.5-.5s-.5.22-.5.5c0 2.69 1.58 5.01 4 5.96zM8.75 12.5c.28 0 .5-.22.5-.5V8c0-2.21 1.79-4 4-4s4 1.79 4 4v4c0 .28-.22-.5-.5-.5s-.5-.22-.5-.5V8c0-1.65-1.35-3-3-3s-3 1.35-3 3v4c0 .28-.22-.5-.5-.5s-.5.22-.5-.5z"/></svg>
                   </div>
                   <span class="badge-main-text">{{ badge.text }}</span>
                   <span class="badge-subtext">{{ badge.subtext }}</span>
@@ -317,10 +317,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* Styles for HomePage.vue component - these are the same as before */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap');
 
-/* Visually Hidden class for accessibility */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -332,14 +330,12 @@ onMounted(() => {
   border: 0;
 }
 
-/* General Page Styles for this component */
-.page-wrapper.home-page-content { /* Be more specific if needed */
+.page-wrapper.home-page-content {
   background-color: #000000;
-  overflow-x: hidden; /* Should be on a higher level if possible, but okay here too */
+  overflow-x: hidden;
   width: 100%;
 }
 
-/* Performance Hints: Use sparingly and test */
 .product-slide-content,
 .news-item,
 .info-block,
@@ -351,21 +347,18 @@ onMounted(() => {
   will-change: opacity, transform;
 }
 
-/* Text rendering optimization */
 .hero-text-container h1,
 .hero-text-container p,
 .product-brand,
 .product-name,
 .product-slogan,
 .news-item-title,
-.section-title { /* This applies to section titles within HomePage.vue */
+.section-title {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-
-/* Video Hero Section */
 .video-hero-section {
   position: relative;
   height: 100vh;
@@ -476,7 +469,6 @@ onMounted(() => {
   outline: none;
 }
 
-/* Product Hero Slider */
 .product-hero-slider {
   width: 100%;
   box-sizing: border-box;
@@ -697,21 +689,26 @@ onMounted(() => {
 }
 
 :deep(.carousel__pagination-button) {
-  background-color: rgba(107, 114, 128, 0.4) !important;
-  padding: 5px;
-  width: 10px;
-  height: 10px;
+  min-width: 32px;
+  min-height: 32px;
+  width: 32px;
+  height: 32px;
+  margin: 0 6px;
   border-radius: 50%;
-  margin: 0 4px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  background-color: rgba(107, 114, 128, 0.4) !important;
+  padding: 0;
   border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 :deep(.carousel__pagination-button--active) {
   background-color: var(--slide-accent-color, #9CA3AF) !important;
-  transform: scale(1.3);
+  transform: scale(1.15);
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
-/* Tech News Section */
 .tech-news-section {
   padding: 70px 0;
   background-color: #0f0f11;
@@ -729,7 +726,7 @@ onMounted(() => {
   box-sizing: border-box;
 }
 
-.tech-news-title { /* This is a .section-title within HomePage.vue */
+.tech-news-title {
   text-align: center;
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(1.8rem, 4vw, 2.8rem);
@@ -759,7 +756,7 @@ onMounted(() => {
   background-color: #18181b;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #27272a;
+  border: 1px solid #33374a;
   box-shadow: 0 5px 15px rgba(0,0,0,0.4);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
@@ -815,7 +812,10 @@ onMounted(() => {
 
 .news-item-meta {
   font-size: 0.75rem;
-  color: #6B7280;
+  color: #e0e0e0;
+  background: #23263a;
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
 .news-read-more {
@@ -831,7 +831,6 @@ onMounted(() => {
   text-decoration: underline;
 }
 
-/* Store Information Section */
 .icon-store::before { content: "🏢 "; }
 .icon-pin::before { content: "📍 "; }
 .icon-clock::before { content: "🕒 "; }
@@ -858,7 +857,7 @@ onMounted(() => {
   box-sizing: border-box;
 }
 
-.section-title.store-section-title { /* This is a .section-title within HomePage.vue */
+.section-title.store-section-title {
   text-align: center;
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(2rem, 5vw, 3rem);
@@ -1026,7 +1025,6 @@ onMounted(() => {
   line-height: 1;
 }
 
-/* Responsive Adjustments for HomePage.vue */
 @media (max-width: 992px) {
   .product-slide-content {
     grid-template-columns: 1fr;
@@ -1070,7 +1068,7 @@ onMounted(() => {
   .news-grid {
     grid-template-columns: 1fr;
   }
-  .tech-news-title { /* Affects .section-title.tech-news-title */
+  .tech-news-title {
     font-size: clamp(1.6rem, 5vw, 2.2rem);
   }
   .tech-news-subtitle {
@@ -1152,7 +1150,7 @@ onMounted(() => {
   .tech-news-section {
     padding: 50px 0 40px;
   }
-  .tech-news-title { /* Affects .section-title.tech-news-title */
+  .tech-news-title {
     font-size: clamp(1.5rem, 6vw, 2rem);
   }
   .tech-news-subtitle {
@@ -1174,7 +1172,7 @@ onMounted(() => {
   }
 
 
-  .section-title.store-section-title { /* Affects .section-title.store-section-title */
+  .section-title.store-section-title {
     font-size: clamp(1.6rem, 6vw, 2rem);
   }
   .section-subtitle.store-section-subtitle {
@@ -1195,7 +1193,6 @@ onMounted(() => {
   }
 }
 
-/* Keyframes */
 @keyframes fadeInFromLeft {
   from { opacity: 0; transform: translateX(-20px); }
   to { opacity: 1; transform: translateX(0); }

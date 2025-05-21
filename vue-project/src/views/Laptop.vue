@@ -1,13 +1,13 @@
 <script>
 import { Modal } from 'bootstrap';
-import { cartStore } from '@/store/cartStore'; // Import global cart store
-import { useRouter } from 'vue-router'; // Import for navigation
+import { cartStore } from '@/store/cartStore';
+import { useRouter } from 'vue-router';
 
 export default {
   name: "LaptopListSection",
   setup() {
-    const router = useRouter(); // Initialize router
-    return { router, cartStore }; // Expose to template
+    const router = useRouter();
+    return { router, cartStore };
   },
   data() {
     return {
@@ -89,7 +89,7 @@ export default {
     },
     openModal(laptop) {
       this.selectedLaptopForModal = laptop;
-      this.checkoutQty = 1; // Reset quantity on modal open
+      this.checkoutQty = 1;
       if (this.bootstrapLaptopModal) {
         this.bootstrapLaptopModal.show();
       }
@@ -123,7 +123,7 @@ export default {
     <div class="container py-4 py-md-5">
       <h2 class="section-title-bs text-center">Toko Laptop</h2>
 
-      <!-- Tombol Checkout Global -->
+      
       <div class="text-center my-4 py-3 border-top border-bottom border-secondary">
         <h4 class="mb-3">Keranjang Belanja Global</h4>
         <p v-if="cartStore.items.length > 0" class="mb-2">
@@ -135,7 +135,7 @@ export default {
         </button>
       </div>
 
-      <!-- Filter Section -->
+      
       <transition name="fade-slide" appear>
         <div class="row justify-content-center mb-4">
           <div class="col-lg-10 col-xl-8">
@@ -162,12 +162,12 @@ export default {
                   </select>
                 </div>
               </div>
-              <!-- Price Range Slider -->
+              
               <div class="row mt-3 align-items-center">
                 <div class="col-12">
                   <div class="slider-harga-bs d-flex flex-column flex-md-row align-items-center gap-3 p-2 rounded-3">
                     <label for="minPriceSlider" class="form-label mb-0 price-range-label-bs">Rentang Harga (Rp):</label>
-                    <div class="slider-range-group d-flex align-items-center flex-grow-1"> <!-- Flex grow for group -->
+                    <div class="slider-range-group d-flex align-items-center flex-grow-1"> 
                         <span class="harga-min-bs me-2" style="min-width: 100px;">{{ formatPrice(priceSlider[0]) }}</span>
                         <input
                           id="minPriceSlider"
@@ -201,7 +201,7 @@ export default {
         </div>
       </transition>
 
-      <!-- Laptop Categories and Cards -->
+      
       <transition-group name="fade-slide" tag="div" appear>
         <div v-if="filteredLaptops.length > 0" key="laptop-list-container">
           <div v-for="categoryData in categoriesWithLaptops" :key="categoryData.name" class="category-section-bs mb-5">
@@ -230,7 +230,7 @@ export default {
                     <div class="card-body d-flex flex-column p-3">
                       <h4 class="card-title card-title-bs mb-2">{{ laptop.name }}</h4>
                       <p class="card-text-desc-bs small mb-2">{{ laptop.description.split(',')[0] }}</p>
-                       <div class="mt-auto"> <!-- mt-auto on a new div to push price and button down -->
+                       <div class="mt-auto"> 
                         <p class="card-text card-text-price-bs mb-2">
                             <strong>Harga:</strong> {{ formatPrice(laptop.price) }}
                         </p>
@@ -261,7 +261,7 @@ export default {
         </div>
       </transition-group>
 
-      <!-- Bootstrap Modal for Laptop Details -->
+      
       <div class="modal fade" id="laptopDetailModalBs" tabindex="-1" aria-labelledby="laptopDetailModalLabelBs" aria-hidden="true" ref="laptopDetailModalRef">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
           <div class="modal-content modal-content-bs">
@@ -295,7 +295,7 @@ export default {
                         {{ spec.trim() }}
                       </li>
                     </ul>
-                    <!-- Checkout Section -->
+                    
                     <div class="d-flex flex-column flex-md-row align-items-center gap-3 justify-content-center justify-content-lg-start mt-4">
                       <div class="input-group checkout-qty-group-bs">
                         <label for="checkoutQtyInput" class="input-group-text">Qty:</label>
@@ -337,7 +337,6 @@ export default {
 </template>
 
 <style scoped>
-/* Variabel Warna Lokal dan layout utama mirip PaketRakitan */
 .pc-list-section-bs {
   --primary-color: #00d9ff;
   --background-main: #0c101c;
@@ -378,15 +377,15 @@ export default {
 .price-range-label-bs {
   color: var(--primary-color);
   font-weight: 500;
-  min-width: 140px; /* Ensure label width is consistent */
+  min-width: 140px;
 }
 .slider-harga-bs .slider-range-group {
   display: flex;
-  flex-direction: column; /* Stack sliders vertically for better control */
-  align-items: stretch; /* Make sliders take full width available */
-  gap: 0.5rem; /* Space between sliders */
-  flex: 1 1 0%; /* Allow group to grow */
-  min-width: 180px; /* Minimum width for the slider group */
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  flex: 1 1 0%;
+  min-width: 180px;
 }
 .slider-harga-bs .form-range {
   margin: 0.2rem 0;
@@ -398,27 +397,27 @@ export default {
   color: var(--primary-color);
   font-weight: 600;
   font-size: 1rem;
-  text-align: center; /* Center price text */
+  text-align: center;
 }
 
 @media (max-width: 767.98px) {
   .slider-harga-bs {
-    flex-direction: column !important; /* Force column layout on smaller screens */
+    flex-direction: column !important;
     gap: 0.5rem !important;
     padding: 0.7rem 0.5rem !important;
   }
   .price-range-label-bs {
-    min-width: unset; /* Remove min-width for label */
+    min-width: unset;
     width: 100%;
-    text-align: left; /* Align label to left */
+    text-align: left;
   }
   .slider-harga-bs .slider-range-group {
-    min-width: 100%; /* Group takes full width */
+    min-width: 100%;
   }
 }
 
 .category-section-bs {
-  margin-bottom: 2.2rem !important; /* Consistent bottom margin */
+  margin-bottom: 2.2rem !important;
 }
 .category-header-bs {
   position: relative;
@@ -446,14 +445,14 @@ export default {
   box-shadow: 0 2px 6px rgba(var(--primary-color-rgb-val), 0.15);
   border: 1px solid var(--border-color-soft);
   z-index: 2;
-  padding: 0.5rem 2.5rem; /* Generous padding */
-  margin: 0 auto; /* Center title */
+  padding: 0.5rem 2.5rem;
+  margin: 0 auto;
   display: inline-block;
-  min-width: 220px; /* Minimum width for title */
+  min-width: 220px;
   text-align: center;
 }
 .row.row-cols-1.row-cols-sm-2.row-cols-lg-3.row-cols-xl-4.g-3.g-lg-4.justify-content-center {
-  --bs-gutter-x: 1.2rem; /* Custom gutter for card grid */
+  --bs-gutter-x: 1.2rem;
   --bs-gutter-y: 1.2rem;
   margin-left: 0;
   margin-right: 0;
@@ -471,7 +470,7 @@ export default {
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  margin: 0 auto; /* Center card if col is wider */
+  margin: 0 auto;
 }
 .card-bs:hover, .card-bs:focus-visible {
   transform: translateY(-5px) scale(1.015);
@@ -479,36 +478,34 @@ export default {
   border-color: var(--border-color-strong);
   outline: none;
 }
-.card-bs:focus-visible:not(:hover) { /* Style for focus without hover */
+.card-bs:focus-visible:not(:hover) {
   outline: 2px solid var(--primary-color);
   outline-offset: 1px;
 }
 
-/* === PERUBAHAN DI SINI === */
 .card-img-wrapper-bs {
   background: #11192b;
   padding: 10px;
-  width: 100%; /* Mengikuti lebar card content area */
-  aspect-ratio: 4 / 3; /* Menetapkan rasio aspek, misal 4:3. Sesuaikan jika perlu (misal 16/10, 1/1) */
+  width: 100%;
+  aspect-ratio: 4 / 3;
   display: flex;
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid var(--border-color-soft);
-  box-sizing: border-box; /* Pastikan padding & border masuk dalam perhitungan width/height */
-  min-height: 190px; /* Tambahkan tinggi minimum agar semua card sama tinggi, termasuk ASUS ROG Zephyrus G14 */
+  box-sizing: border-box;
+  min-height: 190px;
 }
 .card-img-bs {
-  max-width: 100%; /* Gambar akan mengisi sebanyak mungkin wrapper sambil menjaga rasio aspek */
+  max-width: 100%;
   max-height: 100%;
-  object-fit: contain; /* Memastikan seluruh gambar terlihat, menjaga rasio aspek */
+  object-fit: contain;
   border-radius: 4px;
 }
-/* === AKHIR PERUBAHAN === */
 
 .card-bs .card-body {
   padding: 1rem;
-  text-align: center; /* Default text align */
-  flex-grow: 1; /* Allow body to take remaining space */
+  text-align: center;
+  flex-grow: 1;
 }
 .card-title-bs {
   font-family: 'Orbitron', sans-serif;
@@ -516,10 +513,10 @@ export default {
   color: #00d9ff;
   margin-bottom: 0.5rem;
   line-height: 1.35;
-  min-height: calc(1rem * 1.35 * 2); /* Ensure 2 lines of text height */
+  min-height: calc(1rem * 1.35 * 2);
   display: flex;
   align-items: center;
-  justify-content: center; /* Center title text */
+  justify-content: center;
 }
 .card-text-desc-bs {
   font-size: 0.8rem;
@@ -527,12 +524,12 @@ export default {
   line-height: 1.4;
   margin-bottom: 0.75rem !important;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: calc(0.8rem * 1.4 * 2); /* Ensure 2 lines height */
+  min-height: calc(0.8rem * 1.4 * 2);
 }
 .card-text-price-bs {
   font-size: 0.95rem;
@@ -584,7 +581,7 @@ export default {
   text-transform: uppercase;
 }
 .specs-section-bs ul {
-  list-style: disc; /* Standard disc bullets */
+  list-style: disc;
   padding-left: 1.1rem;
   margin-bottom: 0;
 }
@@ -592,11 +589,11 @@ export default {
   margin-bottom: 0.35rem;
   font-size: 0.825rem;
   color: var(--text-light);
-  text-shadow: none; /* Remove any inherited text-shadow */
-  font-style: normal; /* Ensure normal font style */
+  text-shadow: none;
+  font-style: normal;
 }
 .text-stock-ready-bs {
-  color: #28f57a !important; /* Use !important carefully */
+  color: #28f57a !important;
   font-weight: bold;
   text-shadow: 0 0 3px #28f57a80;
 }
@@ -610,7 +607,7 @@ export default {
 }
 .checkout-qty-group-bs .form-control {
   min-width: 60px;
-  text-align: center; /* Center quantity text */
+  text-align: center;
 }
 .checkout-button-bs {
   background: #00d9ff;
@@ -629,7 +626,6 @@ export default {
   to { transform: scale(1) translateY(0); opacity: 1; }
 }
 
-/* Transitions for list items and sections */
 .fade-slide-enter-active, .fade-slide-leave-active {
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -642,19 +638,18 @@ export default {
   transform: translateY(0) scale(1);
 }
 
-/* Responsive Adjustments */
 @media (min-width: 768px) {
   .card-bs .card-body {
-    text-align: left; /* Align card body text to left on md and up */
+    text-align: left;
   }
   .card-title-bs {
-    justify-content: flex-start; /* Align title to left */
+    justify-content: flex-start;
   }
 }
 
 @media (max-width: 767.98px) {
   .filters-bs .col-md, .filters-bs .col-md-auto {
-    flex-basis: 100%; /* Stack filter inputs */
+    flex-basis: 100%;
   }
   .section-title-bs {
     font-size: clamp(1.6rem, 4vw, 2.2rem);
@@ -667,31 +662,27 @@ export default {
     margin-bottom: 1.5rem;
     padding: 0.6rem 0;
   }
-  .modal-body-bs .row > div { /* Center content in modal on small screens */
+  .modal-body-bs .row > div {
     text-align: center !important;
   }
   .modal-details-text {
-    text-align: center; /* Ensure details text is also centered if content above it is */
+    text-align: center;
   }
   .specs-section-bs h4 {
-    text-align: center !important; /* Center specs title */
+    text-align: center !important;
   }
   .specs-section-bs ul {
-    padding-left: 1.5rem; /* Adjust padding for centered list */
-    display: inline-block; /* Allows text-align:center on parent to work for ul */
-    text-align: left; /* Re-align list items to left */
+    padding-left: 1.5rem;
+    display: inline-block;
+    text-align: left;
   }
 }
 
 @media (max-width: 575.98px) {
   .pc-list-section-bs .container {
-    padding-left: 10px; /* Slightly more padding on very small screens */
+    padding-left: 10px;
     padding-right: 10px;
   }
-  /* Hapus pengaturan height eksplisit untuk card-img-wrapper-bs di sini karena sudah diatur oleh aspect-ratio */
-  /* .card-img-wrapper-bs {
-    height: 170px;
-  } */
   .card-title-bs {
     font-size: 0.9rem;
     min-height: calc(0.9rem * 1.35 * 2);
@@ -704,21 +695,21 @@ export default {
     font-size: 0.85rem;
   }
   .card-bs .card-body {
-    padding: 0.75rem; /* Reduce card body padding */
+    padding: 0.75rem;
   }
   .section-title-bs {
     font-size: clamp(1.4rem, 4.5vw, 1.8rem);
   }
   .category-title-bs {
     font-size: clamp(1rem, 2.8vw, 1.4rem);
-    padding: 0.5rem 0.7rem; /* Reduce padding */
+    padding: 0.5rem 0.7rem;
   }
   .filters-bs {
-    padding: 0.7rem; /* Reduce filter padding */
+    padding: 0.7rem;
   }
   .search-box-bs, .filter-select-bs {
     font-size: 0.85rem;
-    padding: 0.6rem 0.9rem; /* Adjust input padding */
+    padding: 0.6rem 0.9rem;
   }
   .modal-pc-title-bs {
     font-size: 1.1rem;
@@ -727,21 +718,21 @@ export default {
     font-size: 0.75rem;
   }
   .modal-image-bs {
-    max-height: 170px; /* Adjust modal image height */
+    max-height: 170px;
   }
   .specs-section-bs h4 {
     font-size: 0.9rem;
   }
-  .row.g-3.g-lg-4 { /* Reduce gutter on small screens */
+  .row.g-3.g-lg-4 {
     --bs-gutter-x: 0.8rem;
     --bs-gutter-y: 0.8rem;
   }
   .checkout-qty-group-bs {
-    width: 100%; /* Make Qty input group full width */
+    width: 100%;
     max-width: none;
   }
   .checkout-button-bs {
-    width: 100%; /* Make checkout button full width */
+    width: 100%;
   }
 }
 </style>

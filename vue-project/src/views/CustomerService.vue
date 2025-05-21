@@ -1,11 +1,9 @@
 <template>
   <section class="py-5 bg-black min-vh-100 d-flex align-items-center justify-content-center">
     <div class="container text-white text-center" style="max-width: 500px;">
-      
-      <!-- H1 langsung tampil, tanpa margin besar & animasi -->
+
       <h1 style="font-size: 2rem; font-weight: 600;">Hubungi Kami</h1>
 
-      <!-- Paragraf LCP-friendly -->
       <p class="mb-3" style="font-size: 0.95rem; font-weight: 300;">
         Kirim pertanyaan atau pesan lewat formulir ini.
       </p>

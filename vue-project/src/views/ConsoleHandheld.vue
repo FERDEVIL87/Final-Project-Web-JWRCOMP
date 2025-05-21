@@ -4,7 +4,7 @@
       🎮 ULTIMATE GAME CONSOLES HUB 🚀
     </h1>
 
-    <!-- Tombol Checkout Global -->
+    
     <div class="text-center my-4 py-3 border-top border-bottom border-secondary">
         <h2 class="mb-3" style="font-family:'Orbitron',sans-serif;color:#fff;">Keranjang Belanja Global</h2>
         <p v-if="cartStore.items.length > 0" class="mb-2" style="color:#1aff6b;">
@@ -16,7 +16,7 @@
         </button>
       </div>
 
-    <!-- Kategori -->
+    
     <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
       <button
         v-for="(card, index) in cards"
@@ -57,7 +57,7 @@
         </div>
       </div>
 
-      <!-- Price Range Filter -->
+      
       <div class="mb-3">
         <label class="form-label text-light fw-bold d-block mb-1" for="minPriceRange">Rentang Harga</label>
         <div class="d-flex align-items-center mb-1">
@@ -159,7 +159,7 @@
       <p>✨ Please select a category above to explore our awesome consoles! ✨</p>
     </div>
 
-    <!-- MODAL Bootstrap -->
+    
     <div class="modal fade" id="consoleDetailModal" tabindex="-1" aria-labelledby="consoleDetailModalLabel" aria-hidden="true" ref="consoleModalRef">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-light">
@@ -195,7 +195,7 @@
               <p class="text-muted">No additional features listed.</p>
             </div>
 
-            <!-- Quantity and Add to Cart in Modal -->
+            
             <div v-if="selectedProduct && (selectedProduct.stock !== 'Kosong' && selectedProduct.stock > 0)" class="mt-3 pt-3 border-top border-secondary">
                 <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
                     <label for="modalQtyConsole" class="form-label mb-0 text-light">Qty:</label>
@@ -233,14 +233,14 @@
 
 <script>
 import { Modal } from 'bootstrap';
-import { cartStore } from '@/store/cartStore'; // Import global cart store
-import { useRouter } from 'vue-router'; // Import for navigation
+import { cartStore } from '@/store/cartStore';
+import { useRouter } from 'vue-router';
 
 export default {
   name: "GameConsolesHub",
   setup() {
-    const router = useRouter(); // Initialize router
-    return { router, cartStore }; // Expose to template
+    const router = useRouter();
+    return { router, cartStore };
   },
   data() {
     return {
@@ -256,25 +256,23 @@ export default {
       selectedBrand: "",
       usdToIdrRate: 15000,
       minPriceIDR: 0,
-      maxPriceIDR: 12000000, // Initial max, will be updated
+      maxPriceIDR: 12000000,
       priceStepIDR: 100000,
       selectedProduct: null,
       bootstrapModalInstance: null,
       consoles: [],
       loading: true,
-      modalQuantity: 1, // For quantity selection in modal
+      modalQuantity: 1,
     };
   },
   async mounted() {
     try {
-      const res = await fetch('/data/console.json'); // Ensure this path is correct
+      const res = await fetch('/data/console.json');
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const jsonData = await res.json();
       this.consoles = jsonData.map(console => ({
           ...console,
-          // Normalize stock: if string "Ready", assume a high number like 10, if "Kosong" set to 0
           stock: console.stock === "Ready" ? 10 : (console.stock === "Kosong" ? 0 : (Number(console.stock) || 0)),
-          // Ensure ID is unique and suitable (e.g., if it's not just a number)
           id: String(console.id || `console-${Math.random().toString(36).substr(2, 9)}`)
       }));
       this.updatePriceSliderBounds();
@@ -289,7 +287,7 @@ export default {
       this.bootstrapModalInstance = new Modal(modalElement);
       modalElement.addEventListener('hidden.bs.modal', () => {
         this.selectedProduct = null;
-        this.modalQuantity = 1; // Reset modal quantity
+        this.modalQuantity = 1;
       });
     }
     if (this.cards.length > 0 && !this.selectedCategory) {
@@ -306,7 +304,7 @@ export default {
       return 0;
     },
     maxSliderBoundIDR() {
-      if (!this.consoles.length) return 12000000; // Default if no consoles
+      if (!this.consoles.length) return 12000000;
       const maxUSD = Math.max(...this.consoles.map(c => c.price || 0), 0);
       return Math.ceil((maxUSD * this.usdToIdrRate) / this.priceStepIDR) * this.priceStepIDR || 12000000;
     },
@@ -326,7 +324,6 @@ export default {
       }
       filtered = filtered.filter(c => {
         const priceIDR = (c.price || 0) * this.usdToIdrRate;
-        // Adjust price comparison to include items at the exact min/max bounds
         return priceIDR >= this.minPriceIDR && priceIDR <= this.maxPriceIDR;
       });
       return filtered;
@@ -337,21 +334,19 @@ export default {
         if (this.consoles.length > 0) {
             const maxUSD = Math.max(...this.consoles.map(c => c.price || 0), 0);
             const calculatedMaxIDR = Math.ceil((maxUSD * this.usdToIdrRate) / this.priceStepIDR) * this.priceStepIDR;
-            this.maxPriceIDR = calculatedMaxIDR > 0 ? calculatedMaxIDR : 12000000; // Ensure it's not 0
+            this.maxPriceIDR = calculatedMaxIDR > 0 ? calculatedMaxIDR : 12000000;
         } else {
-            this.maxPriceIDR = 12000000; // Default
+            this.maxPriceIDR = 12000000;
         }
-        // If selectedCategory is already set, reset maxPrice to new bound
         if (this.selectedCategory) {
-            // this.maxPriceIDR = this.maxSliderBoundIDR; // This might be redundant if called in selectCategory
         }
     },
     selectCategory(category) {
       this.selectedCategory = category;
       this.searchQuery = "";
       this.selectedBrand = "";
-      this.minPriceIDR = this.minSliderBoundIDR; // Reset min price
-      this.maxPriceIDR = this.maxSliderBoundIDR; // Reset max price to category's max or overall max
+      this.minPriceIDR = this.minSliderBoundIDR;
+      this.maxPriceIDR = this.maxSliderBoundIDR;
     },
     formatPrice(price) {
       if (typeof price !== 'number' || isNaN(price)) return 'Rp 0';
@@ -364,7 +359,7 @@ export default {
     },
     showDetails(consoleItem) {
       this.selectedProduct = consoleItem;
-      this.modalQuantity = 1; // Reset quantity when opening modal
+      this.modalQuantity = 1;
       if (this.bootstrapModalInstance) {
         this.bootstrapModalInstance.show();
       }
@@ -375,16 +370,14 @@ export default {
       }
     },
     getStockClass(stock) {
-      // Assuming stock is now a number: 0 for Kosong, >0 for Ready
       if (stock > 0) return 'text-success fw-bold';
-      return 'text-danger fw-bold'; // Kosong
+      return 'text-danger fw-bold';
     },
     addItemToCart(consoleItem, quantity) {
         if (!consoleItem || quantity < 1) {
             alert("Invalid item or quantity.");
             return;
         }
-        // Ensure stock is a number before checking
         const stockNumber = Number(consoleItem.stock);
         if (isNaN(stockNumber) || stockNumber <= 0 || quantity > stockNumber) {
             alert(`Quantity (x${quantity}) exceeds available stock (${stockNumber}) or item is out of stock.`);
@@ -392,26 +385,25 @@ export default {
         }
 
         const itemToAdd = {
-            id: String(consoleItem.id), // Ensure ID is a string
-            source: 'console', // Source identifier
+            id: String(consoleItem.id),
+            source: 'console',
             name: consoleItem.name,
-            price: consoleItem.price * this.usdToIdrRate, // Price in IDR
+            price: consoleItem.price * this.usdToIdrRate,
             qty: quantity,
-            category: consoleItem.category, // Or a more generic "Game Console"
+            category: consoleItem.category,
             brand: consoleItem.brand,
             image: consoleItem.image,
-            // Join specs array into a string, or pass as is if Checkout.vue can handle array
             specification: consoleItem.specs ? consoleItem.specs.join(', ') : 'No specific features listed.'
         };
         cartStore.addItem(itemToAdd);
         alert(`${consoleItem.name} (x${quantity}) added to cart!`);
     },
     addItemToCartFromCard(consoleItem) {
-        this.addItemToCart(consoleItem, 1); // Add 1 item from card
+        this.addItemToCart(consoleItem, 1);
     },
     addItemToCartFromModal(consoleItem) {
         this.addItemToCart(consoleItem, this.modalQuantity);
-        this.closeDetails(); // Close modal after adding
+        this.closeDetails();
     },
     goToCheckout() {
       if (cartStore.items.length === 0) {
@@ -422,7 +414,6 @@ export default {
     }
   },
   watch: {
-    // Watch for changes in consoles data to update price slider bounds if necessary
     consoles: {
         handler() {
             this.updatePriceSliderBounds();
@@ -431,12 +422,12 @@ export default {
     },
     minPriceIDR(newVal, oldVal) {
         if (newVal > this.maxPriceIDR) {
-            this.minPriceIDR = oldVal; // Revert if min exceeds max
+            this.minPriceIDR = oldVal;
         }
     },
     maxPriceIDR(newVal, oldVal) {
         if (newVal < this.minPriceIDR) {
-            this.maxPriceIDR = oldVal; // Revert if max goes below min
+            this.maxPriceIDR = oldVal;
         }
     }
   }
@@ -463,7 +454,7 @@ export default {
   border-radius: 10px;
   overflow: hidden;
   position: relative;
-  border-color: var(--bs-info); /* Using Bootstrap variable for consistency */
+  border-color: var(--bs-info);
 }
 
 .placeholder-img {
@@ -503,9 +494,9 @@ export default {
 }
 .bg-opacity-85 { opacity: 0.85; }
 .modal-footer {
-    border-top-color: var(--bs-secondary); /* Using Bootstrap variables */
+    border-top-color: var(--bs-secondary);
 }
 .btn-close-white {
-    filter: invert(1) grayscale(100%) brightness(200%); /* Ensure visibility on dark bg */
+    filter: invert(1) grayscale(100%) brightness(200%);
 }
 </style>

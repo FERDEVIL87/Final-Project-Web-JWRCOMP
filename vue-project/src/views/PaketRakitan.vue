@@ -1,312 +1,23 @@
 <script>
-import { Modal } from 'bootstrap'; // Import Modal Bootstrap
-import { cartStore } from '@/store/cartStore'; // Import global cart store
-import { useRouter } from 'vue-router'; // Import for navigation
+import { Modal } from 'bootstrap';
+import { cartStore } from '@/store/cartStore';
+import { useRouter } from 'vue-router';
 
 export default {
   name: "PaketRakitanPC",
   setup() {
-    const router = useRouter(); // Initialize router
-    return { router, cartStore }; // Expose to template
+    const router = useRouter();
+    return { router, cartStore };
   },
   data() {
     return {
-      pcs: [ // Data PC Anda
-        {
-          id: 1,
-          name: "Paket Gaming Low-End",
-          category: "Gaming",
-          price: 4500000,
-          image: "src/imgcomp/gaming1.png",
-          description: "PC gaming hemat untuk game eSports seperti Valorant, Dota 2, dan CS:GO. Cocok untuk pelajar dan warnet.",
-          specs: {
-            CPU: "Intel Core i3 10100F",
-            GPU: "GTX 750 Ti 2GB",
-            RAM: "8GB DDR4",
-            Storage: "SSD 240GB",
-            PSU: "450W",
-            Casing: "Mini ATX"
-          }
-        },
-        {
-          id: 2,
-          name: "Paket Gaming Mid-End",
-          category: "Gaming",
-          price: 8500000,
-          image: "src/imgcomp/gaming2.png",
-          description: "PC gaming untuk game AAA setting medium-high, streaming ringan, dan editing video dasar.",
-          specs: {
-            CPU: "Intel Core i5 12400F",
-            GPU: "GTX 1650 4GB",
-            RAM: "16GB DDR4",
-            Storage: "SSD 512GB",
-            PSU: "500W",
-            Casing: "ATX RGB"
-          }
-        },
-        {
-          id: 3,
-          name: "Paket Gaming High-End",
-          category: "Gaming",
-          price: 18500000,
-          image: "src/imgcomp/gaming3.png",
-          description: "PC gaming untuk game AAA ultra, VR, streaming, dan editing profesional.",
-          specs: {
-            CPU: "AMD Ryzen 7 5800X",
-            GPU: "RTX 3070 8GB",
-            RAM: "32GB DDR4",
-            Storage: "SSD NVMe 1TB",
-            PSU: "750W 80+ Gold",
-            Casing: "Full ATX RGB"
-          }
-        },
-        {
-          id: 4,
-          name: "Paket Office Basic",
-          category: "Office",
-          price: 3500000,
-          image: "src/imgcomp/office1.png",
-          description: "PC untuk kebutuhan kantor, administrasi, browsing, dan meeting online.",
-          specs: {
-            CPU: "Intel Pentium G6400",
-            GPU: "Integrated Intel UHD",
-            RAM: "4GB DDR4",
-            Storage: "SSD 120GB",
-            PSU: "350W",
-            Casing: "Mini Tower"
-          }
-        },
-        {
-          id: 5,
-          name: "Paket Office Pro",
-          category: "Office",
-          price: 5500000,
-          image: "src/imgcomp/office2.png",
-          description: "PC office multitasking, cocok untuk desain ringan, Excel berat, dan meeting online.",
-          specs: {
-            CPU: "Intel Core i3 12100",
-            GPU: "Integrated Intel UHD",
-            RAM: "8GB DDR4",
-            Storage: "SSD 256GB",
-            PSU: "400W",
-            Casing: "Slim Tower"
-          }
-        },
-        {
-          id: 30,
-          name: "Paket Office Pro (Duplicate)", // Renamed for clarity
-          category: "Office",
-          price: 5500000,
-          image: "src/imgcomp/office2.png",
-          description: "PC office multitasking, cocok untuk desain ringan, Excel berat, dan meeting online.",
-          specs: {
-            CPU: "Intel Core i3 12100",
-            GPU: "Integrated Intel UHD",
-            RAM: "8GB DDR4",
-            Storage: "SSD 256GB",
-            PSU: "400W",
-            Casing: "Slim Tower"
-          }
-        },
-        {
-          id: 6,
-          name: "Paket Editing & Desain",
-          category: "Editing",
-          price: 12000000,
-          image: "src/imgcomp/edit1.png",
-          description: "PC untuk editing video, desain grafis, dan rendering 3D ringan.",
-          specs: {
-            CPU: "AMD Ryzen 5 5600G",
-            GPU: "GTX 1660 Super 6GB",
-            RAM: "16GB DDR4",
-            Storage: "SSD 512GB + HDD 1TB",
-            PSU: "550W",
-            Casing: "ATX"
-          }
-        },
-        {
-          id: 35,
-          name: "Paket Editing & Desain (Duplicate)", // Renamed
-          category: "Editing",
-          price: 12000000,
-          image: "src/imgcomp/edit1.png",
-          description: "PC untuk editing video, desain grafis, dan rendering 3D ringan.",
-          specs: {
-            CPU: "AMD Ryzen 5 5600G",
-            GPU: "GTX 1660 Super 6GB",
-            RAM: "16GB DDR4",
-            Storage: "SSD 512GB + HDD 1TB",
-            PSU: "550W",
-            Casing: "ATX"
-          }
-        },
-        {
-          id: 7,
-          name: "Paket Streaming & Content Creator",
-          category: "Streaming",
-          price: 15500000,
-          image: "src/imgcomp/streaming.png",
-          description: "PC untuk streaming, recording, dan editing konten YouTube/TikTok.",
-          specs: {
-            CPU: "Intel Core i7 12700F",
-            GPU: "RTX 3060 12GB",
-            RAM: "32GB DDR4",
-            Storage: "SSD NVMe 1TB",
-            PSU: "750W",
-            Casing: "Full ATX"
-          }
-        },
-        {
-          id: 31,
-          name: "Paket Streaming (Duplicate 1)", // Renamed
-          category: "Streaming",
-          price: 15500000,
-          image: "src/imgcomp/streaming.png",
-          description: "PC untuk streaming, recording, dan editing konten YouTube/TikTok.",
-          specs: {
-            CPU: "Intel Core i7 12700F",
-            GPU: "RTX 3060 12GB",
-            RAM: "32GB DDR4",
-            Storage: "SSD NVMe 1TB",
-            PSU: "750W",
-            Casing: "Full ATX"
-          }
-        },
-        {
-          id: 32,
-          name: "Paket Streaming (Duplicate 2)", // Renamed
-          category: "Streaming",
-          price: 15500000,
-          image: "src/imgcomp/streaming.png",
-          description: "PC untuk streaming, recording, dan editing konten YouTube/TikTok.",
-          specs: {
-            CPU: "Intel Core i7 12700F",
-            GPU: "RTX 3060 12GB",
-            RAM: "32GB DDR4",
-            Storage: "SSD NVMe 1TB",
-            PSU: "750W",
-            Casing: "Full ATX"
-          }
-        },
-        {
-          id: 8,
-          name: "Mining Rig 6 VGA",
-          category: "Mining",
-          price: 35000000,
-          image: "src/imgcomp/mining.png",
-          description: "Rig mining siap pakai, 6 slot VGA, cocok untuk ETH/altcoin mining.",
-          specs: {
-            CPU: "Intel Celeron G3930",
-            GPU: "6x RX 580 8GB",
-            RAM: "8GB DDR4",
-            Storage: "SSD 120GB",
-            PSU: "2x 1200W",
-            Casing: "Open Frame Mining"
-          }
-        },
-        {
-          id: 36,
-          name: "Mining Rig (Duplicate 1)", // Renamed
-          category: "Mining",
-          price: 35000000,
-          image: "src/imgcomp/mining.png",
-          description: "Rig mining siap pakai, 6 slot VGA, cocok untuk ETH/altcoin mining.",
-          specs: {
-            CPU: "Intel Celeron G3930",
-            GPU: "6x RX 580 8GB",
-            RAM: "8GB DDR4",
-            Storage: "SSD 120GB",
-            PSU: "2x 1200W",
-            Casing: "Open Frame Mining"
-          }
-        },
-        {
-          id: 37,
-          name: "Mining Rig (Duplicate 2)", // Renamed
-          category: "Mining",
-          price: 35000000,
-          image: "src/imgcomp/mining.png",
-          description: "Rig mining siap pakai, 6 slot VGA, cocok untuk ETH/altcoin mining.",
-          specs: {
-            CPU: "Intel Celeron G3930",
-            GPU: "6x RX 580 8GB",
-            RAM: "8GB DDR4",
-            Storage: "SSD 120GB",
-            PSU: "2x 1200W",
-            Casing: "Open Frame Mining"
-          }
-        },
-        {
-          id: 9,
-          name: "Paket Warnet eSports",
-          category: "Warnet",
-          price: 6500000,
-          image: "src/imgcomp/warnet.png",
-          description: "PC untuk usaha warnet, lancar main eSports dan browsing.",
-          specs: {
-            CPU: "Intel Core i3 10105F",
-            GPU: "GT 1030 2GB",
-            RAM: "8GB DDR4",
-            Storage: "SSD 240GB",
-            PSU: "400W",
-            Casing: "Mini ATX"
-          }
-        },
-        {
-          id: 33,
-          name: "Paket Warnet (Duplicate 1)", // Renamed
-          category: "Warnet",
-          price: 6500000,
-          image: "src/imgcomp/warnet.png",
-          description: "PC untuk usaha warnet, lancar main eSports dan browsing.",
-          specs: {
-            CPU: "Intel Core i3 10105F",
-            GPU: "GT 1030 2GB",
-            RAM: "8GB DDR4",
-            Storage: "SSD 240GB",
-            PSU: "400W",
-            Casing: "Mini ATX"
-          }
-        },
-        {
-          id: 34,
-          name: "Paket Warnet (Duplicate 2)", // Renamed
-          category: "Warnet",
-          price: 6500000,
-          image: "src/imgcomp/warnet.png",
-          description: "PC untuk usaha warnet, lancar main eSports dan browsing.",
-          specs: {
-            CPU: "Intel Core i3 10105F",
-            GPU: "GT 1030 2GB",
-            RAM: "8GB DDR4",
-            Storage: "SSD 240GB",
-            PSU: "400W",
-            Casing: "Mini ATX"
-          }
-        },
-        {
-          id: 10,
-          name: "Paket Rendering 3D Pro",
-          category: "Editing",
-          price: 25000000,
-          image: "src/imgcomp/edit2.png",
-          description: "PC untuk rendering 3D berat, animasi, dan arsitektur.",
-          specs: {
-            CPU: "AMD Ryzen 9 5900X",
-            GPU: "RTX 3080 10GB",
-            RAM: "64GB DDR4",
-            Storage: "SSD NVMe 2TB",
-            PSU: "850W 80+ Gold",
-            Casing: "Full ATX"
-          }
-        }
-      ],
+      pcs: [],
       searchQuery: "",
       selectedCategoryFilter: "",
       selectedPCForModal: null,
       bootstrapPCModal: null,
       showSimulasi: false,
-      showPreview: false, // Keep for simulation preview before adding to global cart
+      showPreview: false,
       partsData: {
         CPU: [ { id: 1, name: "Intel Core i3 10100F", price: 1200000 }, { id: 2, name: "Intel Core i5 12400F", price: 2200000 }, { id: 3, name: "AMD Ryzen 5 5600G", price: 2100000 }, ],
         GPU: [ { id: 1, name: "GTX 750 Ti 2GB", price: 900000 }, { id: 2, name: "GTX 1650 4GB", price: 1800000 }, { id: 3, name: "RTX 3060 12GB", price: 5500000 }, ],
@@ -318,11 +29,15 @@ export default {
       selectedParts: { CPU: null, GPU: null, RAM: null, Storage: null, PSU: null, Casing: null, },
       quantities: { CPU: 1, GPU: 1, RAM: 1, Storage: 1, PSU: 1, Casing: 1, },
       totalPrice: 0,
-      // cart: [], // REMOVED: Local cart is no longer used
-      // showCart: false, // REMOVED
     };
   },
-  mounted() {
+  async mounted() {
+    try {
+      const res = await fetch('/data/pc.json');
+      this.pcs = await res.json();
+    } catch {
+      this.pcs = [];
+    }
     const modalElement = this.$refs.pcDetailModalRef;
     if (modalElement) {
       this.bootstrapPCModal = new Modal(modalElement);
@@ -334,7 +49,7 @@ export default {
         document.body.style.overflow = 'hidden';
       });
     }
-    this.updateTotal(); // For simulation
+    this.updateTotal();
   },
   computed: {
     filteredPCs() {
@@ -379,7 +94,7 @@ export default {
     },
     selectPart(part, item) {
       this.selectedParts[part] = item;
-      this.quantities[part] = item ? 1 : 1; // Reset quantity if item selected, or keep 1 if deselected (though not used if null)
+      this.quantities[part] = item ? 1 : 1;
       this.updateTotal();
     },
     getSubtotal(part) {
@@ -404,7 +119,7 @@ export default {
       this.updateTotal();
       this.showPreview = false;
     },
-    saveSimulasi() { // This now just shows preview, actual saving to cart is addToCartSimulasi
+    saveSimulasi() {
       this.showPreview = true;
     },
     gantiKomponen(part) {
@@ -412,7 +127,7 @@ export default {
       this.quantities[part] = 1;
       this.updateTotal();
     },
-    addToCartSimulasi() { // Adds custom build to GLOBAL cartStore
+    addToCartSimulasi() {
       const selectedPartsForCart = {};
       let atLeastOnePartSelected = false;
       for (const partKey in this.selectedParts) {
@@ -420,8 +135,7 @@ export default {
           atLeastOnePartSelected = true;
           selectedPartsForCart[partKey] = {
             name: this.selectedParts[partKey].name,
-            price: this.selectedParts[partKey].price, // Include price for display if needed
-            // No need for quantity here as Checkout.vue displays one line per part type
+            price: this.selectedParts[partKey].price,
           };
         }
       }
@@ -432,25 +146,23 @@ export default {
       }
 
       const customBuildItem = {
-        id: `sim-${Date.now()}`, // Unique ID for this custom build
+        id: `sim-${Date.now()}`,
         source: 'rakitan_kustom',
         name: 'Simulasi Rakitan Kustom',
         price: this.totalPrice,
-        qty: 1, // A custom build is considered one item
+        qty: 1,
         category: 'Custom Rakitan',
         brand: 'JWR Custom',
-        image: 'src/imgcomp/custom_build_placeholder.png', // Path to a generic placeholder image
-                                                          // Ensure this image exists and is accessible
+        image: 'src/imgcomp/custom_build_placeholder.png',
         specification: {
-          parts: selectedPartsForCart, // Pass the structured parts
-          // quantities: { ...this.quantities } // Optionally pass quantities if needed by Checkout.vue in future
+          parts: selectedPartsForCart,
         }
       };
       cartStore.addItem(customBuildItem);
       alert('Simulasi rakitan berhasil ditambahkan ke keranjang!');
-      this.resetSimulasi(); // Reset simulation form
+      this.resetSimulasi();
     },
-    addPaketToCart(pc) { // Renamed from addToCart to be specific
+    addPaketToCart(pc) {
       const paketItem = {
         id: pc.id,
         source: 'paket_rakitan',
@@ -485,7 +197,7 @@ export default {
     <div class="container py-4 py-md-5">
       <h2 class="section-title-bs text-center">Paket Rakitan PC</h2>
 
-      <!-- Pembelian Produk (Simulasi) -->
+      
       <div class="text-center mb-4">
         <div class="pembelian-paket-highlight d-inline-block position-relative">
           <button
@@ -579,7 +291,7 @@ export default {
                   </button>
                 </div>
               </div>
-              <!-- Preview Section -->
+              
               <div v-if="showPreview" class="preview-simulasi-bs mt-4 p-3 rounded-3">
                 <h5 class="mb-3">Preview Rakitan Kustom</h5>
                 <ul class="list-group mb-2">
@@ -595,7 +307,7 @@ export default {
         </div>
       </transition>
 
-      <!-- Tombol Checkout Global -->
+      
       <div class="text-center my-4 py-3 border-top border-bottom border-secondary">
         <h4 class="mb-3">Keranjang Belanja Global</h4>
         <p v-if="cartStore.items.length > 0" class="mb-2">
@@ -608,7 +320,7 @@ export default {
       </div>
 
 
-      <!-- Filter Section -->
+      
       <div class="row justify-content-center mb-4">
         <div class="col-lg-10 col-xl-8">
           <div class="filters-bs p-3 rounded-3">
@@ -633,7 +345,7 @@ export default {
         </div>
       </div>
 
-      <!-- PC Categories and Cards -->
+      
       <div v-if="filteredPCs.length > 0">
         <div v-for="categoryData in categoriesWithPCs" :key="categoryData.name" class="category-section-bs mb-5">
           <div class="category-header-bs text-center" :style="categoryData.backgroundImage ? { '--bg-image': `url(${categoryData.backgroundImage})` } : {}">
@@ -710,7 +422,7 @@ export default {
         <p>Tidak ada rakitan PC yang cocok dengan kriteria pencarian Anda.</p>
       </div>
 
-      <!-- Modal Bootstrap -->
+      
       <div class="modal fade" id="pcDetailModalBs" tabindex="-1" aria-labelledby="pcDetailModalLabelBs" aria-hidden="true" ref="pcDetailModalRef">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
           <div class="modal-content modal-content-bs">
@@ -760,8 +472,6 @@ export default {
 </template>
 
 <style scoped>
-/* Styles from previous response, ensure they are complete */
-/* Variabel Warna Lokal */
 .pc-list-section-bs {
   --primary-color: #00d9ff;
   --secondary-color: #00c6ff;
@@ -769,8 +479,8 @@ export default {
   --background-section: #11192b;
   --background-card: #1a243a;
   --background-modal: #0f1626;
-  --text-light: #e8eff5; /* Warna teks lebih terang sedikit */
-  --text-muted-bs: #adb5bd; /* Warna muted Bootstrap */
+  --text-light: #e8eff5; 
+  --text-muted-bs: #adb5bd; 
   --text-title: #ffffff;
   --primary-color-rgb-val: 0, 217, 255;
   --border-color-soft: rgba(var(--primary-color-rgb-val), 0.2);
@@ -784,7 +494,6 @@ export default {
   overflow-x: hidden;
 }
 
-/* Container Styling */
 .container {
   width: 100%;
   max-width: 1100px;
@@ -809,10 +518,9 @@ export default {
   }
 }
 
-/* Judul Utama Section */
 .section-title-bs {
   font-family: 'Orbitron', sans-serif;
-  font-size: clamp(1.8rem, 4.5vw, 2.8rem); /* Disesuaikan */
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem); 
   font-weight: 700;
   color: var(--text-title);
   text-shadow: 0 0 6px var(--text-title), 0 0 11px var(--primary-color), 0 0 16px var(--primary-color);
@@ -827,14 +535,13 @@ export default {
   bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 50px; /* Lebih pendek */
-  height: 2.5px; /* Lebih tipis */
+  width: 50px; 
+  height: 2.5px; 
   background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
   border-radius: 1.5px;
   box-shadow: 0 0 8px var(--primary-color), 0 0 5px var(--secondary-color);
 }
 
-/* Filter Section */
 .filters-bs {
   background-color: var(--background-section);
   border: 1px solid var(--border-color-soft);
@@ -842,17 +549,17 @@ export default {
   margin-bottom: 2.5rem !important;
 }
 .search-box-bs, .filter-select-bs {
-  padding: 0.75rem 1.1rem; /* Padding lebih nyaman */
+  padding: 0.75rem 1.1rem; 
   border: 1px solid var(--border-color-medium);
-  border-radius: 8px; /* Radius lebih besar */
+  border-radius: 8px; 
   background-color: var(--background-card);
   color: var(--text-light);
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  height: auto; /* Biarkan tinggi otomatis berdasarkan padding */
+  height: auto; 
 }
 .search-box-bs::placeholder {
-  color: rgba(224, 224, 224, 0.5); /* Placeholder lebih soft */
+  color: rgba(224, 224, 224, 0.5); 
 }
 .search-box-bs:focus, .filter-select-bs:focus {
   background-color: var(--background-section);
@@ -865,7 +572,6 @@ export default {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300d9ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
-/* Tombol Pembelian Paket Transparan Keren */
 .btn-pembelian-paket-bs {
   background: rgba(0,0,0,0.15);
   color: #00d9ff;
@@ -895,14 +601,13 @@ export default {
   text-shadow: 0 0 8px #00ffe7, 0 0 2px #fff;
 }
 
-/* Category Section Styling */
 .category-section-bs {
   margin-bottom: 2.2rem !important;
 }
 .category-header-bs {
   position: relative;
   margin-bottom: 2rem;
-  border-radius: 10px; /* Radius lebih besar */
+  border-radius: 10px; 
   background-color: var(--background-section);
   border: 1px solid var(--border-color-medium);
   box-shadow: 0 5px 18px rgba(0,0,0,0.25);
@@ -915,7 +620,7 @@ export default {
 }
 .category-title-bs {
   font-family: 'Orbitron', sans-serif;
-  font-size: clamp(1.3rem, 2.8vw, 1.8rem); /* Disesuaikan */
+  font-size: clamp(1.3rem, 2.8vw, 1.8rem); 
   font-weight: 600;
   color: var(--primary-color);
   text-shadow: 0 0 3px rgba(0,0,0,0.5), 0 0 7px var(--primary-color);
@@ -924,7 +629,7 @@ export default {
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(var(--primary-color-rgb-val), 0.15);
   border: 1px solid var(--border-color-soft);
-  z-index: 2; /* Agar di atas overlay jika ada */
+  z-index: 2; 
   padding: 0.5rem 2.5rem;
   margin: 0 auto;
   display: inline-block;
@@ -932,7 +637,6 @@ export default {
   text-align: center;
 }
 
-/* Card Styling */
 .row.row-cols-1.row-cols-sm-2.row-cols-lg-3.row-cols-xl-4.g-3.g-lg-4.justify-content-center {
   --bs-gutter-x: 1.2rem;
   --bs-gutter-y: 1.2rem;
@@ -955,7 +659,6 @@ export default {
     box-shadow 0.25s, 
     border-color 0.25s,
     filter 0.25s;
-  /* cursor: pointer; REMOVED - click targets are more specific now */
   color: var(--text-light);
   overflow: hidden;
   display: flex;
@@ -964,7 +667,7 @@ export default {
   backdrop-filter: blur(2.5px) saturate(1.2);
   background-clip: padding-box;
 }
-.card-bs:hover, .card-bs:focus-within { /* focus-within for keyboard nav */
+.card-bs:hover, .card-bs:focus-within { 
   transform: translateY(-8px) scale(1.025) rotate(-0.5deg);
   box-shadow: 0 12px 38px 0 rgba(0,217,255,0.22), 0 2px 12px 0 rgba(143,92,255,0.18), 0 0 0 4px #00d9ff33;
   border-color: #00d9ff;
@@ -1021,7 +724,7 @@ export default {
 .col.d-flex.align-items-stretch:nth-child(6) .card-bs { animation-delay: 0.39s; }
 
 .card-img-wrapper-bs, .card-title-bs, .card-text-desc-bs, .card-text-price-bs {
-    cursor: pointer; /* Apply pointer to elements that open modal */
+    cursor: pointer; 
 }
 
 
@@ -1159,12 +862,11 @@ export default {
 
 .no-results-bs {
   margin-top: 30px;
-  font-size: 1.1rem; /* Disesuaikan */
+  font-size: 1.1rem; 
   color: var(--primary-color);
   font-family: 'Orbitron', sans-serif;
 }
 
-/* Modal Styling */
 .modal-content-bs {
   background: var(--background-modal);
   border-radius: 10px;
@@ -1303,7 +1005,7 @@ export default {
     text-align: center !important;
   }
 }
-@media (max-width: 575.98px) { /* sm breakpoint */
+@media (max-width: 575.98px) { 
   .pc-list-section-bs .container {
     padding-left: 10px;
     padding-right: 10px;
