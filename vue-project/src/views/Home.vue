@@ -106,27 +106,27 @@ const onSlideChange = (data) => {
 const techNews = ref([
   {
     id: 1,
-    title: "CPU Prices Experiencing Upward Trend",
-    excerpt: "Analysts report a noticeable increase in CPU prices across various manufacturers, citing supply chain issues and heightened demand. Gamers and PC builders should anticipate these changes when planning their next upgrades.",
-    date: "October 26, 2023",
+    title: "Harga CPU Mengalami Kenaikan?",
+    excerpt: "Para analis melaporkan lonjakan harga CPU yang signifikan dari berbagai produsen, disebabkan oleh masalah rantai pasokan dan meningkatnya permintaan. Gamer dan perakit PC disarankan untuk mempertimbangkan perubahan ini saat merencanakan peningkatan sistem mereka berikutnya.",
+    date: "26 Oktober 2023",
     source: "TechWire Daily",
     imageUrl: "https://placehold.co/600x350/1F2937/9CA3AF/png?text=CPU+Market+Update",
     readMoreUrl: "#"
   },
   {
     id: 2,
-    title: "Next-Gen Graphics Cards: What to Expect",
-    excerpt: "Rumors and official teasers point towards a significant leap in performance for the upcoming generation of GPUs. Expect advancements in ray tracing, AI-powered features, and higher VRAM capacities.",
-    date: "October 24, 2023",
+    title: "Kartu Grafis Next-gen: Apa yang Diharapkan",
+    excerpt: "Rumor dan teaser resmi menunjukkan lonjakan performa yang signifikan untuk generasi GPU mendatang. Antisipasi peningkatan dalam ray tracing, fitur berbasis AI, dan kapasitas VRAM yang lebih tinggi.",
+    date: "24 Oktober 2023",
     source: "PixelPushers News",
     imageUrl: "https://placehold.co/600x350/1F2937/9CA3AF/png?text=GPU+Advancements",
     readMoreUrl: "#"
   },
   {
     id: 3,
-    title: "The Future of RAM: DDR6 on the Horizon",
-    excerpt: "Industry insiders suggest that the DDR6 memory standard is nearing finalization, promising substantial bandwidth improvements over current DDR5 technology. Early adoption is expected in high-end systems.",
-    date: "October 22, 2023",
+    title: "Masa Depan RAM: DDR6 di Cakrawala",
+    excerpt: "Insider industri menyarankan bahwa standar memori DDR6 mendekati finalisasi, menjanjikan peningkatan bandwidth yang substansial dibandingkan teknologi DDR5 saat ini. Adopsi awal diharapkan pada sistem kelas atas.",
+    date: "22 Oktober 2023",
     source: "ComponentChronicle",
     imageUrl: "https://placehold.co/600x350/1F2937/9CA3AF/png?text=RAM+Evolution",
     readMoreUrl: "#"
@@ -230,7 +230,7 @@ onMounted(() => {
       <div class="tech-news-container">
         <h2 class="section-title tech-news-title">Tech Bytes & Insights</h2>
         <p class="section-subtitle tech-news-subtitle">
-          Catch up on the latest trends, announcements, and shifts in the world of computer hardware.
+          Ikuti Perkembangan Terkini di Dunia Komputer.
         </p>
         <div class="news-grid">
           <article v-for="news in techNews" :key="news.id" class="news-item">
@@ -256,33 +256,33 @@ onMounted(() => {
 
     <section class="store-info-section">
       <div class="store-info-container">
-        <h2 class="section-title store-section-title">Welcome to YourTech Haven</h2>
+        <h2 class="section-title store-section-title">Welcome to JWR Comp</h2>
         <p class="section-subtitle store-section-subtitle">
-          Your premier destination for cutting-edge hardware, expert advice, and unparalleled gaming experiences.
+          Destinasi Utama untuk Perangkat Gaming Terkini, Konsultasi Ahli, dan Pengalaman Bermain Tanpa Tanding.
         </p>
 
         <div class="info-grid">
           <div class="info-block">
-            <h3><i class="icon-store" role="img" aria-label="Store icon"></i>About Us</h3>
-            <p>We are a team of passionate tech enthusiasts and gamers dedicated to bringing you the best components, peripherals, and custom-built systems. Our mission is to empower your digital life, whether for gaming, creation, or professional work.</p>
+            <h3><i class="icon-store" role="img" aria-label="Store icon"></i>Tentang Kami</h3>
+            <p>Kami adalah sekelompok penggila teknologi dan gamer yang berdedikasi untuk menghadirkan komponen terbaik, periferal canggih, dan sistem rakitan kustom berkualitas tinggi. Misi kami adalah memberdayakan kehidupan digital Anda—baik untuk gaming, kreasi konten, maupun pekerjaan profesional.</p>
           </div>
 
           <div class="info-block">
-            <h3><i class="icon-pin" role="img" aria-label="Location pin icon"></i>Visit Our Store</h3>
-            <p><strong>Address:</strong> 123 Tech Nebula Drive, Silicon City, TX 75001</p>
-            <p><strong>Phone:</strong> <a href="tel:+1555TECHNOW">(555) 832-4669</a></p>
-            <p><strong>Email:</strong> <a href="mailto:support@yourtechhaven.com">support@yourtechhaven.com</a></p>
+            <h3><i class="icon-pin" role="img" aria-label="Location pin icon"></i>Kunjungi toko kami</h3>
+            <p><strong>Alamat:</strong> Jl. Ring Road Utara, Ngringin, Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55281</p>
+            <p><strong>Nomor WA:</strong> <a href="tel:+1555TECHNOW">(555) 832-4669</a></p>
+            <p><strong>Email:</strong> <a href="mailto:jwrcomp@gmail.com">jwrcomp@gmail.com</a></p>
           </div>
 
           <div class="info-block">
-            <h3><i class="icon-clock" role="img" aria-label="Clock icon"></i>Opening Hours</h3>
-            <p><strong>Monday - Friday:</strong> 9:00 AM - 8:00 PM</p>
-            <p><strong>Saturday:</strong> 10:00 AM - 7:00 PM</p>
-            <p><strong>Sunday:</strong> 12:00 PM - 5:00 PM</p>
+            <h3><i class="icon-clock" role="img" aria-label="Clock icon"></i>Jam Operasional</h3>
+            <p><strong>Senin - Jum'at:</strong> 9:00 AM - 8:00 PM</p>
+            <p><strong>Sabtu:</strong> 9:00 AM - 7:00 PM</p>
+            <p><strong>Minggu:</strong> 9:00 AM - 5:00 PM</p>
           </div>
 
           <div class="info-block">
-            <h3><i class="icon-services" role="img" aria-label="Tools icon for services"></i>Our Services</h3>
+            <h3><i class="icon-services" role="img" aria-label="Tools icon for services"></i>Melayani</h3>
             <ul>
               <li>Custom PC Building</li>
               <li>Hardware Upgrades & Installation</li>
@@ -295,14 +295,14 @@ onMounted(() => {
 
         <div class="map-social-container">
           <div class="map-placeholder">
-            <h4><i class="icon-map" role="img" aria-label="Map icon"></i>Our Location</h4>
+            <h4><i class="icon-map" role="img" aria-label="Map icon"></i>Lokasi Kami</h4>
             <div class="map-embed-placeholder">
-              <span>Interactive Map (Placeholder)</span>
-              <p>Find us easily in the heart of Silicon City!</p>
+              <span>Map Interaktif (Placeholder)</span>
+              <p>Temukan kami di Yogyakarta!</p>
             </div>
           </div>
           <div class="social-links">
-              <h4><i class="icon-connect" role="img" aria-label="Connect icon"></i>Connect With Us</h4>
+              <h4><i class="icon-connect" role="img" aria-label="Connect icon"></i>Follow Kami di</h4>
               <a href="#" aria-label="Facebook"><i class="icon-facebook" role="img" aria-hidden="true"></i><span class="visually-hidden">Facebook</span></a>
               <a href="#" aria-label="Twitter"><i class="icon-twitter" role="img" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
               <a href="#" aria-label="Instagram"><i class="icon-instagram" role="img" aria-hidden="true"></i><span class="visually-hidden">Instagram</span></a>
