@@ -234,7 +234,7 @@
 <script>
 import axios from 'axios';
 import { Modal } from 'bootstrap';
-import { cartStore } from '@/store/cartStore';
+import { cartStore } from '@/store/cartStore'; // Pastikan path ini benar
 import { useRouter } from 'vue-router';
 
 export default {
@@ -245,6 +245,7 @@ export default {
   },
   data() {
     return {
+      // Data lainnya biarkan sama
       cards: [
         { title: "PROCESSOR INTEL" }, { title: "PROCESSOR AMD" }, { title: "MAINBOARD" },
         { title: "MEMORY" }, { title: "VGA" }, { title: "HDD" }, { title: "SSD" },
@@ -270,6 +271,7 @@ export default {
     };
   },
   computed: {
+    // Bagian computed biarkan sama persis
     priceStep() {
       const range = this.maxPriceInCategory - this.minPriceInCategory;
       if (range <= 0) return 50000;
@@ -321,29 +323,37 @@ export default {
     },
   },
   methods: {
+    // ==========================================================
+    // INI BAGIAN UTAMA YANG DIUBAH
+    // ==========================================================
     async fetchHardwareData() {
-        this.loading = true;
-        try {
-            // Menggunakan axios sesuai permintaan
-            const res = await axios.get('http://localhost/WebBackend/api/getHardware.php');
-            this.allHardware = res.data.map(item => ({
-                ...item, // Menyalin semua properti asli dari API (termasuk specs jika ada)
-                id: String(item.id || `hw-${Math.random().toString(36).substr(2, 9)}`),
-                name: item.name || 'Unknown Name',
-                price: Number(item.price) || 0, 
-                // Logika baru untuk menangani berbagai format stok dari API
-                stock: item.stock === "Ready" ? 'Ready' : (item.stock === "Kosong" ? 0 : (Number(item.stock) || 0)),
-                brand: item.brand || 'Unknown Brand',
-                category: item.category || 'Unknown Category',
-                image: item.image || '/img/placeholder.webp' 
-            }));
-        } catch (error) {
-            console.error("Failed to load hardware data:", error);
-            this.allHardware = [];
-        } finally {
-            this.loading = false;
+      this.loading = true;
+      try {
+        // Ganti URL ke endpoint API Laravel Anda
+        const res = await axios.get('http://127.0.0.1:8000/api/hardware');
+        
+        // Sesuaikan pemetaan data jika perlu. Model Laravel kita sudah
+        // menangani konversi tipe data, jadi kodenya lebih sederhana.
+        this.allHardware = res.data.map(item => ({
+          ...item, // Salin semua properti dari API (id, name, price, brand, dll)
+          // Laravel sudah memastikan 'specs' adalah array, jadi tidak perlu parsing rumit
+          // Cukup pastikan saja tipe datanya benar
+          price: Number(item.price) || 0,
+          stock: Number(item.stock) || 0, // Laravel sudah memberikan angka, ini hanya untuk keamanan
+        }));
+      } catch (error) {
+        console.error("Gagal memuat data dari API Laravel:", error);
+        // Tampilkan pesan error yang lebih jelas jika gagal konek
+        if (error.code === "ERR_NETWORK") {
+            alert("Tidak dapat terhubung ke server backend. Pastikan server Laravel Anda (php artisan serve) sedang berjalan.");
         }
+        this.allHardware = [];
+      } finally {
+        this.loading = false;
+      }
     },
+
+    // Metode lain biarkan sama persis
     selectCategory(category) {
       this.selectedCategory = category;
       this.searchQuery = "";
@@ -382,18 +392,15 @@ export default {
             alert("Item atau kuantitas tidak valid.");
             return;
         }
-
-        const isStockAvailable = item.stock === 'Ready' || (typeof item.stock === 'number' && item.stock > 0);
+        const isStockAvailable = typeof item.stock === 'number' && item.stock > 0;
         if (!isStockAvailable) {
             alert(`Item ini sedang habis.`);
             return;
         }
-
-        if (typeof item.stock === 'number' && quantity > item.stock) {
+        if (quantity > item.stock) {
              alert(`Kuantitas (x${quantity}) melebihi stok yang tersedia (${item.stock}).`);
             return;
         }
-
         const itemToAdd = {
             id: String(item.id),
             source: 'hardware', 
@@ -444,13 +451,10 @@ export default {
         this.modalQuantity = 1;
       });
     }
-    // Pilih kategori pertama secara default setelah data dimuat
     if (this.cards && this.cards.length > 0 && !this.selectedCategory) {
       this.selectCategory(this.cards[0]); 
     }
   },
-   watch: {
-  }
 };
 </script>
 
