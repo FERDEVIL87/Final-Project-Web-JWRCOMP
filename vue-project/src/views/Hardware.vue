@@ -204,7 +204,7 @@
                         id="modalQtyHardware" 
                         v-model.number="modalQuantity" 
                         min="1" 
-                        :max="selectedProduct.stock === 'Ready' ? 99 : selectedProduct.stock"
+                        :max="selectedProduct.stock === 'Ready' ? 99 : (typeof selectedProduct.stock === 'number' ? selectedProduct.stock : 99)"
                         class="form-control form-control-sm bg-secondary bg-opacity-25 text-light border-info" 
                         style="width: 70px;"
                     >
@@ -232,6 +232,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { Modal } from 'bootstrap';
 import { cartStore } from '@/store/cartStore';
 import { useRouter } from 'vue-router';
@@ -295,7 +296,7 @@ export default {
     filteredHardware() {
       if (!this.selectedCategory || !this.allHardware.length) return [];
       let filtered = this.allHardware.filter(
-        item => item.category === this.selectedCategory.title
+        item => item.category.toUpperCase() === this.selectedCategory.title.toUpperCase()
       );
       if (this.searchQuery) {
         filtered = filtered.filter(item =>
@@ -323,15 +324,17 @@ export default {
     async fetchHardwareData() {
         this.loading = true;
         try {
-            const res = await fetch('/data/hardware.json'); 
-            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-            const jsonData = await res.json();
-            this.allHardware = jsonData.map(item => ({
-                ...item,
+            // Menggunakan axios sesuai permintaan
+            const res = await axios.get('http://localhost/WebBackend/api/getHardware.php');
+            this.allHardware = res.data.map(item => ({
+                ...item, // Menyalin semua properti asli dari API (termasuk specs jika ada)
                 id: String(item.id || `hw-${Math.random().toString(36).substr(2, 9)}`),
+                name: item.name || 'Unknown Name',
                 price: Number(item.price) || 0, 
-                stock: item.stock === "Ready" ? 100 : (item.stock === "Kosong" ? 0 : (Number(item.stock) || 0)),
+                // Logika baru untuk menangani berbagai format stok dari API
+                stock: item.stock === "Ready" ? 'Ready' : (item.stock === "Kosong" ? 0 : (Number(item.stock) || 0)),
                 brand: item.brand || 'Unknown Brand',
+                category: item.category || 'Unknown Category',
                 image: item.image || '/img/placeholder.webp' 
             }));
         } catch (error) {
@@ -376,12 +379,18 @@ export default {
     },
     addItemToCart(item, quantity) {
         if (!item || quantity < 1) {
-            alert("Invalid item or quantity.");
+            alert("Item atau kuantitas tidak valid.");
             return;
         }
-        const stockNumber = Number(item.stock); 
-        if (isNaN(stockNumber) || stockNumber <= 0 || quantity > stockNumber) {
-             alert(`Quantity (x${quantity}) exceeds available stock (${stockNumber > 0 ? stockNumber : 'Kosong'}) or item is out of stock.`);
+
+        const isStockAvailable = item.stock === 'Ready' || (typeof item.stock === 'number' && item.stock > 0);
+        if (!isStockAvailable) {
+            alert(`Item ini sedang habis.`);
+            return;
+        }
+
+        if (typeof item.stock === 'number' && quantity > item.stock) {
+             alert(`Kuantitas (x${quantity}) melebihi stok yang tersedia (${item.stock}).`);
             return;
         }
 
@@ -394,10 +403,10 @@ export default {
             category: item.category, 
             brand: item.brand,
             image: item.image,
-            specification: item.specs ? item.specs.join(', ') : 'N/A'
+            specification: item.specs && Array.isArray(item.specs) ? item.specs.join(', ') : 'N/A'
         };
         cartStore.addItem(itemToAdd);
-        alert(`${item.name} (x${quantity}) added to cart!`);
+        alert(`${item.name} (x${quantity}) telah ditambahkan ke keranjang!`);
     },
     addItemToCartFromCard(item) {
         this.addItemToCart(item, 1);
@@ -435,6 +444,7 @@ export default {
         this.modalQuantity = 1;
       });
     }
+    // Pilih kategori pertama secara default setelah data dimuat
     if (this.cards && this.cards.length > 0 && !this.selectedCategory) {
       this.selectCategory(this.cards[0]); 
     }
