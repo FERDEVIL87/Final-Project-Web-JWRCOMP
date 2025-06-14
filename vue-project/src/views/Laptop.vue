@@ -118,13 +118,18 @@ export default {
       if (laptop && this.checkoutQty > 0 && this.checkoutQty <= laptop.stock) {
         cartStore.addItem({
           id: laptop.id,
+          source: 'laptop',
           name: laptop.name,
           price: laptop.price,
           qty: this.checkoutQty,
+          category: laptop.category,
+          brand: laptop.brand,
           image: laptop.image,
+          specification: laptop.description
         });
         laptop.stock -= this.checkoutQty;
         this.closeModal();
+        document.body.style.overflow = '';
       } else {
         alert("Jumlah yang Anda masukkan tidak valid atau stok tidak mencukupi.");
       }
