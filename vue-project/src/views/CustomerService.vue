@@ -1,33 +1,38 @@
 <template>
   <section class="py-5 bg-black min-vh-100 d-flex align-items-center justify-content-center">
-    <div class="container text-white text-center" style="max-width: 500px;">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+      <div class="card shadow-lg custom-card">
+        <div class="card-body px-4 py-4">
+          <div class="mb-4 pb-2 border-bottom border-info">
+            <h2 class="mb-1 fw-bold text-info" style="font-size: 1.7rem;">Hubungi Kami</h2>
+            <p class="desc-info mb-0">Kirim pertanyaan atau pesan lewat formulir ini.</p>
+          </div>
 
-      <h1 style="font-size: 2rem; font-weight: 600;">Hubungi Kami</h1>
+          <!-- Tampilkan pesan sukses/error -->
+          <div v-if="statusMessage" :class="['alert', isSuccess ? 'alert-success' : 'alert-danger']">
+            {{ statusMessage }}
+          </div>
 
-      <p class="mb-3" style="font-size: 0.95rem; font-weight: 300;">
-        Kirim pertanyaan atau pesan lewat formulir ini.
-      </p>
-
-      <!-- Tampilkan pesan sukses/error -->
-      <div v-if="statusMessage" :class="['alert', isSuccess ? 'alert-success' : 'alert-danger']">
-        {{ statusMessage }}
+          <!-- Gunakan v-if untuk menyembunyikan form setelah sukses -->
+          <form @submit.prevent="submitForm" v-if="!isSuccess">
+            <div class="mb-3 text-start">
+              <label class="form-label text-info fw-semibold" for="name">Nama</label>
+              <input v-model="form.name" id="name" type="text" class="form-control" placeholder="Nama Anda" required autocomplete="name">
+            </div>
+            <div class="mb-3 text-start">
+              <label class="form-label text-info fw-semibold" for="email">Email</label>
+              <input v-model="form.email" id="email" type="email" class="form-control" placeholder="Email Anda" required autocomplete="email">
+            </div>
+            <div class="mb-4 text-start">
+              <label class="form-label text-info fw-semibold" for="message">Pesan</label>
+              <textarea v-model="form.message" id="message" class="form-control" placeholder="Pesan Anda" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-info w-100 fw-bold" :disabled="isLoading">
+              {{ isLoading ? 'Mengirim...' : 'Kirim' }}
+            </button>
+          </form>
+        </div>
       </div>
-
-      <!-- Gunakan v-if untuk menyembunyikan form setelah sukses -->
-      <form @submit.prevent="submitForm" v-if="!isSuccess">
-        <div class="mb-2">
-          <input v-model="form.name" type="text" class="form-control" placeholder="Nama Anda" required autocomplete="name">
-        </div>
-        <div class="mb-2">
-          <input v-model="form.email" type="email" class="form-control" placeholder="Email Anda" required autocomplete="email">
-        </div>
-        <div class="mb-3">
-          <textarea v-model="form.message" class="form-control" placeholder="Pesan Anda" rows="4" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary w-100" :disabled="isLoading">
-          {{ isLoading ? 'Mengirim...' : 'Kirim' }}
-        </button>
-      </form>
     </div>
   </section>
 </template>
@@ -93,27 +98,59 @@ export default {
 </script>
 
 <style scoped>
-/* Styling untuk form-control bisa ditambahkan jika belum ada secara global */
+.custom-card {
+  max-width: 430px;
+  width: 100%;
+  border-radius: 1.2rem;
+  background: #181c22;
+  border: 1.5px solid #00d9ff33;
+}
+
+.card-body {
+  /* padding sudah diatur inline */
+}
+
 .form-control {
-    background-color: #2a3038 !important; 
+    background-color: #23272f !important; 
     color: #e8eff5 !important; 
     border-color: #00d9ff55 !important;
     padding: 0.75rem 1rem;
+    border-radius: 0.7rem;
 }
 .form-control::placeholder {
     color: #adb5bdAA !important; 
 }
 .form-control:focus {
     border-color: #00d9ff !important;
-    box-shadow: 0 0 0 0.2rem rgba(0, 217, 255, 0.25) !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 217, 255, 0.18) !important;
 }
-.btn-primary {
+.btn-info {
     background-color: #00d9ff;
     border-color: #00d9ff;
     color: #181c22;
     font-weight: bold;
+    border-radius: 0.7rem;
+    transition: background 0.2s;
+}
+.btn-info:active, .btn-info:focus, .btn-info:hover {
+    background-color: #00b6d6;
+    border-color: #00b6d6;
+    color: #fff;
 }
 .alert {
   margin-bottom: 1rem;
+  border-radius: 0.7rem;
+  font-size: 0.98rem;
+}
+.text-info {
+  color: #00d9ff !important;
+}
+.border-info {
+  border-color: #00d9ff !important;
+}
+.desc-info {
+  color: #e8eff5;
+  font-size: 1rem;
+  opacity: 0.92;
 }
 </style>
