@@ -1,141 +1,92 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import 'vue3-carousel/dist/carousel.css';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
+import apiClient from '@/services/api.js';
 
-import slcImage from "/src/img home/slc.webp";
-import tufImage from "/src/img home/tuf.webp";
-import k70Image from "/src/img home/k70avif.avif";
-import doomVideoPoster from "/src/img home/video/doom.mp4";
+import doomVideoPoster from "/public/videos/doom.mp4";
 
-const products = ref([
-  {
-    id: 1,
-    brand: "ROG RYUO IV",
-    name: "SLC 360 ARGB",
-    slogan: "A NEW VISION OF COOLING",
-    imageSrc: slcImage,
-    imageWidth: 600,
-    imageHeight: 450,
-    features: [
-      "High-Performance Pump",
-      "Extraordinary Visuals",
-      "Attention to Detail",
-    ],
-    badges: [
-      { text: "6", subtext: "YEAR WARRANTY" },
-      { text: "Intel", subtext: "LGA 1851", detail: "Compatible" },
-      { text: "AMD", subtext: "AM5", detail: "Compatible" },
-      { text: "Curve", subtext: "6.5\"", detail: "" },
-      { text: "AMOLED", subtext: "2K 60HZ", detail: "" },
-      { text: "Daisy Chainable Fan", subtext: "", icon: 'fan' },
-    ],
-    backgroundColor: "linear-gradient(135deg, #18181b 0%, #27272a 50%, #3f3f46 100%)",
-    accentColor: "#a3a3a3",
-  },
-  {
-    id: 2,
-    brand: "ASUS TUF Gaming",
-    name: "TUF Gaming A15 (2024)",
-    slogan: "GEARED FOR SERIOUS GAMING AND REAL-WORLD DURABILITY",
-    imageSrc: tufImage,
-    imageWidth: 700,
-    imageHeight: 500,
-    features: [
-      "Latest AMD Ryzen CPU & NVIDIA GPU",
-      "Blazing-Fast NVMe SSD",
-      "Customizable RGB Keyboard",
-      "Self-Cleaning Cooling 2.0",
-      "MIL-STD-810H Durability"
-    ],
-    badges: [
-      { text: "2", subtext: "YEAR WARRANTY" },
-      { text: "NVIDIA", subtext: "RTX 4060" },
-      { text: "AMD", subtext: "Ryzen 7 8000 Series" },
-      { text: "16GB", subtext: "DDR5 RAM" },
-      { text: "1TB", subtext: "NVMe SSD" },
-      { text: "15.6\"", subtext: "FHD 144Hz" }
-    ],
-    backgroundColor: "linear-gradient(135deg, #1f2937 0%, #374151 50%, #4b5563 100%)",
-    accentColor: "#9ca3af"
-  },
-  {
-    id: 3,
-    brand: "Corsair",
-    name: "K70 RGB MK.2",
-    slogan: "BUILT TO LAST. PERFORM LIKE A LEGEND.",
-    imageSrc: k70Image,
-    imageWidth: 650,
-    imageHeight: 380,
-    features: [
-      "Genuine Cherry MX Switches",
-      "Dynamic Per-Key RGB Backlighting",
-      "Aircraft-Grade Aluminum Frame",
-      "8MB Profile Storage",
-      "Dedicated Multimedia Controls"
-    ],
-    badges: [
-      { text: "2", subtext: "YEAR WARRANTY" },
-      { text: "Cherry MX", subtext: "Red Switches" },
-      { text: "iCUE", subtext: "Software Control" },
-      { text: "100%", subtext: "Anti-Ghosting" },
-      { text: "USB", subtext: "Passthrough Port" }
-    ],
-    backgroundColor: "linear-gradient(135deg, #000000 0%, #1c1c1c 50%, #2d2d2d 100%)",
-    accentColor: "#d1d5db"
+// --- LOGIKA UNTUK BANNER (DINAMIS) ---
+const banners = ref([]);
+const isLoadingBanners = ref(true);
+const bannerError = ref(null);
+
+const fetchBanners = async () => {
+  isLoadingBanners.value = true;
+  bannerError.value = null;
+  try {
+    const response = await apiClient.get('/banners');
+    banners.value = response.data.map(banner => ({
+      ...banner, // Ambil semua data dari API
+      imageWidth: 650,
+      imageHeight: 400,
+      badges: [],
+      backgroundColor: "linear-gradient(135deg, #18181b 0%, #27272a 50%, #3f3f46 100%)",
+      accentColor: "#a3a3a3",
+    }));
+    if (banners.value.length > 0) {
+      currentSlideAccentColor.value = banners.value[0].accentColor;
+    }
+  } catch (error) {
+    console.error("Gagal memuat banner:", error);
+    bannerError.value = "Gagal memuat promosi.";
+  } finally {
+    isLoadingBanners.value = false;
   }
-]);
-
-const carouselSettings = {
-  itemsToShow: 1,
-  snapAlign: 'center',
-  transition: 500,
-};
-const carouselBreakpoints = {
-  700: { itemsToShow: 1, snapAlign: 'center' },
-  1024: { itemsToShow: 1, snapAlign: 'start' },
 };
 
-const currentSlideAccentColor = ref(products.value[0].accentColor);
+// Pengaturan Carousel
+const carouselSettings = { itemsToShow: 1, snapAlign: 'center', transition: 500 };
+const carouselBreakpoints = { 700: { itemsToShow: 1, snapAlign: 'center' }, 1024: { itemsToShow: 1, snapAlign: 'start' } };
+const currentSlideAccentColor = ref('#a3a3a3');
+
 const onSlideChange = (data) => {
-  if (products.value[data.currentSlideIndex]) {
-    currentSlideAccentColor.value = products.value[data.currentSlideIndex].accentColor;
+  if (banners.value[data.currentSlideIndex]) {
+    currentSlideAccentColor.value = banners.value[data.currentSlideIndex].accentColor;
   }
 };
 
-const techNews = ref([
-  {
-    id: 1,
-    title: "Harga CPU Mengalami Kenaikan?",
-    excerpt: "Para analis melaporkan lonjakan harga CPU yang signifikan dari berbagai produsen, disebabkan oleh masalah rantai pasokan dan meningkatnya permintaan. Gamer dan perakit PC disarankan untuk mempertimbangkan perubahan ini saat merencanakan peningkatan sistem mereka berikutnya.",
-    date: "26 Oktober 2023",
-    source: "TechWire Daily",
-    imageUrl: "https://placehold.co/600x350/1F2937/9CA3AF/png?text=CPU+Market+Update",
-    readMoreUrl: "#"
-  },
-  {
-    id: 2,
-    title: "Kartu Grafis Next-gen: Apa yang Diharapkan",
-    excerpt: "Rumor dan teaser resmi menunjukkan lonjakan performa yang signifikan untuk generasi GPU mendatang. Antisipasi peningkatan dalam ray tracing, fitur berbasis AI, dan kapasitas VRAM yang lebih tinggi.",
-    date: "24 Oktober 2023",
-    source: "PixelPushers News",
-    imageUrl: "https://placehold.co/600x350/1F2937/9CA3AF/png?text=GPU+Advancements",
-    readMoreUrl: "#"
-  },
-  {
-    id: 3,
-    title: "Masa Depan RAM: DDR6 di Cakrawala",
-    excerpt: "Insider industri menyarankan bahwa standar memori DDR6 mendekati finalisasi, menjanjikan peningkatan bandwidth yang substansial dibandingkan teknologi DDR5 saat ini. Adopsi awal diharapkan pada sistem kelas atas.",
-    date: "22 Oktober 2023",
-    source: "ComponentChronicle",
-    imageUrl: "https://placehold.co/600x350/1F2937/9CA3AF/png?text=RAM+Evolution",
-    readMoreUrl: "#"
+// --- LOGIKA UNTUK TECH NEWS (DINAMIS) ---
+const techNews = ref([]);
+const isLoadingNews = ref(true);
+const newsError = ref(null);
+
+const fetchTechNews = async () => {
+  isLoadingNews.value = true;
+  newsError.value = null;
+  try {
+    const response = await apiClient.get('/tech-news');
+    techNews.value = response.data;
+  } catch (error) {
+    console.error("Gagal memuat berita dari API Laravel:", error);
+    newsError.value = "Gagal memuat berita terkini. Pastikan server backend berjalan.";
+  } finally {
+    isLoadingNews.value = false;
   }
+};
+
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString('id-ID', options);
+};
+
+// --- DATA STATIS UNTUK TIM ---
+const team = ref([
+  { name: "Aldo Pratama", role: "Project Manager", photo: "https://randomuser.me/api/portraits/men/32.jpg" },
+  { name: "Bella Salsabila", role: "Frontend Developer", photo: "https://randomuser.me/api/portraits/women/44.jpg" },
+  { name: "Cahyo Nugroho", role: "Backend Developer", photo: "https://randomuser.me/api/portraits/men/45.jpg" },
+  { name: "Dewi Lestari", role: "UI/UX Designer", photo: "https://randomuser.me/api/portraits/women/65.jpg" },
+  { name: "Eka Saputra", role: "DevOps Engineer", photo: "https://randomuser.me/api/portraits/men/77.jpg" },
+  { name: "Fani Rahmawati", role: "Quality Assurance", photo: "https://randomuser.me/api/portraits/women/12.jpg" },
+  { name: "Gilang Ramadhan", role: "Fullstack Developer", photo: "https://randomuser.me/api/portraits/men/23.jpg" }
 ]);
 
+// --- ONMOUNTED HOOK ---
 onMounted(() => {
+  fetchBanners();
+  fetchTechNews();
 });
-
 </script>
 
 <template>
@@ -176,16 +127,16 @@ onMounted(() => {
         @slide-start="onSlideChange"
         :style="{'--slide-accent-color': currentSlideAccentColor }"
       >
-        <Slide v-for="(product, index) in products" :key="product.id">
-          <div class="carousel__item" :style="{ background: product.backgroundColor }">
+        <Slide v-for="(banner, index) in banners" :key="banner.id">
+          <div class="carousel__item" :style="{ background: banner.backgroundColor }">
             <div class="product-slide-content">
               <div class="product-text-info">
-                <h2 class="product-brand" :style="{ color: product.accentColor }">{{ product.brand }}</h2>
-                <h1 class="product-name">{{ product.name }}</h1>
-                <p class="product-slogan">{{ product.slogan }}</p>
+                <h2 class="product-brand" :style="{ color: banner.accentColor }">{{ banner.brand }}</h2>
+                <h1 class="product-name">{{ banner.name }}</h1>
+                <p class="product-slogan">{{ banner.slogan }}</p>
                 <ul class="product-features">
-                  <li v-for="feature in product.features" :key="feature">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16" :style="{ color: product.accentColor }">
+                  <li v-for="feature in banner.features" :key="feature">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16" :style="{ color: banner.accentColor }">
                       <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
                     </svg>
                     {{ feature }}
@@ -195,18 +146,18 @@ onMounted(() => {
 
               <div class="product-image-container">
                 <img
-                  :src="product.imageSrc"
-                  :alt="product.name"
+                  :src="banner.imageSrc"
+                  :alt="banner.name"
                   class="product-image"
                   :loading="index === 0 ? 'eager' : 'lazy'"
                   :fetchpriority="index === 0 ? 'high' : 'auto'"
-                  :width="product.imageWidth"
-                  :height="product.imageHeight"
+                  :width="banner.imageWidth"
+                  :height="banner.imageHeight"
                 />
               </div>
 
               <div class="product-badges-container">
-                <div v-for="badge in product.badges" :key="badge.text + badge.subtext" class="product-badge">
+                <div v-for="badge in banner.badges" :key="badge.text + badge.subtext" class="product-badge">
                   <div v-if="badge.icon === 'fan'" class="badge-icon-fan">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-3.79V8.5c0-.28.22-.5.5-.5s.5.22.5.5v7.71c2.42-.95 4-3.27 4-5.96 0-.28-.22-.5-.5-.5s-.5.22-.5.5c0 2.21-1.79 4-4 4s-4-1.79-4-4c0-.28-.22-.5-.5-.5s-.5.22-.5.5c0 2.69 1.58 5.01 4 5.96zM8.75 12.5c.28 0 .5-.22.5-.5V8c0-2.21 1.79-4 4-4s4 1.79 4 4v4c0 .28-.22-.5-.5-.5s-.5-.22-.5-.5V8c0-1.65-1.35-3-3-3s-3 1.35-3 3v4c0 .28-.22-.5-.5-.5s-.5.22-.5-.5z"/></svg>
                   </div>
@@ -310,6 +261,33 @@ onMounted(() => {
           </div>
         </div>
 
+      </div>
+    </section>
+
+    <!-- Section Tim Kami -->
+    <section class="team-section py-5 bg-black">
+      <div class="container">
+        <div class="text-center mb-5">
+          <h2 class="fw-bold text-info" style="font-size:2rem; letter-spacing:1px;">Tim Kami</h2>
+          <p class="text-muted" style="font-size:1.1rem;">7 orang kreatif di balik pengembangan website ini</p>
+        </div>
+        <div class="row justify-content-center g-4">
+          <div
+            v-for="member in team"
+            :key="member.name"
+            class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center"
+          >
+            <div class="team-card text-center p-4">
+              <img
+                :src="member.photo"
+                :alt="member.name"
+                class="team-photo mb-3"
+              />
+              <h5 class="mb-1 text-info fw-semibold">{{ member.name }}</h5>
+              <p class="mb-0 text-secondary" style="font-size:0.98rem;">{{ member.role }}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1023,6 +1001,50 @@ onMounted(() => {
   font-size: 1em;
   font-style: normal;
   line-height: 1;
+}
+
+.team-section {
+  background: #10141a;
+  border-top: 2px solid #00d9ff33;
+  border-bottom: 2px solid #00d9ff33;
+}
+
+.team-card {
+  background: linear-gradient(135deg, #181c22 80%, #00d9ff22 100%);
+  border: 1.5px solid #00d9ff55;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 24px 0 #00d9ff22;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  min-width: 220px;
+  max-width: 260px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+.team-card:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 8px 32px 0 #00d9ff55;
+  border-color: #00d9ff;
+}
+.team-photo {
+  width: 82px;
+  height: 82px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #00d9ff;
+  box-shadow: 0 0 0 4px #23272f, 0 0 16px #00d9ff44;
+  background: #23272f;
+  margin-bottom: 1rem;
+  transition: box-shadow 0.2s;
+}
+.team-card:hover .team-photo {
+  box-shadow: 0 0 0 4px #23272f, 0 0 32px #00d9ff99;
+}
+.text-info {
+  color: #00d9ff !important;
+}
+.text-secondary {
+  color: #adb5bd !important;
 }
 
 @media (max-width: 992px) {
