@@ -4,7 +4,6 @@
       ULTIMATE GAME CONSOLES HUB
     </h1>
 
-    
     <div class="text-center my-4 py-3 border-top border-bottom border-secondary">
         <h2 class="mb-3" style="font-family:'Orbitron',sans-serif;color:#fff;">Keranjang Belanja Global</h2>
         <p v-if="cartStore.items.length > 0" class="mb-2" style="color:#1aff6b;">
@@ -16,7 +15,6 @@
         </button>
       </div>
 
-    
     <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
       <button
         v-for="(card, index) in cards"
@@ -29,157 +27,69 @@
       </button>
     </div>
 
-    <div v-if="selectedCategory" class="bg-dark bg-opacity-85 rounded-3 p-3 mb-4" style="background:#181c22 !important;min-height:350px;transition:min-height 0.2s cubic-bezier(.4,0,.2,1);">
+    <div v-if="selectedCategory" class="bg-dark bg-opacity-85 rounded-3 p-3 mb-4" style="background:#181c22 !important;min-height:350px;">
       <h2 class="text-center fw-bold mb-3" style="font-family:'Orbitron',sans-serif;color:#fff;">
         {{ selectedCategory.title }}
       </h2>
+      <!-- ... sisa template filter ... -->
       <div class="row g-2 align-items-center mb-2">
         <div class="col-12 col-md-6">
-          <label for="searchConsoleInput" class="form-label visually-hidden">Search Console</label>
-          <input
-            type="text"
-            id="searchConsoleInput"
-            v-model="searchQuery"
-            placeholder="Search console..."
-            class="form-control bg-secondary bg-opacity-25 text-light border-info"
-            autocomplete="off"
-            aria-label="Cari konsol"
-          />
+          <input type="text" v-model="searchQuery" placeholder="Search console..." class="form-control bg-secondary bg-opacity-25 text-light border-info" autocomplete="off"/>
         </div>
         <div class="col-12 col-md-6">
-          <label for="brandSelect" class="form-label visually-hidden">Select Brand</label>
-          <select id="brandSelect" v-model="selectedBrand" class="form-select bg-secondary bg-opacity-25 text-light border-info" aria-label="Pilih brand">
+          <select v-model="selectedBrand" class="form-select bg-secondary bg-opacity-25 text-light border-info">
             <option value="">All Brands</option>
             <option v-for="brand in brands" :key="brand" :value="brand">{{ brand }}</option>
           </select>
         </div>
       </div>
-
-      
       <div class="mb-3">
-        <label class="form-label text-light fw-bold d-block mb-1" for="minPriceRange">Rentang Harga</label>
+        <label class="form-label text-light fw-bold d-block mb-1">Rentang Harga</label>
         <div class="d-flex align-items-center mb-1">
-          <span class="me-2 text-light" style="min-width:100px;">{{ formatPrice(minPriceIDR) }}</span>
-          <input
-            type="range"
-            v-model.number="minPriceIDR"
-            :min="minSliderBoundIDR"
-            :max="maxSliderBoundIDR"
-            :step="priceStepIDR"
-            class="form-range"
-            style="accent-color:#00d9ff;"
-            id="minPriceRange"
-            aria-label="Harga minimum"
-            @input="maxPriceIDR = Math.max(minPriceIDR, maxPriceIDR)"
-          />
+          <span class="me-2 text-light" style="min-width:100px;">{{ formatPrice(minPrice) }}</span>
+          <input type="range" v-model.number="minPrice" :min="minSliderBound" :max="maxSliderBound" :step="priceStep" class="form-range" @input="maxPrice = Math.max(minPrice, maxPrice)"/>
         </div>
         <div class="d-flex align-items-center mb-1">
-          <span class="me-2 text-light" style="min-width:100px;">{{ formatPrice(maxPriceIDR) }}</span>
-          <input
-            type="range"
-            v-model.number="maxPriceIDR"
-            :min="minSliderBoundIDR"
-            :max="maxSliderBoundIDR"
-            :step="priceStepIDR"
-            class="form-range"
-            style="accent-color:#00d9ff;"
-            id="maxPriceRange"
-            aria-label="Harga maksimum"
-            @input="minPriceIDR = Math.min(minPriceIDR, maxPriceIDR)"
-          />
-        </div>
-        <div class="d-flex justify-content-between text-light mt-1 px-1 small">
-          <span>Min: {{ formatPrice(minPriceIDR) }}</span>
-          <span>Max: {{ formatPrice(maxPriceIDR) }}</span>
+          <span class="me-2 text-light" style="min-width:100px;">{{ formatPrice(maxPrice) }}</span>
+          <input type="range" v-model.number="maxPrice" :min="minSliderBound" :max="maxSliderBound" :step="priceStep" class="form-range" @input="minPrice = Math.min(minPrice, maxPrice)"/>
         </div>
       </div>
 
+
       <div v-if="loading" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-2" style="min-height:320px;">
-        <div v-for="n in 8" :key="n" class="col">
-          <div class="card placeholder-card h-100 bg-secondary bg-opacity-50 border-info text-light">
-            <div class="placeholder-img mb-2"></div>
-            <div class="card-body py-2">
-              <div class="placeholder-line w-75 mb-2"></div>
-              <div class="placeholder-line w-50 mb-2"></div>
-              <div class="placeholder-line w-100 mb-1"></div>
-              <div class="placeholder-line w-50"></div>
-            </div>
-          </div>
-        </div>
+        <div v-for="n in 8" :key="n" class="col"><div class="card placeholder-card h-100"><div class="placeholder-img"></div></div></div>
       </div>
       <div v-else-if="filteredConsoles.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-2" style="min-height:320px;">
         <div v-for="consoleItem in filteredConsoles" :key="consoleItem.id" class="col">
-          <div
-            class="card h-100 bg-secondary bg-opacity-75 border-info text-light d-flex flex-column"
-            tabindex="0"
-            role="button"
-            style="cursor:pointer;"
-          >
-            <img
-              :src="consoleItem.image"
-              :alt="consoleItem.name"
-              class="card-img-top"
-              style="height:120px;object-fit:cover;background:#101829;"
-              loading="lazy"
-              width="240"
-              height="120"
-              @click="showDetails(consoleItem)"
-            />
+          <div class="card h-100 border-info text-light d-flex flex-column" role="button" @click="showDetails(consoleItem)">
+            <img :src="consoleItem.image" :alt="consoleItem.name" class="card-img-top" style="height:120px;object-fit:cover;background:#101829;" loading="lazy"/>
             <div class="card-body py-2 d-flex flex-column flex-grow-1">
-              <h4 class="card-title fw-bold mb-1" style="font-family:'Orbitron',sans-serif;color:#fff;" @click="showDetails(consoleItem)">
-                {{ consoleItem.name }}
-              </h4>
-              <p class="mb-1" @click="showDetails(consoleItem)"><span class="fw-semibold">Brand:</span> {{ consoleItem.brand }}</p>
-              <p class="mb-1" @click="showDetails(consoleItem)">
-                <span class="fw-semibold">Stock:</span>
-                <span :class="getStockClass(consoleItem.stock)">
-                  {{ consoleItem.stock }}
-                </span>
-              </p>
-              <p class="fw-bold mb-2" @click="showDetails(consoleItem)">{{ formatPrice(consoleItem.price * usdToIdrRate) }}</p>
-               <button 
-                class="btn btn-sm btn-info fw-bold mt-auto" 
-                style="font-family:'Orbitron',sans-serif;"
-                @click.stop="addItemToCartFromCard(consoleItem)"
-                :disabled="consoleItem.stock === 'Kosong' || consoleItem.stock === 0"
-              >
+              <h4 class="card-title fw-bold mb-1" style="font-family:'Orbitron',sans-serif;color:#fff;">{{ consoleItem.name }}</h4>
+              <p class="mb-1"><span class="fw-semibold">Brand:</span> {{ consoleItem.brand }}</p>
+              <p class="mb-1"><span class="fw-semibold">Stock:</span> <span :class="getStockClass(consoleItem.stock)">{{ consoleItem.stock }}</span></p>
+              <p class="fw-bold mb-2">{{ formatPrice(consoleItem.price) }}</p>
+              <button class="btn btn-sm btn-info fw-bold mt-auto" @click.stop="addItemToCartFromCard(consoleItem)" :disabled="consoleItem.stock === 'Kosong' || consoleItem.stock === 0 || consoleItem.stock === '0'">
                 <i class="bi bi-cart-plus-fill"></i> Add to Cart
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div v-else class="text-center text-info py-4" style="font-family:'Orbitron',sans-serif;min-height:120px;">
-        <p>No consoles match your current filters.</p>
-      </div>
+      <div v-else class="text-center text-info py-4"><p>No consoles match your current filters.</p></div>
     </div>
-    <div v-else class="text-center text-info py-4" style="font-family:'Orbitron',sans-serif;">
-      <p>✨ Please select a category above to explore our awesome consoles! ✨</p>
-    </div>
+    <div v-else class="text-center text-info py-4"><p>✨ Please select a category above to explore our awesome consoles! ✨</p></div>
 
-    
-    <div class="modal fade" id="consoleDetailModal" tabindex="-1" aria-labelledby="consoleDetailModalLabel" aria-hidden="true" ref="consoleModalRef">
+    <div class="modal fade" id="consoleDetailModal" tabindex="-1" ref="consoleModalRef">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-light">
           <div class="modal-header border-0 pb-0">
-            <h3 class="modal-title w-100 text-center fw-bold" id="consoleDetailModalLabel" style="font-family:'Orbitron',sans-serif;color:#fff;">
-              {{ selectedProduct?.name }}
-            </h3>
-            <button type="button" class="btn-close btn-close-white" aria-label="Close modal" @click="closeDetails"></button>
+            <h3 class="modal-title w-100 text-center fw-bold" style="font-family:'Orbitron',sans-serif;color:#fff;">{{ selectedProduct?.name }}</h3>
+            <button type="button" class="btn-close btn-close-white" @click="closeDetails"></button>
           </div>
           <div class="modal-body">
-            <img
-              v-if="selectedProduct"
-              :src="selectedProduct.image"
-              :alt="selectedProduct.name"
-              class="d-block mx-auto mb-3 rounded"
-              style="max-width:220px;max-height:120px;object-fit:contain;background:#101829;"
-              loading="lazy"
-              width="220"
-              height="120"
-            />
+            <img v-if="selectedProduct" :src="selectedProduct.image" :alt="selectedProduct.name" class="d-block mx-auto mb-3 rounded" style="max-width:220px;max-height:120px;object-fit:contain;background:#101829;" loading="lazy"/>
             <div v-if="selectedProduct" class="mb-2">
-              <p class="mb-1"><strong>Price:</strong> <span>{{ formatPrice(selectedProduct.price * usdToIdrRate) }}</span></p>
+              <p class="mb-1"><strong>Price:</strong> <span>{{ formatPrice(selectedProduct.price) }}</span></p>
               <p class="mb-1"><strong>Brand:</strong> <span>{{ selectedProduct.brand }}</span></p>
               <p class="mb-1"><strong>Stock:</strong> <span :class="getStockClass(selectedProduct.stock)">{{ selectedProduct.stock }}</span></p>
             </div>
@@ -189,40 +99,15 @@
                 <li v-for="(feature, index) in selectedProduct.specs" :key="index">{{ feature }}</li>
               </ul>
             </div>
-            <div v-else-if="selectedProduct">
-              <p class="text-muted">No additional features listed.</p>
-            </div>
-
-            
-            <div v-if="selectedProduct && (selectedProduct.stock !== 'Kosong' && selectedProduct.stock > 0)" class="mt-3 pt-3 border-top border-secondary">
+            <div v-else-if="selectedProduct"><p class="text-muted">No additional features listed.</p></div>
+            <div v-if="selectedProduct && (selectedProduct.stock !== 'Kosong' && Number(selectedProduct.stock) > 0)" class="mt-3 pt-3 border-top border-secondary">
                 <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
-                    <label for="modalQtyConsole" class="form-label mb-0 text-light">Qty:</label>
-                    <input 
-                        type="number" 
-                        id="modalQtyConsole" 
-                        v-model.number="modalQuantity" 
-                        min="1" 
-                        :max="selectedProduct.stock === 'Ready' ? 99 : selectedProduct.stock"
-                        class="form-control form-control-sm bg-secondary bg-opacity-25 text-light border-info" 
-                        style="width: 70px;"
-                    >
+                    <label class="form-label mb-0">Qty:</label>
+                    <input type="number" v-model.number="modalQuantity" min="1" :max="selectedProduct.stock === 'Ready' ? 99 : selectedProduct.stock" class="form-control form-control-sm bg-secondary bg-opacity-25 text-light border-info" style="width: 70px;"/>
                 </div>
-                <button 
-                    class="btn btn-info w-100 fw-bold" 
-                    style="font-family:'Orbitron',sans-serif;"
-                    @click="addItemToCartFromModal(selectedProduct)"
-                >
-                    <i class="bi bi-cart-plus-fill"></i> Add to Cart
-                </button>
+                <button class="btn btn-info w-100 fw-bold" @click="addItemToCartFromModal(selectedProduct)">Add to Cart</button>
             </div>
-            <div v-else-if="selectedProduct" class="mt-3 text-center">
-                <p class="text-danger fw-bold">This item is currently out of stock.</p>
-            </div>
-
           </div>
-           <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-outline-secondary" @click="closeDetails">Close</button>
-            </div>
         </div>
       </div>
     </div>
@@ -233,6 +118,7 @@
 import { Modal } from 'bootstrap';
 import { cartStore } from '@/store/cartStore';
 import { useRouter } from 'vue-router';
+import apiClient from '@/services/api.js'; // Impor apiClient
 
 export default {
   name: "GameConsolesHub",
@@ -243,158 +129,133 @@ export default {
   data() {
     return {
       cards: [
-        { title: "🎮 PlayStation Powerhouse" },
-        { title: "🟩 Xbox Universe" },
-        { title: "🍄 Nintendo Magic" },
-        { title: "💻 Handheld PC Heroes" },
-        { title: "✨ Explore More Consoles" },
+        { title: "PlayStation Powerhouse" },
+        { title: "Xbox Universe" },
+        { title: "Nintendo Magic" },
+        { title: "Handheld PC Heroes" },
+        { title: "Explore More Consoles" },
       ],
       selectedCategory: null,
       searchQuery: "",
       selectedBrand: "",
-      usdToIdrRate: 15000,
-      minPriceIDR: 0,
-      maxPriceIDR: 12000000,
-      priceStepIDR: 100000,
+      minPrice: 0,
+      maxPrice: 12000000,
+      priceStep: 100000,
       selectedProduct: null,
       bootstrapModalInstance: null,
-      consoles: [],
+      consoles: [], // Data akan diisi dari API
       loading: true,
       modalQuantity: 1,
     };
   },
   async mounted() {
-    try {
-      const res = await fetch('/data/console.json');
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      const jsonData = await res.json();
-      this.consoles = jsonData.map(console => ({
-          ...console,
-          stock: console.stock === "Ready" ? 10 : (console.stock === "Kosong" ? 0 : (Number(console.stock) || 0)),
-          id: String(console.id || `console-${Math.random().toString(36).substr(2, 9)}`)
-      }));
-      this.updatePriceSliderBounds();
-    } catch (error) {
-      console.error("Failed to load console data:", error);
-      this.consoles = [];
-    } finally {
-      this.loading = false;
-    }
+    // Panggil metode untuk mengambil data dari Laravel API
+    await this.fetchConsoleData();
+
+    // Inisialisasi modal Bootstrap
     const modalElement = this.$refs.consoleModalRef;
     if (modalElement) {
       this.bootstrapModalInstance = new Modal(modalElement);
-      modalElement.addEventListener('hidden.bs.modal', () => {
-        this.selectedProduct = null;
-        this.modalQuantity = 1;
-      });
-    }
-    if (this.cards.length > 0 && !this.selectedCategory) {
-        this.selectCategory(this.cards[0]);
     }
   },
   computed: {
     brands() {
-      if (!this.selectedCategory || !this.consoles.length) return [];
+      if (!this.selectedCategory) return [];
       const consolesInCategory = this.consoles.filter(c => c.category === this.selectedCategory.title);
       return [...new Set(consolesInCategory.map(c => c.brand))].sort();
     },
-    minSliderBoundIDR() {
-      return 0;
-    },
-    maxSliderBoundIDR() {
+    minSliderBound() { return 0; },
+    maxSliderBound() {
       if (!this.consoles.length) return 12000000;
-      const maxUSD = Math.max(...this.consoles.map(c => c.price || 0), 0);
-      return Math.ceil((maxUSD * this.usdToIdrRate) / this.priceStepIDR) * this.priceStepIDR || 12000000;
+      const maxPrice = Math.max(...this.consoles.map(c => Number(c.price) || 0), 0);
+      return Math.ceil(maxPrice / this.priceStep) * this.priceStep || 12000000;
     },
     filteredConsoles() {
-      if (!this.selectedCategory || !this.consoles.length) return [];
-      let filtered = this.consoles.filter(
-        c => c.category === this.selectedCategory.title
-      );
+      if (!this.selectedCategory) return [];
+      let filtered = this.consoles.filter(c => c.category === this.selectedCategory.title);
       if (this.searchQuery) {
-        const query = this.searchQuery.toLowerCase();
-        filtered = filtered.filter(c =>
-          c.name.toLowerCase().includes(query)
-        );
+        filtered = filtered.filter(c => c.name.toLowerCase().includes(this.searchQuery.toLowerCase()));
       }
       if (this.selectedBrand) {
         filtered = filtered.filter(c => c.brand === this.selectedBrand);
       }
       filtered = filtered.filter(c => {
-        const priceIDR = (c.price || 0) * this.usdToIdrRate;
-        return priceIDR >= this.minPriceIDR && priceIDR <= this.maxPriceIDR;
+        const price = Number(c.price) || 0;
+        return price >= this.minPrice && price <= this.maxPrice;
       });
       return filtered;
     },
   },
   methods: {
+    async fetchConsoleData() {
+      this.loading = true;
+      try {
+        // Gunakan apiClient untuk memanggil endpoint Laravel
+        const response = await apiClient.get('/console-and-handhelds'); // Sesuaikan dengan nama rute API Anda
+        this.consoles = response.data.map(console => ({
+            ...console,
+            // Konversi tipe data jika perlu, Laravel seharusnya sudah memberikan yang benar
+            price: Number(console.price),
+            // Pastikan stock adalah angka atau string yang bisa diinterpretasikan
+            stock: console.stock === "Ready" ? 100 : (console.stock === "Kosong" ? 0 : Number(console.stock) || 0),
+        }));
+        this.updatePriceSliderBounds();
+        if (this.cards.length > 0 && !this.selectedCategory) {
+            this.selectCategory(this.cards[0]);
+        }
+      } catch (error) {
+        console.error("Gagal memuat data konsol dari Laravel:", error);
+        alert("Gagal memuat data. Pastikan server backend berjalan.");
+      } finally {
+        this.loading = false;
+      }
+    },
     updatePriceSliderBounds() {
-        if (this.consoles.length > 0) {
-            const maxUSD = Math.max(...this.consoles.map(c => c.price || 0), 0);
-            const calculatedMaxIDR = Math.ceil((maxUSD * this.usdToIdrRate) / this.priceStepIDR) * this.priceStepIDR;
-            this.maxPriceIDR = calculatedMaxIDR > 0 ? calculatedMaxIDR : 12000000;
-        } else {
-            this.maxPriceIDR = 12000000;
-        }
-        if (this.selectedCategory) {
-        }
+        this.$nextTick(() => {
+          this.maxPrice = this.maxSliderBound;
+          this.minPrice = this.minSliderBound;
+        });
     },
     selectCategory(category) {
       this.selectedCategory = category;
       this.searchQuery = "";
       this.selectedBrand = "";
-      this.minPriceIDR = this.minSliderBoundIDR;
-      this.maxPriceIDR = this.maxSliderBoundIDR;
+      this.updatePriceSliderBounds();
     },
     formatPrice(price) {
-      if (typeof price !== 'number' || isNaN(price)) return 'Rp 0';
-      return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(price);
+      return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price || 0);
     },
     showDetails(consoleItem) {
       this.selectedProduct = consoleItem;
       this.modalQuantity = 1;
-      if (this.bootstrapModalInstance) {
-        this.bootstrapModalInstance.show();
-      }
+      if (this.bootstrapModalInstance) this.bootstrapModalInstance.show();
     },
     closeDetails() {
-      if (this.bootstrapModalInstance) {
-        this.bootstrapModalInstance.hide();
-      }
+      if (this.bootstrapModalInstance) this.bootstrapModalInstance.hide();
     },
     getStockClass(stock) {
-      if (stock > 0) return 'text-success fw-bold';
-      return 'text-danger fw-bold';
+      return Number(stock) > 0 ? 'text-success fw-bold' : 'text-danger fw-bold';
     },
     addItemToCart(consoleItem, quantity) {
-        if (!consoleItem || quantity < 1) {
-            alert("Invalid item or quantity.");
-            return;
-        }
+        if (!consoleItem || quantity < 1) return;
         const stockNumber = Number(consoleItem.stock);
-        if (isNaN(stockNumber) || stockNumber <= 0 || quantity > stockNumber) {
-            alert(`Quantity (x${quantity}) exceeds available stock (${stockNumber}) or item is out of stock.`);
+        if (isNaN(stockNumber) || stockNumber < quantity) {
+            alert(`Stok tidak mencukupi.`);
             return;
         }
-
         const itemToAdd = {
             id: String(consoleItem.id),
             source: 'console',
             name: consoleItem.name,
-            price: consoleItem.price * this.usdToIdrRate,
+            price: Number(consoleItem.price), // Harga sudah dalam IDR
             qty: quantity,
             category: consoleItem.category,
             brand: consoleItem.brand,
             image: consoleItem.image,
-            specification: consoleItem.specs ? consoleItem.specs.join(', ') : 'No specific features listed.'
+            specification: Array.isArray(consoleItem.specs) ? consoleItem.specs.join(', ') : 'N/A'
         };
         cartStore.addItem(itemToAdd);
-        alert(`${consoleItem.name} (x${quantity}) added to cart!`);
+        alert(`${consoleItem.name} (x${quantity}) ditambahkan ke keranjang!`);
     },
     addItemToCartFromCard(consoleItem) {
         this.addItemToCart(consoleItem, 1);
@@ -405,29 +266,14 @@ export default {
     },
     goToCheckout() {
       if (cartStore.items.length === 0) {
-        alert("Keranjang belanja Anda kosong. Silakan tambahkan produk terlebih dahulu.");
+        alert("Keranjang belanja Anda kosong.");
         return;
       }
       this.router.push('/checkout');
     }
   },
   watch: {
-    consoles: {
-        handler() {
-            this.updatePriceSliderBounds();
-        },
-        deep: true
-    },
-    minPriceIDR(newVal, oldVal) {
-        if (newVal > this.maxPriceIDR) {
-            this.minPriceIDR = oldVal;
-        }
-    },
-    maxPriceIDR(newVal, oldVal) {
-        if (newVal < this.minPriceIDR) {
-            this.maxPriceIDR = oldVal;
-        }
-    }
+    consoles: 'updatePriceSliderBounds',
   }
 };
 </script>

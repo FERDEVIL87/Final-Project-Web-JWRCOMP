@@ -232,10 +232,10 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { Modal } from 'bootstrap';
-import { cartStore } from '@/store/cartStore'; // Pastikan path ini benar
+import { cartStore } from '@/store/cartStore';
 import { useRouter } from 'vue-router';
+import apiClient from '@/services/api.js'; // Use centralized API client
 
 export default {
   name: "HardwareList",
@@ -245,7 +245,6 @@ export default {
   },
   data() {
     return {
-      // Data lainnya biarkan sama
       cards: [
         { title: "PROCESSOR INTEL" }, { title: "PROCESSOR AMD" }, { title: "MAINBOARD" },
         { title: "MEMORY" }, { title: "VGA" }, { title: "HDD" }, { title: "SSD" },
@@ -271,7 +270,6 @@ export default {
     };
   },
   computed: {
-    // Bagian computed biarkan sama persis
     priceStep() {
       const range = this.maxPriceInCategory - this.minPriceInCategory;
       if (range <= 0) return 50000;
@@ -323,37 +321,25 @@ export default {
     },
   },
   methods: {
-    // ==========================================================
-    // INI BAGIAN UTAMA YANG DIUBAH
-    // ==========================================================
     async fetchHardwareData() {
       this.loading = true;
       try {
-        // Ganti URL ke endpoint API Laravel Anda
-        const res = await axios.get('http://127.0.0.1:8000/api/hardware');
-        
-        // Sesuaikan pemetaan data jika perlu. Model Laravel kita sudah
-        // menangani konversi tipe data, jadi kodenya lebih sederhana.
+        const res = await apiClient.get('/hardware');
         this.allHardware = res.data.map(item => ({
-          ...item, // Salin semua properti dari API (id, name, price, brand, dll)
-          // Laravel sudah memastikan 'specs' adalah array, jadi tidak perlu parsing rumit
-          // Cukup pastikan saja tipe datanya benar
+          ...item,
           price: Number(item.price) || 0,
-          stock: Number(item.stock) || 0, // Laravel sudah memberikan angka, ini hanya untuk keamanan
+          stock: Number(item.stock) || 0,
         }));
       } catch (error) {
         console.error("Gagal memuat data dari API Laravel:", error);
-        // Tampilkan pesan error yang lebih jelas jika gagal konek
         if (error.code === "ERR_NETWORK") {
-            alert("Tidak dapat terhubung ke server backend. Pastikan server Laravel Anda (php artisan serve) sedang berjalan.");
+          alert("Tidak dapat terhubung ke server backend. Pastikan server Laravel Anda (php artisan serve) sedang berjalan.");
         }
         this.allHardware = [];
       } finally {
         this.loading = false;
       }
     },
-
-    // Metode lain biarkan sama persis
     selectCategory(category) {
       this.selectedCategory = category;
       this.searchQuery = "";

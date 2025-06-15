@@ -4,11 +4,11 @@
 
     <div v-if="isLoadingPayment" class="payment-loading-overlay">
       <div class="spinner"></div>
-      <p>Memproses pembayaran Anda...</p>
+      <p>Menyimpan pesanan Anda...</p>
     </div>
 
     <div v-if="paymentStatusMessage" :class="['payment-status-message', paymentSuccess ? 'success' : 'error']">
-      <p v-html="paymentStatusMessage.replace(/\n/g, '<br>')"></p> <!-- Allow line breaks in status -->
+      <p v-html="paymentStatusMessage.replace(/\n/g, '<br>')"></p>
       <button v-if="paymentSuccess" @click="resetAndGoHome" class="btn-small-action">
         Kembali ke Beranda
       </button>
@@ -22,16 +22,37 @@
         <p>Keranjang belanja Anda kosong.</p>
         <p>Silakan tambahkan produk terlebih dahulu untuk melanjutkan.</p>
       </div>
+      
+      <!-- Menggunakan satu form untuk semua -->
       <form @submit.prevent="handleFinalCheckout" v-else>
+        
+        <!-- ========================================================== -->
+        <!-- BAGIAN BARU: FORM DATA PEMBELI -->
+        <!-- ========================================================== -->
+        <div class="customer-details-form">
+          <h4>Detail Pengiriman</h4>
+          <div class="form-group">
+            <label for="customer_name">Nama Lengkap</label>
+            <input type="text" id="customer_name" v-model="customer.name" class="form-control-checkout" required>
+          </div>
+          <div class="form-group">
+            <label for="customer_address">Alamat Lengkap</label>
+            <textarea id="customer_address" v-model="customer.address" class="form-control-checkout" rows="3" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="customer_phone">Nomor HP</label>
+            <input type="tel" id="customer_phone" v-model="customer.phone" class="form-control-checkout" required>
+          </div>
+        </div>
+        <!-- ========================================================== -->
+        
+        <h4>Ringkasan Pesanan</h4>
         <div class="table-responsive">
           <table class="checkout-table">
             <thead>
               <tr>
                 <th>Gambar</th>
-                <th>Nama Pesanan & Asal</th> 
-                <th>Kategori</th>
-                <th>Brand</th>
-                <th>Harga Satuan</th>
+                <th>Nama Pesanan</th>
                 <th>Jumlah</th>
                 <th>Subtotal</th>
                 <th>Aksi</th>
@@ -39,50 +60,14 @@
             </thead>
             <tbody>
               <tr v-for="item in cartStore.items" :key="`${item.source}-${item.id}`">
-                <td data-label="Gambar">
-                  <img v-if="item.image" :src="item.image" :alt="item.name" class="checkout-item-image"/>
-                  <span v-else class="no-image-placeholder">No Image</span>
-                </td>
-                <td data-label="Nama Pesanan & Asal">
-                  {{ item.name }}
-                  <div class="item-source-display">
-                    <small><em>Dari: {{ getSourceDisplayName(item.source) }}</em></small>
-                  </div>
-                  <div v-if="item.source === 'rakitan_kustom' && item.specification && typeof item.specification.parts === 'object'" class="specs-list-checkout">
-                    <small><i>Rakitan Kustom:</i></small>
-                    <ul>
-                      <li v-for="(partDetail, partKey) in item.specification.parts" :key="partKey">
-                        <small v-if="partDetail"><em>{{ partKey }}: {{ partDetail.name }}</em></small>
-                      </li>
-                    </ul>
-                  </div>
-                  <div v-else-if="item.specification && typeof item.specification === 'string' && item.specification.length > 0" class="specs-list-checkout">
-                    <small><em>Spesifikasi: {{ item.specification.substring(0, 50) }}{{ item.specification.length > 50 ? '...' : '' }}</em></small>
-                  </div>
-                </td>
-                <td data-label="Kategori">{{ item.category }}</td>
-                <td data-label="Brand">{{ item.brand || '-' }}</td>
-                <td data-label="Harga Satuan">Rp{{ (Number(item.price) || 0).toLocaleString('id-ID') }}</td>
+                <td data-label="Gambar"><img v-if="item.image" :src="item.image" :alt="item.name" class="checkout-item-image"/></td>
+                <td data-label="Nama Pesanan">{{ item.name }}</td>
                 <td data-label="Jumlah">
-                  <input
-                    type="number"
-                    :value="item.qty"
-                    @input="updateQuantity(`${item.source}-${item.id}`, $event.target.value)"
-                    min="1"
-                    class="qty-input"
-                    :disabled="isLoadingPayment"
-                  />
+                  <input type="number" :value="item.qty" @input="updateQuantity(`${item.source}-${item.id}`, $event.target.value)" min="1" class="qty-input"/>
                 </td>
                 <td data-label="Subtotal">Rp{{ ((Number(item.price) || 0) * (Number(item.qty) || 0)).toLocaleString('id-ID') }}</td>
                 <td data-label="Aksi">
-                  <button
-                    type="button"
-                    @click="removeItem(`${item.source}-${item.id}`)"
-                    class="remove-item-button"
-                    :disabled="isLoadingPayment"
-                  >
-                    Hapus
-                  </button>
+                  <button type="button" @click="removeItem(`${item.source}-${item.id}`)" class="remove-item-button">Hapus</button>
                 </td>
               </tr>
             </tbody>
@@ -90,18 +75,9 @@
         </div>
 
         <div class="checkout-summary">
-          <div class="payment-method-selection">
-            <h4>Pilih Metode Pembayaran (Simulasi)</h4>
-            <select v-model="selectedPaymentMethod" :disabled="isLoadingPayment" class="payment-select">
-              <option value="cc">Kartu Kredit/Debit</option>
-              <option value="bank_transfer">Transfer Bank (Virtual Account)</option>
-              <option value="ewallet">E-Wallet (GoPay/OVO/Dana)</option>
-              <option value="cod">Bayar di Tempat (COD)</option>
-            </select>
-          </div>
           <p class="total-text"><strong>Total Keseluruhan: Rp{{ cartStore.totalPrice.toLocaleString('id-ID') }}</strong></p>
           <button type="submit" :disabled="cartStore.items.length === 0 || isLoadingPayment">
-            {{ isLoadingPayment ? 'Memproses...' : 'Bayar Sekarang' }}
+            {{ isLoadingPayment ? 'Memproses...' : 'Konfirmasi Pesanan' }}
           </button>
         </div>
       </form>
@@ -111,6 +87,7 @@
 
 <script>
 import { cartStore } from '@/store/cartStore';
+import apiClient from '@/services/api.js'; // Use centralized API client
 
 export default {
   setup() {
@@ -121,27 +98,18 @@ export default {
       isLoadingPayment: false,
       paymentStatusMessage: '',
       paymentSuccess: false,
-      selectedPaymentMethod: 'cc', 
+      customer: {
+        name: '',
+        address: '',
+        phone: ''
+      }
     };
   },
   methods: {
-    getSourceDisplayName(sourceKey) {
-      const sourceMap = {
-        'console': 'Game Consoles Hub',
-        'hardware': 'Komponen Hardware',
-        'laptop': 'Toko Laptop',
-        'paket_rakitan': 'Paket Rakitan PC',
-        'rakitan_kustom': 'Simulasi Rakitan Kustom',
-      };
-      return sourceMap[sourceKey] || sourceKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    },
     updateQuantity(compositeId, newQuantity) {
       const qty = parseInt(newQuantity, 10);
       if (!isNaN(qty) && qty >= 1) { 
         cartStore.updateItemQuantity(compositeId, qty);
-      } else if (!isNaN(qty) && qty < 1) {
-        const item = cartStore.items.find(i => `${i.source}-${i.id}` === compositeId);
-        if(item) item.qty = 1;
       }
     },
     removeItem(compositeId) {
@@ -154,41 +122,13 @@ export default {
     },
     resetAndGoHome() {
         this.resetPaymentStatus();
-        if (this.$router) {
-            this.$router.push('/');
-        }
-    },
-    async mockPaymentGateway(orderDetails, paymentMethod) {
-      return new Promise((resolve, reject) => {
-        console.log("Mengirim ke Payment Gateway (Simulasi):", { orderDetails, paymentMethod });
-        setTimeout(() => {
-          const isSuccess = Math.random() > 0.1;
-          if (isSuccess) {
-            resolve({
-              transactionId: `TRX-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-              message: `Pembayaran dengan metode ${paymentMethod.replace('_', ' ').toUpperCase()} berhasil!`,
-              status: 'success'
-            });
-          } else {
-            let failMessage = `Pembayaran gagal. `;
-            if (paymentMethod === 'cod') {
-                failMessage += 'Layanan COD tidak tersedia untuk pesanan Anda atau area Anda saat ini.';
-            } else if (paymentMethod === 'ewallet') {
-                failMessage += 'Saldo E-Wallet tidak mencukupi atau terjadi gangguan pada layanan E-Wallet.';
-            } else {
-                failMessage += 'Silakan coba lagi beberapa saat atau gunakan metode pembayaran lain.';
-            }
-            reject({
-              message: failMessage,
-              status: 'failed'
-            });
-          }
-        }, 2500);
-      });
+        this.$router.push('/');
     },
     async handleFinalCheckout() {
-      if (cartStore.items.length === 0) {
-        alert("Keranjang kosong!");
+      if (cartStore.items.length === 0) return;
+
+      if (!this.customer.name || !this.customer.address || !this.customer.phone) {
+        alert("Harap isi semua detail pengiriman.");
         return;
       }
 
@@ -196,62 +136,83 @@ export default {
       this.paymentStatusMessage = '';
 
       const orderPayload = {
-        orderId: `ORDER-${Date.now()}`,
+        customer_name: this.customer.name,
+        customer_address: this.customer.address,
+        customer_phone: this.customer.phone,
         items: cartStore.items.map(item => ({
-          productId: item.id,
-          source: item.source,
-          sourceDisplay: this.getSourceDisplayName(item.source),
           name: item.name,
           quantity: item.qty,
-          unitPrice: item.price,
-          category: item.category,
-          brand: item.brand,
-          image: item.image,
-          specification: item.specification 
+          price: item.price, // <-- TAMBAHKAN HARGA DI SINI
         })),
-        totalAmount: cartStore.totalPrice,
-        currency: 'IDR',
-        customerInfo: {
-          name: 'Pelanggan JWR', 
-          email: 'customer@example.com', 
-        },
-        paymentMethod: this.selectedPaymentMethod,
-        timestamp: new Date().toISOString()
       };
 
       try {
-        const paymentResponse = await this.mockPaymentGateway(orderPayload, this.selectedPaymentMethod);
+        // Use the shared API instance
+        const response = await apiClient.post('/checkout', orderPayload);
+        
         this.paymentSuccess = true;
-        let successDetails = `ID Transaksi: ${paymentResponse.transactionId}\n`
-        successDetails += `Metode Pembayaran: ${this.selectedPaymentMethod.replace('_', ' ').toUpperCase()}\n`
-        successDetails += `Total Pembayaran: Rp${orderPayload.totalAmount.toLocaleString('id-ID')}\n\n`
-        successDetails += `Terima kasih telah berbelanja di JWR Comp! Pesanan Anda akan segera kami proses.`
-
-        this.paymentStatusMessage = `${paymentResponse.message}\n\n${successDetails}`;
+        this.paymentStatusMessage = `${response.data.message}\nID Transaksi Anda: ${response.data.transaction_id}`;
+        
         cartStore.clearCart();
-        console.log("Payment successful. Response:", paymentResponse);
-        console.log("Order details sent:", orderPayload);
-
+        
       } catch (error) {
         this.paymentSuccess = false;
-        this.paymentStatusMessage = error.message || 'Terjadi kesalahan teknis saat memproses pembayaran. Mohon coba kembali.';
-        console.error("Payment failed. Error:", error);
-        console.log("Order details attempted:", orderPayload);
+        if (error.response && error.response.data && error.response.data.message) {
+            this.paymentStatusMessage = `Gagal menyimpan pesanan: ${error.response.data.message}`;
+        } else if (error.code === 'ERR_NETWORK') {
+            this.paymentStatusMessage = 'Tidak dapat terhubung ke server. Pastikan server backend berjalan.';
+        } else {
+            this.paymentStatusMessage = 'Terjadi kesalahan teknis. Mohon coba kembali.';
+        }
+        console.error("Gagal mengirim checkout:", error);
       } finally {
         this.isLoadingPayment = false;
       }
-    },
-    formatPrice(value) {
-      if (typeof value !== "number" || isNaN(value)) {
-        return 'Rp 0';
-      }
-      return `Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)}`;
     },
   }
 };
 </script>
 
 <style scoped>
+/* Tambahkan style untuk form customer */
+.customer-details-form {
+  margin-bottom: 40px;
+  padding: 25px;
+  background-color: #1f2937;
+  border-radius: 8px;
+  border: 1px solid #2d3748;
+}
+.customer-details-form h4 {
+  font-size: 1.2rem;
+  color: #00d9ff;
+  margin-bottom: 20px;
+  font-family: 'Orbitron', sans-serif;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #a0aec0;
+}
+.form-control-checkout {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #3a475b;
+  background: #161a27;
+  color: #e0e0e0;
+  font-size: 0.95rem;
+}
+.form-control-checkout:focus {
+  border-color: #00d9ff;
+  box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.2);
+  outline: none;
+}
+/* Sisa CSS bisa dibiarkan sama */
+/* ... */
 .checkout-container {
   max-width: 1100px;
   margin: 30px auto;
@@ -282,9 +243,6 @@ export default {
   border-radius: 8px;
   border: 1px solid #2d3748;
 }
-.empty-cart-message p {
-  margin-bottom: 15px;
-}
 
 .table-responsive {
   overflow-x: auto;
@@ -296,8 +254,7 @@ export default {
   border-collapse: collapse;
 }
 
-.checkout-table th,
-.checkout-table td {
+.checkout-table th, .checkout-table td {
   border: 1px solid #2d3748;
   padding: 12px 15px;
   text-align: left;
@@ -308,8 +265,6 @@ export default {
   background-color: #1f2937;
   color: #00d9ff;
   font-weight: 600;
-  font-size: 0.9rem;
-  text-transform: uppercase;
   white-space: nowrap; 
 }
 
@@ -319,32 +274,8 @@ export default {
   object-fit: contain;
   border-radius: 6px;
   background-color: #252f42;
-  padding: 4px;
   border: 1px solid #3a475b;
 }
-.no-image-placeholder {
-  display: inline-block;
-  width: 70px;
-  height: 70px;
-  line-height: 70px;
-  text-align: center;
-  background-color: #252f42;
-  color: #718096;
-  font-size: 0.75rem;
-  border-radius: 6px;
-  border: 1px solid #3a475b;
-}
-
-.item-source-display {
-  font-size: 0.8em;
-  color: #89a5c1;
-  margin-top: 4px;
-  display: block; 
-}
-.item-source-display em {
-  font-style: normal;
-}
-
 
 .qty-input {
   width: 65px;
@@ -354,12 +285,6 @@ export default {
   background: #1f2937;
   color: #e0e0e0;
   text-align: center;
-  font-size: 0.9rem;
-}
-.qty-input:focus {
-  border-color: #00d9ff;
-  box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.2);
-  outline: none;
 }
 
 .remove-item-button {
@@ -370,11 +295,6 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   font-size: 0.8rem;
-  transition: background-color 0.2s, color 0.2s;
-}
-.remove-item-button:hover {
-  background-color: #ff6b6b;
-  color: #161a27;
 }
 
 .checkout-summary {
@@ -383,46 +303,12 @@ export default {
   border-top: 1px solid #2d3748;
 }
 
-.payment-method-selection {
-  margin-bottom: 25px;
-  text-align: left;
-  padding: 20px;
-  background-color: #1f2937; 
-  border-radius: 8px;
-  border: 1px solid #2d3748;
-}
-.payment-method-selection h4 {
-  font-size: 1.1rem;
-  color: #00d9ff;
-  margin-bottom: 15px;
-  font-family: 'Orbitron', sans-serif;
-}
-.payment-select {
-  width: 100%;
-  max-width: 400px;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #3a475b;
-  background: #161a27;
-  color: #e0e0e0;
-  font-size: 0.95rem;
-}
-.payment-select:focus {
-  border-color: #00d9ff;
-  box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.2);
-  outline: none;
-}
-
-
 .total-text {
   font-size: 1.4rem;
   font-weight: bold;
   color: #00d9ff;
   margin-bottom: 25px;
   text-align: right;
-}
-.total-text strong {
-  color: #fff;
 }
 
 .checkout-summary button[type="submit"] { 
@@ -432,44 +318,12 @@ export default {
   border: none;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 1.05rem;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 4px 15px rgba(0, 170, 255, 0.2);
   display: block; 
   margin: 0 auto; 
-  min-width: 250px; 
 }
 .checkout-summary button[type="submit"]:disabled {
   background: #4a5568;
-  color: #a0aec0;
   cursor: not-allowed;
-  box-shadow: none;
-  opacity: 0.7;
-}
-.checkout-summary button[type="submit"]:hover:not(:disabled) {
-  background: linear-gradient(45deg, #00c6ff, #0099ff);
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 6px 20px rgba(0, 170, 255, 0.3);
-}
-
-.specs-list-checkout {
-  margin-top: 5px;
-}
-.specs-list-checkout ul {
-  padding-left: 15px;
-  margin: 5px 0 0 0;
-  list-style-type: "- ";
-  font-size: 0.8rem;
-  color: #a0aec0;
-}
-.specs-list-checkout li {
-  margin-bottom: 3px;
-}
-.specs-list-checkout small i {
-    color: #00d9ff;
 }
 
 .payment-loading-overlay {
@@ -503,139 +357,30 @@ export default {
   100% { transform: rotate(360deg); }
 }
 
-.payment-loading-overlay p {
-  font-size: 1.1rem;
-  font-family: 'Orbitron', sans-serif;
-  letter-spacing: 0.5px;
-}
-
 .payment-status-message {
   padding: 25px;
   margin: 30px auto;
   border-radius: 8px;
   text-align: center;
-  font-size: 1.1rem;
   max-width: 600px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   line-height: 1.6;
 }
 .payment-status-message.success {
   background-color: #1f2937;
   border: 1px solid #28a745;
-  color: #a8dbb3;
-}
-.payment-status-message.success p {
   color: #d4edda;
 }
 .payment-status-message.error {
   background-color: #1f2937;
   border: 1px solid #dc3545;
-  color: #f0b6bc;
-}
-.payment-status-message.error p {
   color: #f8d7da;
 }
-
 .payment-status-message button.btn-small-action {
-    margin-top: 20px;
-    padding: 10px 22px;
-    font-size: 0.95rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    font-weight: 500;
+  margin-top: 20px;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
 }
-.payment-status-message.success button.btn-small-action {
-    background-color: #28a745;
-    color: white;
-    border: none;
-}
-.payment-status-message.success button.btn-small-action:hover {
-    background-color: #218838;
-    transform: translateY(-1px);
-}
-.payment-status-message.error button.btn-small-action {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-}
-.payment-status-message.error button.btn-small-action:hover {
-    background-color: #c82333;
-    transform: translateY(-1px);
-}
-
-
-form {
-    transition: opacity 0.3s ease-in-out;
-}
-
-@media (max-width: 800px) {
-  .checkout-container h2 {
-    font-size: clamp(1.6rem, 5vw, 2rem);
-  }
-  .checkout-table thead {
-    display: none;
-  }
-  .checkout-table, .checkout-table tbody, .checkout-table tr, .checkout-table td {
-    display: block;
-    width: 100%;
-  }
-  .checkout-table tr {
-    margin-bottom: 20px;
-    border: 1px solid #2d3748;
-    border-radius: 8px;
-    padding: 15px;
-    background-color: #1f2937;
-  }
-  .checkout-table td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: right;
-    padding: 10px 0;
-    position: relative;
-    border: none;
-    border-bottom: 1px dotted #3a475b;
-  }
-  .checkout-table td:last-child {
-    border-bottom: none;
-  }
-  .checkout-table td::before {
-    content: attr(data-label);
-    text-align: left;
-    font-weight: bold;
-    color: #00d9ff;
-    margin-right: 10px;
-    flex-shrink: 0; 
-    min-width: 100px; 
-  }
-  .checkout-item-image, .no-image-placeholder {
-    max-width: 50px;
-    max-height: 50px;
-  }
-  .item-source-display {
-    text-align: right; 
-    margin-top: 0;
-    margin-left: 5px;
-    font-size: 0.75em;
-  }
-  .checkout-table td[data-label="Nama Pesanan & Asal"] {
-    flex-wrap: wrap;
-  }
-  .checkout-table td[data-label="Nama Pesanan & Asal"] > .item-source-display {
-    width: 100%;
-    text-align: right; 
-    margin-top: 3px;
-  }
-
-  .qty-input {
-    width: 50px;
-    padding: 6px;
-  }
-  .total-text { font-size: 1.2rem; text-align: center;}
-  .checkout-summary button[type="submit"] { font-size: 0.95rem; padding: 12px 25px; width: 100%; max-width: 300px; }
-  .payment-method-selection { padding: 15px; }
-  .payment-method-selection h4 { font-size: 1rem; }
-  .payment-select { max-width: none; } 
-}
+.payment-status-message.success button.btn-small-action { background-color: #28a745; color: white; border: none; }
+.payment-status-message.error button.btn-small-action { background-color: #dc3545; color: white; border: none; }
 </style>
