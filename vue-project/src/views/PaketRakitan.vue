@@ -1,341 +1,80 @@
-<script>
-import { Modal } from 'bootstrap';
-import { cartStore } from '@/store/cartStore';
-import { useRouter } from 'vue-router';
-
-export default {
-  name: "PaketRakitanPC",
-  setup() {
-    const router = useRouter();
-    return { router, cartStore };
-  },
-  data() {
-    return {
-      pcs: [],
-      searchQuery: "",
-      selectedCategoryFilter: "",
-      selectedPCForModal: null,
-      bootstrapPCModal: null,
-      showSimulasi: false,
-      showPreview: false,
-      partsData: {
-        CPU: [ { id: 1, name: "Intel Core i3 10100F", price: 1200000 }, { id: 2, name: "Intel Core i5 12400F", price: 2200000 }, { id: 3, name: "AMD Ryzen 5 5600G", price: 2100000 }, ],
-        GPU: [ { id: 1, name: "GTX 750 Ti 2GB", price: 900000 }, { id: 2, name: "GTX 1650 4GB", price: 1800000 }, { id: 3, name: "RTX 3060 12GB", price: 5500000 }, ],
-        RAM: [ { id: 1, name: "8GB DDR4", price: 350000 }, { id: 2, name: "16GB DDR4", price: 700000 }, { id: 3, name: "32GB DDR4", price: 1400000 }, ],
-        Storage: [ { id: 1, name: "SSD 240GB", price: 350000 }, { id: 2, name: "SSD 512GB", price: 700000 }, { id: 3, name: "SSD NVMe 1TB", price: 1500000 }, ],
-        PSU: [ { id: 1, name: "450W", price: 350000 }, { id: 2, name: "500W", price: 500000 }, { id: 3, name: "750W 80+ Gold", price: 1200000 }, ],
-        Casing: [ { id: 1, name: "Mini ATX", price: 300000 }, { id: 2, name: "ATX RGB", price: 600000 }, { id: 3, name: "Full ATX RGB", price: 900000 }, ],
-      },
-      selectedParts: { CPU: null, GPU: null, RAM: null, Storage: null, PSU: null, Casing: null, },
-      quantities: { CPU: 1, GPU: 1, RAM: 1, Storage: 1, PSU: 1, Casing: 1, },
-      totalPrice: 0,
-    };
-  },
-  async mounted() {
-    try {
-      const res = await fetch('/data/pc.json');
-      this.pcs = await res.json();
-    } catch {
-      this.pcs = [];
-    }
-    const modalElement = this.$refs.pcDetailModalRef;
-    if (modalElement) {
-      this.bootstrapPCModal = new Modal(modalElement);
-      modalElement.addEventListener('hidden.bs.modal', () => {
-        this.selectedPCForModal = null;
-        document.body.style.overflow = '';
-      });
-      modalElement.addEventListener('shown.bs.modal', () => {
-        document.body.style.overflow = 'hidden';
-      });
-    }
-    this.updateTotal();
-  },
-  computed: {
-    filteredPCs() {
-      return this.pcs.filter((pc) => {
-        const matchesSearch = pc.name.toLowerCase().includes(this.searchQuery.toLowerCase());
-        const matchesCategory = this.selectedCategoryFilter ? pc.category === this.selectedCategoryFilter : true;
-        return matchesSearch && matchesCategory;
-      });
-    },
-    uniqueCategoriesList() {
-      const categories = this.pcs.map(pc => pc.category);
-      return [...new Set(categories)].sort();
-    },
-    categoriesWithPCs() {
-      const categoryData = this.uniqueCategoriesList.map(categoryName => {
-        const pcsInCategory = this.filteredPCs.filter(pc => pc.category === categoryName);
-        return { name: categoryName, pcs: pcsInCategory, };
-      });
-      if (this.selectedCategoryFilter) {
-        return categoryData.filter(cat => cat.name === this.selectedCategoryFilter && cat.pcs.length > 0);
-      }
-      return categoryData.filter(cat => cat.pcs.length > 0);
-    }
-  },
-  methods: {
-    formatPrice(value) {
-      if (typeof value !== "number" || isNaN(value)) {
-        return 'Rp 0';
-      }
-      return `Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)}`;
-    },
-    openModal(pc) {
-      this.selectedPCForModal = pc;
-      if (this.bootstrapPCModal) {
-        this.bootstrapPCModal.show();
-      }
-    },
-    closeModal() {
-      if (this.bootstrapPCModal) {
-        this.bootstrapPCModal.hide();
-      }
-    },
-    selectPart(part, item) {
-      this.selectedParts[part] = item;
-      this.quantities[part] = item ? 1 : 1;
-      this.updateTotal();
-    },
-    getSubtotal(part) {
-      const item = this.selectedParts[part];
-      const qty = this.quantities[part] || 1;
-      return item ? item.price * qty : 0;
-    },
-    updateTotal() {
-      let total = 0;
-      for (const part in this.selectedParts) {
-        const item = this.selectedParts[part];
-        const qty = this.quantities[part] || 1;
-        if (item) total += item.price * qty;
-      }
-      this.totalPrice = total;
-    },
-    resetSimulasi() {
-      for (const key in this.selectedParts) {
-        this.selectedParts[key] = null;
-        this.quantities[key] = 1;
-      }
-      this.updateTotal();
-      this.showPreview = false;
-    },
-    saveSimulasi() {
-      this.showPreview = true;
-    },
-    gantiKomponen(part) {
-      this.selectedParts[part] = null;
-      this.quantities[part] = 1;
-      this.updateTotal();
-    },
-    addToCartSimulasi() {
-      const selectedPartsForCart = {};
-      let atLeastOnePartSelected = false;
-      for (const partKey in this.selectedParts) {
-        if (this.selectedParts[partKey]) {
-          atLeastOnePartSelected = true;
-          selectedPartsForCart[partKey] = {
-            name: this.selectedParts[partKey].name,
-            price: this.selectedParts[partKey].price,
-          };
-        }
-      }
-
-      if (!atLeastOnePartSelected) {
-        alert('Pilih minimal satu komponen untuk ditambahkan ke keranjang!');
-        return;
-      }
-
-      const customBuildItem = {
-        id: `sim-${Date.now()}`,
-        source: 'rakitan_kustom',
-        name: 'Simulasi Rakitan Kustom',
-        price: this.totalPrice,
-        qty: 1,
-        category: 'Custom Rakitan',
-        brand: 'JWR Custom',
-        image: 'src/imgcomp/custom_build_placeholder.png',
-        specification: {
-          parts: selectedPartsForCart,
-        }
-      };
-      cartStore.addItem(customBuildItem);
-      alert('Simulasi rakitan berhasil ditambahkan ke keranjang!');
-      this.resetSimulasi();
-    },
-    addPaketToCart(pc) {
-      const paketItem = {
-        id: pc.id,
-        source: 'paket_rakitan',
-        name: pc.name,
-        price: pc.price,
-        qty: 1,
-        category: pc.category,
-        brand: pc.specs.CPU.includes("Intel") ? "Intel Build" : (pc.specs.CPU.includes("AMD") ? "AMD Build" : "JWR Paket"),
-        image: pc.image,
-        specification: Object.entries(pc.specs).map(([key, value]) => `${key}: ${value}`).join('; ')
-      };
-      cartStore.addItem(paketItem);
-      alert(`${pc.name} berhasil ditambahkan ke keranjang!`);
-    },
-    goToCheckout() {
-      if (cartStore.items.length === 0) {
-        alert("Keranjang belanja Anda kosong. Silakan tambahkan produk terlebih dahulu.");
-        return;
-      }
-      this.router.push('/checkout');
-    },
-  },
-  watch: {
-    selectedParts: { handler: 'updateTotal', deep: true },
-    quantities: { handler: 'updateTotal', deep: true }
-  },
-};
-</script>
-
 <template>
   <section class="pc-list-section-bs">
     <div class="container py-4 py-md-5">
-      <h2 class="section-title-bs text-center">Paket Rakitan PC</h2>
+      <h2 class="section-title-bs text-center">Paket Rakitan PC & Simulasi Kustom</h2>
 
-      
+      <!-- Tombol Simulasi -->
       <div class="text-center mb-4">
-        <div class="pembelian-paket-highlight d-inline-block position-relative">
-          <button
-            class="btn btn-pembelian-paket-bs"
-            @click="showSimulasi = !showSimulasi"
-          >
-            {{ showSimulasi ? 'Tutup Simulasi Kustom' : 'Buat Rakitan Kustom' }}
-          </button>
-          <div class="paket-pointer-efek"></div>
-        </div>
+        <button class="btn btn-pembelian-paket-bs" @click="showSimulasi = !showSimulasi">
+          {{ showSimulasi ? 'Tutup Simulasi Kustom' : 'Buat Rakitan Kustom' }}
+        </button>
       </div>
+
+      <!-- Bagian Simulasi Kustom -->
       <transition name="fade-slide">
-        <div v-if="showSimulasi" class="row justify-content-center mb-4">
-          <div class="col-12">
-            <div class="simulasi-form-bs p-3 rounded-3 mb-3 shadow-lg animate-glow">
-              <table class="table table-dark table-bordered align-middle mb-0 simulasi-table-bs">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Komponen</th>
-                    <th style="width: 35%;">Nama</th>
-                    <th style="width: 10%;">Harga</th>
-                    <th style="width: 15%;">Jumlah</th>
-                    <th style="width: 10%;">Subtotal</th>
-                    <th style="width: 10%;">Produk</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(options, part) in partsData" :key="part" class="simulasi-row-bs">
-                    <td><strong>{{ part }}</strong></td>
-                    <td>
-                      <span v-if="selectedParts[part]">{{ selectedParts[part].name }}</span>
-                      <span v-else class="text-muted">Belum dipilih</span>
-                    </td>
-                    <td>
-                      <span v-if="selectedParts[part]">{{ formatPrice(selectedParts[part].price) }}</span>
-                      <span v-else>-</span>
-                    </td>
-                    <td>
-                      <input
-                        v-if="selectedParts[part]"
-                        type="number"
-                        min="1"
-                        class="form-control form-control-sm"
-                        style="width: 70px;"
-                        v-model.number="quantities[part]"
-                      />
-                      <span v-else>-</span>
-                    </td>
-                    <td>
-                      <span v-if="selectedParts[part]">{{ formatPrice(getSubtotal(part)) }}</span>
-                      <span v-else>-</span>
-                    </td>
-                    <td>
-                      <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-info dropdown-toggle" type="button"
-                          data-bs-toggle="dropdown" :id="'dropdown-'+part">
-                          Pilih
-                        </button>
-                        <ul class="dropdown-menu" :aria-labelledby="'dropdown-'+part">
-                          <li v-for="item in options" :key="item.id">
-                            <a class="dropdown-item" href="#" @click.prevent="selectPart(part, item)">
-                              {{ item.name }} ({{ formatPrice(item.price) }})
-                            </a>
-                          </li>
-                          <li>
-                            <a class="dropdown-item text-danger" href="#" @click.prevent="selectPart(part, null)">
-                              Kosongkan
-                            </a>
-                          </li>
-                          <li v-if="selectedParts[part]">
-                            <hr class="dropdown-divider" />
-                            <a class="dropdown-item text-warning" href="#" @click.prevent="gantiKomponen(part)">
-                              Ganti Komponen
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-                <div class="total-bs fs-5 fw-bold neon-text-glow">Total Simulasi: {{ formatPrice(totalPrice) }}</div>
-                <div class="d-flex flex-wrap align-items-center">
-                  <button class="btn btn-secondary me-2 mt-1 mt-md-0" @click="resetSimulasi">Reset</button>
-                  <button class="btn btn-info me-2 mt-1 mt-md-0" @click="saveSimulasi" :disabled="totalPrice === 0">
-                    Preview Rakitan
-                  </button>
-                  <button class="btn btn-success me-2 mt-1 mt-md-0" @click="addToCartSimulasi" :disabled="totalPrice === 0">
-                    <i class="bi bi-cart-plus-fill"></i> Tambah ke Keranjang
-                  </button>
-                </div>
-              </div>
-              
-              <div v-if="showPreview" class="preview-simulasi-bs mt-4 p-3 rounded-3">
-                <h5 class="mb-3">Preview Rakitan Kustom</h5>
-                <ul class="list-group mb-2">
-                  <li v-for="(item, part) in selectedParts" :key="part" v-if="item"
-                      class="list-group-item bg-transparent text-light border-secondary py-1 px-2">
-                    <strong>{{ part }}:</strong> {{ item.name }} x{{ quantities[part] }} ({{ formatPrice(item.price) }}) = <span class="fw-bold">{{ formatPrice(getSubtotal(part)) }}</span>
-                  </li>
-                </ul>
-                <div class="fw-bold neon-text-glow">Total: {{ formatPrice(totalPrice) }}</div>
+        <div v-if="showSimulasi" class="simulasi-form-bs p-3 rounded-3 mb-4 shadow-lg">
+          <div v-if="loadingParts" class="text-center p-5">Memuat komponen...</div>
+          <div v-else-if="partsError" class="text-center p-5 text-danger">{{ partsError }}</div>
+          <div v-else>
+            <table class="table table-dark table-bordered align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Komponen</th><th>Nama</th><th>Harga</th><th>Pilihan</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(options, part) in partsData" :key="part">
+                  <td><strong>{{ part.replace(/_/g, ' ') }}</strong></td>
+                  <td>{{ selectedParts[part] ? selectedParts[part].name : 'Belum dipilih' }}</td>
+                  <td>{{ selectedParts[part] ? formatPrice(selectedParts[part].price) : '-' }}</td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-info dropdown-toggle" type="button" data-bs-toggle="dropdown" :disabled="options.length === 0">
+                        {{ options.length > 0 ? 'Pilih' : 'Kosong' }}
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li v-for="item in options" :key="item.id">
+                          <a class="dropdown-item" href="#" @click.prevent="selectPart(part, item)">{{ item.name }} ({{ formatPrice(item.price) }})</a>
+                        </li>
+                        <li v-if="options.length === 0"><span class="dropdown-item-text text-muted">Komponen tidak tersedia</span></li>
+                        <li v-if="selectedParts[part]"><hr class="dropdown-divider"><a class="dropdown-item text-danger" href="#" @click.prevent="selectPart(part, null)">Kosongkan</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <div class="total-bs fs-5 fw-bold">Total Simulasi: {{ formatPrice(totalSimulasi) }}</div>
+              <div>
+                <button class="btn btn-secondary me-2" @click="resetSimulasi">Reset</button>
+                <button class="btn btn-success" @click="addToCartSimulasi" :disabled="!isSimulasiLengkap" title="Harap lengkapi semua komponen">
+                  Tambah ke Keranjang
+                </button>
               </div>
             </div>
           </div>
         </div>
       </transition>
-
       
+      <!-- Keranjang Belanja Global -->
       <div class="text-center my-4 py-3 border-top border-bottom border-secondary">
-        <h4 class="mb-3">Keranjang Belanja Global</h4>
-        <p v-if="cartStore.items.length > 0" class="mb-2">
-          Total Item: {{ cartStore.items.reduce((acc, item) => acc + item.qty, 0) }} | Total Harga: <span class="text-success fw-bold">{{ formatPrice(cartStore.totalPrice) }}</span>
-        </p>
-        <p v-else class="text-muted mb-2">Keranjang belanja utama masih kosong.</p>
-        <button class="btn btn-success btn-lg px-5" @click="goToCheckout">
-           <i class="bi bi-cart-check-fill me-2"></i> Lihat Keranjang & Checkout
-        </button>
+        <h4>Keranjang Belanja Global</h4>
+        <p v-if="cartStore.items.length > 0">Total Item: {{ cartStore.items.length }} | Total Harga: <span class="text-success fw-bold">{{ formatPrice(cartStore.totalPrice) }}</span></p>
+        <p v-else class="text-muted">Keranjang belanja utama masih kosong.</p>
+        <button class="btn btn-success btn-lg px-5" @click="goToCheckout">Lihat Keranjang & Checkout</button>
       </div>
 
-
-      
+      <!-- Filter untuk Paket Jadi -->
       <div class="row justify-content-center mb-4">
         <div class="col-lg-10 col-xl-8">
           <div class="filters-bs p-3 rounded-3">
             <div class="row g-2 g-md-3 align-items-center">
               <div class="col-md">
-                <input
-                  type="text"
-                  v-model="searchQuery"
-                  placeholder="Cari nama paket..."
-                  class="form-control form-control-lg search-box-bs"
-                  aria-label="Cari rakitan PC"
-                />
+                <input type="text" v-model="searchQuery" placeholder="Cari nama paket..." class="form-control form-control-lg"/>
               </div>
               <div class="col-md-auto">
-                <select v-model="selectedCategoryFilter" class="form-select form-select-lg filter-select-bs" aria-label="Pilih kategori rakitan">
+                <select v-model="selectedCategoryFilter" class="form-select form-select-lg">
                   <option value="">Semua Kategori</option>
                   <option v-for="cat in uniqueCategoriesList" :key="cat" :value="cat">{{ cat }}</option>
                 </select>
@@ -345,73 +84,29 @@ export default {
         </div>
       </div>
 
-      
-      <div v-if="filteredPCs.length > 0">
+      <!-- Tampilan Paket Jadi -->
+      <div v-if="loadingPCs" class="text-center py-5">Memuat paket rakitan...</div>
+      <div v-else-if="errorPCs" class="text-center text-danger py-5">{{ errorPCs }}</div>
+      <div v-else-if="filteredPCs.length > 0">
         <div v-for="categoryData in categoriesWithPCs" :key="categoryData.name" class="category-section-bs mb-5">
-          <div class="category-header-bs text-center" :style="categoryData.backgroundImage ? { '--bg-image': `url(${categoryData.backgroundImage})` } : {}">
-            <h3 class="category-title-bs position-relative d-inline-block px-sm-4 px-3 py-2">{{ categoryData.name }}</h3>
+          <div class="category-header-bs text-center">
+            <h3 class="category-title-bs">{{ categoryData.name }}</h3>
           </div>
-
           <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-3 g-lg-4 justify-content-center">
-            <div
-              v-for="pc in categoryData.pcs"
-              :key="pc.id"
-              class="col d-flex align-items-stretch"
-            >
-              <div
-                class="card h-100 card-bs"
-                role="button" 
-                tabindex="0"
-              >
-                <div 
-                  class="card-img-wrapper-bs pc-bg-wrapper"
-                  @click="openModal(pc)"
-                  @keydown.enter="openModal(pc)"
-                  @keydown.space="openModal(pc)"
-                >
-                  <div class="pc-bg-decor"></div>
-                  <svg class="pc-curve-decor" width="100" height="40" viewBox="0 0 100 40" fill="none">
-                    <path d="M0,35 Q50,0 100,35" stroke="#00ffe7" stroke-width="2.5" fill="none" opacity="0.18"/>
-                  </svg>
-                  <span class="pc-star star1"></span>
-                  <span class="pc-star star2"></span>
-                  <span class="pc-star star3"></span>
+            <div v-for="pc in categoryData.pcs" :key="pc.id" class="col d-flex align-items-stretch">
+              <div class="card h-100 card-bs" role="button" tabindex="0">
+                <div class="card-img-wrapper-bs" @click="openModal(pc)">
                   <img :src="pc.image" :alt="pc.name" class="card-img-top card-img-bs" />
                 </div>
                 <div class="card-body d-flex flex-column p-3">
-                  <h4 
-                    class="card-title card-title-bs mb-2" 
-                    @click="openModal(pc)"
-                    @keydown.enter="openModal(pc)"
-                  >{{ pc.name }}</h4>
-                  <p 
-                    class="card-text-desc-bs small mb-2"
-                    @click="openModal(pc)"
-                  >{{ pc.description }}</p>
-                  
-                  <div class="d-flex flex-wrap align-items-center justify-content-center mb-2 gap-2">
-                    <span
-                      class="badge"
-                      :class="pc.price < 10000000 ? 'bg-success text-light' : 'bg-danger text-light'"
-                      style="font-size:0.95em;"
-                    >
-                      {{ pc.price < 10000000 ? 'Ready Stock' : 'Stock Kosong' }}
-                    </span>
-                    <button
-                      v-if="pc.price < 10000000"
-                      class="btn btn-sm btn-primary" 
-                      @click.stop="addPaketToCart(pc)"
-                    >
+                  <h4 class="card-title card-title-bs mb-2" @click="openModal(pc)">{{ pc.name }}</h4>
+                  <p class="card-text-desc-bs small mb-2" @click="openModal(pc)">{{ pc.description }}</p>
+                  <div class="mt-auto">
+                    <p class="card-text card-text-price-bs mb-2"><strong>Harga:</strong> {{ formatPrice(pc.price) }}</p>
+                    <button class="btn btn-sm btn-primary w-100" @click.stop="addPaketToCart(pc)">
                       <i class="bi bi-cart-plus-fill me-1"></i> Tambah ke Keranjang
                     </button>
                   </div>
-                  
-                  <p 
-                    class="card-text card-text-price-bs mt-auto mb-0"
-                    @click="openModal(pc)"
-                  >
-                    <strong>Harga:</strong> {{ formatPrice(pc.price) }}
-                  </p>
                 </div>
               </div>
             </div>
@@ -422,29 +117,25 @@ export default {
         <p>Tidak ada rakitan PC yang cocok dengan kriteria pencarian Anda.</p>
       </div>
 
-      
-      <div class="modal fade" id="pcDetailModalBs" tabindex="-1" aria-labelledby="pcDetailModalLabelBs" aria-hidden="true" ref="pcDetailModalRef">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+      <!-- Modal Detail Paket Jadi -->
+      <div class="modal fade" id="pcDetailModalBs" tabindex="-1" ref="pcDetailModalRef">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
           <div class="modal-content modal-content-bs">
-            <div class="modal-header modal-header-bs">
-              <h5 class="modal-title w-100 text-center modal-pc-title-bs" id="pcDetailModalLabelBs">
-                {{ selectedPCForModal?.name }}
-              </h5>
-              <button type="button" class="btn-close modal-close-button-bs" @click="closeModal" aria-label="Tutup detail rakitan"></button>
+            <div class="modal-header">
+              <h5 class="modal-title w-100 text-center">{{ selectedPCForModal?.name }}</h5>
+              <button type="button" class="btn-close" @click="closeModal"></button>
             </div>
-            <div class="modal-body modal-body-bs">
-              <div v-if="selectedPCForModal" class="row g-3 g-lg-4 align-items-center">
+            <div class="modal-body">
+              <div v-if="selectedPCForModal" class="row">
                 <div class="col-lg-5 text-center">
-                  <img :src="selectedPCForModal.image" :alt="selectedPCForModal.name" class="img-fluid rounded modal-image-bs" />
+                  <img :src="selectedPCForModal.image" :alt="selectedPCForModal.name" class="img-fluid rounded" />
                 </div>
-                <div class="col-lg-7 modal-details-text">
-                  <div class="modal-info-group mb-3">
-                    <p><strong>Kategori:</strong> {{ selectedPCForModal.category }}</p>
-                    <p><strong>Harga:</strong> {{ formatPrice(selectedPCForModal.price) }}</p>
-                    <p class="mb-2"><strong>Deskripsi:</strong> {{ selectedPCForModal.description }}</p>
-                  </div>
-                  <div v-if="selectedPCForModal.specs" class="specs-section-bs">
-                    <h4 class="text-center text-lg-start">Spesifikasi Detail:</h4>
+                <div class="col-lg-7">
+                  <p><strong>Kategori:</strong> {{ selectedPCForModal.category }}</p>
+                  <p><strong>Harga:</strong> {{ formatPrice(selectedPCForModal.price) }}</p>
+                  <p><strong>Deskripsi:</strong> {{ selectedPCForModal.description }}</p>
+                  <div v-if="selectedPCForModal.specs">
+                    <h4>Spesifikasi Detail:</h4>
                     <ul>
                       <li v-for="(value, key) in selectedPCForModal.specs" :key="key">
                         <strong>{{ key }}:</strong> {{ value }}
@@ -454,22 +145,193 @@ export default {
                 </div>
               </div>
             </div>
-             <div class="modal-footer d-flex justify-content-center">
-                <button 
-                    v-if="selectedPCForModal && selectedPCForModal.price < 10000000" 
-                    type="button" 
-                    class="btn btn-primary" 
-                    @click="addPaketToCart(selectedPCForModal); closeModal();">
-                    <i class="bi bi-cart-plus-fill"></i> Tambah ke Keranjang
-                </button>
-                <button type="button" class="btn btn-secondary" @click="closeModal">Tutup</button>
-            </div>
           </div>
         </div>
       </div>
+
     </div>
   </section>
 </template>
+
+<script>
+import { Modal } from 'bootstrap';
+import { cartStore } from '@/store/cartStore';
+import { useRouter } from 'vue-router';
+import apiClient from '@/services/api.js';
+
+export default {
+  name: "PaketRakitanPC",
+  setup() {
+    const router = useRouter();
+    return { router, cartStore };
+  },
+  data() {
+    return {
+      // Data untuk Paket Jadi
+      pcs: [],
+      loadingPCs: true,
+      errorPCs: null,
+      searchQuery: "",
+      selectedCategoryFilter: "",
+      selectedPCForModal: null,
+      bootstrapPCModal: null,
+
+      // Data untuk Simulasi
+      showSimulasi: false,
+      partsData: {},
+      loadingParts: true,
+      partsError: null,
+      selectedParts: {},
+    };
+  },
+  async created() {
+    this.fetchPaketRakitans();
+    this.fetchPcPartsForSimulasi();
+  },
+  computed: {
+    // --- Computed untuk Paket Jadi ---
+    uniqueCategoriesList() {
+      if (!this.pcs || this.pcs.length === 0) return [];
+      const categories = this.pcs.map(pc => pc.category);
+      return [...new Set(categories)].sort();
+    },
+    filteredPCs() {
+      if (!this.pcs) return [];
+      return this.pcs.filter((pc) => {
+        const matchesSearch = pc.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+        const matchesCategory = this.selectedCategoryFilter ? pc.category === this.selectedCategoryFilter : true;
+        return matchesSearch && matchesCategory;
+      });
+    },
+    categoriesWithPCs() {
+      if (this.uniqueCategoriesList.length === 0) return [];
+      const categoryData = this.uniqueCategoriesList.map(categoryName => ({
+          name: categoryName,
+          pcs: this.filteredPCs.filter(pc => pc.category === categoryName),
+      }));
+      if (this.selectedCategoryFilter) {
+        return categoryData.filter(cat => cat.name === this.selectedCategoryFilter && cat.pcs.length > 0);
+      }
+      return categoryData.filter(cat => cat.pcs.length > 0);
+    },
+
+    // --- Computed untuk Simulasi ---
+    totalSimulasi() {
+      return Object.values(this.selectedParts).reduce((total, part) => {
+        return total + (part ? Number(part.price) : 0);
+      }, 0);
+    },
+    isSimulasiLengkap() {
+      if (Object.keys(this.partsData).length === 0) return false;
+      for (const partKey in this.partsData) {
+        if (!this.selectedParts[partKey]) return false;
+      }
+      return true;
+    }
+  },
+  methods: {
+    // --- Metode untuk Paket Jadi ---
+    async fetchPaketRakitans() {
+      this.loadingPCs = true;
+      this.errorPCs = null;
+      try {
+        const response = await apiClient.get('/pc-rakitans');
+        this.pcs = response.data;
+      } catch (error) {
+        console.error("Gagal memuat paket rakitan:", error);
+        this.errorPCs = "Gagal memuat data paket rakitan.";
+      } finally {
+        this.loadingPCs = false;
+      }
+    },
+    addPaketToCart(pc) {
+      const paketItem = {
+        id: pc.id,
+        source: 'paket_rakitan',
+        name: pc.name,
+        price: pc.price,
+        qty: 1,
+        category: pc.category,
+        brand: 'Rakitan',
+        image: pc.image,
+        specification: Object.entries(pc.specs).map(([key, value]) => `${key}: ${value}`).join('; ')
+      };
+      cartStore.addItem(paketItem);
+      alert(`${pc.name} berhasil ditambahkan ke keranjang!`);
+    },
+    openModal(pc) {
+      this.selectedPCForModal = pc;
+      if (!this.bootstrapPCModal) {
+        this.bootstrapPCModal = new Modal(this.$refs.pcDetailModalRef);
+      }
+      this.bootstrapPCModal.show();
+    },
+    closeModal() {
+      if (this.bootstrapPCModal) this.bootstrapPCModal.hide();
+    },
+
+    // --- Metode untuk Simulasi Kustom ---
+    async fetchPcPartsForSimulasi() {
+      this.loadingParts = true;
+      this.partsError = null;
+      try {
+        const response = await apiClient.get('/simulasi-parts');
+        this.partsData = response.data;
+        this.resetSimulasi();
+      } catch (error) {
+        console.error("Gagal memuat komponen PC:", error);
+        this.partsError = "Gagal memuat komponen untuk simulasi.";
+      } finally {
+        this.loadingParts = false;
+      }
+    },
+    selectPart(part, item) {
+      this.selectedParts[part] = item;
+    },
+    resetSimulasi() {
+      const initialSelection = {};
+      for (const partKey in this.partsData) {
+        initialSelection[partKey] = null;
+      }
+      this.selectedParts = initialSelection;
+    },
+    addToCartSimulasi() {
+      if (!this.isSimulasiLengkap) {
+        alert('Harap lengkapi semua komponen sebelum melanjutkan!');
+        return;
+      }
+      const selectedForCart = {};
+      for (const partKey in this.selectedParts) {
+        selectedForCart[partKey] = {
+          name: this.selectedParts[partKey].name,
+          price: this.selectedParts[partKey].price,
+        };
+      }
+      const customBuildItem = {
+        id: `sim-${Date.now()}`,
+        source: 'rakitan_kustom',
+        name: 'Simulasi Rakitan Kustom',
+        price: this.totalSimulasi,
+        qty: 1,
+        image: '/path/to/placeholder.png', // Sesuaikan path placeholder jika perlu
+        specification: { parts: selectedForCart }
+      };
+      cartStore.addItem(customBuildItem);
+      alert('Simulasi rakitan berhasil ditambahkan ke keranjang!');
+      this.resetSimulasi();
+      this.showSimulasi = false;
+    },
+
+    // --- Metode Umum ---
+    formatPrice(value) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value || 0);
+    },
+    goToCheckout() {
+      this.router.push('/checkout');
+    },
+  },
+};
+</script>
 
 <style scoped>
 .pc-list-section-bs {
