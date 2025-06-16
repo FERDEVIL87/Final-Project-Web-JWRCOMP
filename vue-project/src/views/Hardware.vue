@@ -479,6 +479,7 @@ export default {
 .form-range::-ms-thumb {
   background-color: #00d9ff;
 }
+
 .modal-footer {
     border-top-color: var(--bs-secondary);
 }
@@ -502,6 +503,11 @@ h2.text-center.fw-bold.mb-4::after {
   border-radius: 2px;
   background: linear-gradient(90deg, #00d9ff 0%, #007bff 100%);
 }
+
+.text-muted{
+  color: white !important;
+}
+
 @media (max-width: 575.98px) {
   h2.text-center.fw-bold.mb-4::after {
     width: 50px;

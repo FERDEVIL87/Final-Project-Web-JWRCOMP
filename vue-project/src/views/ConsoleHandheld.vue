@@ -340,6 +340,11 @@ export default {
 .modal-footer {
     border-top-color: var(--bs-secondary);
 }
+
+.mb-2{
+  color: white !important;
+}
+
 .btn-close-white {
     filter: invert(1) grayscale(100%) brightness(200%);
 }

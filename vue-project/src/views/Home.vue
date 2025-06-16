@@ -73,13 +73,13 @@ const formatDate = (dateString) => {
 
 // --- DATA STATIS UNTUK TIM ---
 const team = ref([
-  { name: "Aldo Pratama", role: "Project Manager", photo: "https://randomuser.me/api/portraits/men/32.jpg" },
-  { name: "Bella Salsabila", role: "Frontend Developer", photo: "https://randomuser.me/api/portraits/women/44.jpg" },
-  { name: "Cahyo Nugroho", role: "Backend Developer", photo: "https://randomuser.me/api/portraits/men/45.jpg" },
-  { name: "Dewi Lestari", role: "UI/UX Designer", photo: "https://randomuser.me/api/portraits/women/65.jpg" },
-  { name: "Eka Saputra", role: "DevOps Engineer", photo: "https://randomuser.me/api/portraits/men/77.jpg" },
-  { name: "Fani Rahmawati", role: "Quality Assurance", photo: "https://randomuser.me/api/portraits/women/12.jpg" },
-  { name: "Gilang Ramadhan", role: "Fullstack Developer", photo: "https://randomuser.me/api/portraits/men/23.jpg" }
+  { name: "Ferdy Syaifanoor", nim: "23.11.54", peran: "Frontend Developer", photo: "/imgprofil/ferdy.jpg.png" },
+  { name: "Dhimas Apryza H", nim: "23.11.5495", peran: "Backend Developer", photo: "/imgprofil/dhimas.jpg.png" },
+  { name: "Didit Gunawan", nim: "23.11.5462", peran: "UI/UX Designer", photo: "/imgprofil/didit.jpeg" },
+  { name: "Eri Oktafianto", nim: "23.11.5482", peran: "Database Engineer", photo: "/imgprofil/eri.png" },
+  { name: "R.M Alfarizky C.K", nim: "23.11.5473", peran: "Project Manager", photo: "/imgprofil/alfarizky.jpg.png" },
+  { name: "Ahmad Rafi H", nim: "23.11.5474", peran: "Quality Assurance", photo: "/imgprofil/rafi.png" },
+  { name: "Naufal Zaky A.P", nim: "23.11.5455", peran: "DevOps", photo: "/imgprofil/naufal.jpg.png" }
 ]);
 
 // --- ONMOUNTED HOOK ---
@@ -272,21 +272,26 @@ onMounted(() => {
           <p class="text-muted" style="font-size:1.1rem;">7 orang kreatif di balik pengembangan website ini</p>
         </div>
         <div class="row justify-content-center g-4">
-          <div
-            v-for="member in team"
-            :key="member.name"
-            class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center"
-          >
-            <div class="team-card text-center p-4">
-              <img
-                :src="member.photo"
-                :alt="member.name"
-                class="team-photo mb-3"
-              />
-              <h5 class="mb-1 text-info fw-semibold">{{ member.name }}</h5>
-              <p class="mb-0 text-secondary" style="font-size:0.98rem;">{{ member.role }}</p>
-            </div>
-          </div>
+<div
+  v-for="member in team"
+  :key="member.name"
+  class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center"
+>
+  <div class="team-card text-center p-4">
+    <img
+      :src="member.photo"
+      :alt="member.name"
+      class="team-photo mb-3"
+    />
+    <h5 class="mb-1 text-info fw-semibold">{{ member.name }}</h5>
+    <p class="mb-0 text-secondary" style="font-size:0.98rem;">
+      <strong>NIM:</strong> {{ member.nim }}
+    </p>
+    <p class="mb-0 text-secondary" style="font-size:0.98rem;">
+      <strong>Peran:</strong> {{ member.peran }}
+    </p>
+  </div>
+</div>
         </div>
       </div>
     </section>
@@ -1045,6 +1050,10 @@ onMounted(() => {
 }
 .text-secondary {
   color: #adb5bd !important;
+}
+
+.text-muted{
+  color: white !important;
 }
 
 @media (max-width: 992px) {

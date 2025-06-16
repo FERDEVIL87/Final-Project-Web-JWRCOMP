@@ -783,6 +783,11 @@ export default {
 .modal-body-bs {
   padding: 1.25rem;
 }
+
+.text-muted{
+  color: white !important;
+}
+
 .modal-image-bs {
   width: 100%;
   max-width: 280px;

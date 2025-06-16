@@ -436,6 +436,10 @@ export default {
   text-overflow: ellipsis;
   min-height: calc(0.8rem * 1.4 * 2);
 }
+
+.text-muted{
+  color: white !important;
+}
 .card-text-price-bs {
   font-size: 0.95rem;
   font-weight: bold;
