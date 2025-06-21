@@ -12,7 +12,9 @@
     <!-- Bootstrap Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold">Manajemen Backend</a>
+            <a class="navbar-brand fw-bold" href="{{ route('dashboard') }}">
+                <img src="{{ asset('logo.webp') }}" alt="Logo" height="40">
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar" aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
