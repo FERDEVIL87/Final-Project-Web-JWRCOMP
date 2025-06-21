@@ -1,4 +1,4 @@
-# Final-Project-Web
+# Final-Project-Web JWR Comp
 - Ferdy / 23.11.5484
 - Eri / 23.11.5482
 - Didit / 23.11.5462
