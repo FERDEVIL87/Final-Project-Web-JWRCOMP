@@ -5,7 +5,8 @@
 - Dhimas / 23.11.5495
 - Kiki / 23.11.5473
 - Rafi / 23.11.5474
-
+- Zaky / 23.11.5455
+  
   Tutor Setup dan Running :
 1.buka vscode
 2.clone url ini
@@ -59,4 +60,4 @@
 
 
 
-- Zaky / 23.11.5455
+
