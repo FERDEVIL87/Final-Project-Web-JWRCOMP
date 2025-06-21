@@ -82,12 +82,47 @@
         </div>
       </form>
     </div>
+
+    <!-- ========================================================== -->
+    <!-- BAGIAN CEK STATUS PESANAN (DIUBAH) -->
+    <!-- ========================================================== -->
+    <div class="status-checker-container mt-5">
+      <h3>Cek Status Pesanan Anda</h3>
+      <form @submit.prevent="checkOrderStatus">
+        <div class="input-group">
+          <!-- Ganti input email menjadi input nama -->
+          <input type="text" v-model="statusCheckName" class="form-control" placeholder="Masukkan Nama Lengkap Pemesan" required>
+          <button class="btn btn-outline-info" type="submit" :disabled="loadingStatus">
+            {{ loadingStatus ? 'Mencari...' : 'Cek Status' }}
+          </button>
+        </div>
+      </form>
+
+      <div v-if="loadingStatus" class="mt-3 text-center">Mencari pesanan...</div>
+      <div v-if="statusError" class="mt-3 alert alert-danger">{{ statusError }}</div>
+
+      <!-- Tampilkan riwayat jika ditemukan -->
+      <div v-if="Object.keys(orderHistory).length > 0" class="mt-4">
+        <h4>Riwayat Pesanan untuk: {{ statusCheckName }}</h4>
+        <div v-for="(items, transactionId) in orderHistory" :key="transactionId" class="order-history-card">
+          <p><strong>ID Transaksi:</strong> {{ transactionId }}</p>
+          <p><strong>Status:</strong> <span class="fw-bold">{{ items[0].status_order }}</span></p>
+          <p><strong>Tanggal:</strong> {{ new Date(items[0].purchase_date).toLocaleDateString('id-ID') }}</p>
+          <ul>
+            <li v-for="item in items" :key="item.id">{{ item.product_name }} (x{{ item.quantity }})</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- ========================================================== -->
+
   </div>
 </template>
 
 <script>
 import { cartStore } from '@/store/cartStore';
-import apiClient from '@/services/api.js'; // Use centralized API client
+import apiClient from '@/services/api.js';
+import '@/assets/co.css';
 
 export default {
   setup() {
@@ -102,7 +137,12 @@ export default {
         name: '',
         address: '',
         phone: ''
-      }
+      },
+      // State baru untuk cek status berdasarkan nama
+      statusCheckName: '', // <-- Diubah dari statusCheckEmail
+      loadingStatus: false,
+      statusError: '',
+      orderHistory: {}, // Diubah jadi object agar Object.keys() berfungsi
     };
   },
   methods: {
@@ -169,218 +209,28 @@ export default {
         this.isLoadingPayment = false;
       }
     },
+    // Metode baru untuk cek status
+    async checkOrderStatus() {
+      if (!this.statusCheckName) return;
+      this.loadingStatus = true;
+      this.statusError = '';
+      this.orderHistory = {};
+      try {
+        // Kirim 'customer_name' sebagai payload
+        const response = await apiClient.post('/order-status', { customer_name: this.statusCheckName });
+        
+        if (Object.keys(response.data).length === 0) {
+            this.statusError = "Tidak ada riwayat pesanan yang ditemukan untuk nama ini.";
+        } else {
+            this.orderHistory = response.data;
+        }
+      } catch (error) {
+        this.statusError = "Gagal mengambil data status pesanan.";
+        console.error(error);
+      } finally {
+        this.loadingStatus = false;
+      }
+    }
   }
 };
 </script>
-
-<style scoped>
-/* Tambahkan style untuk form customer */
-.customer-details-form {
-  margin-bottom: 40px;
-  padding: 25px;
-  background-color: #1f2937;
-  border-radius: 8px;
-  border: 1px solid #2d3748;
-}
-.customer-details-form h4 {
-  font-size: 1.2rem;
-  color: #00d9ff;
-  margin-bottom: 20px;
-  font-family: 'Orbitron', sans-serif;
-}
-.form-group {
-  margin-bottom: 15px;
-}
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: #a0aec0;
-}
-.form-control-checkout {
-  width: 100%;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #3a475b;
-  background: #161a27;
-  color: #e0e0e0;
-  font-size: 0.95rem;
-}
-.form-control-checkout:focus {
-  border-color: #00d9ff;
-  box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.2);
-  outline: none;
-}
-/* Sisa CSS bisa dibiarkan sama */
-/* ... */
-.checkout-container {
-  max-width: 1100px;
-  margin: 30px auto;
-  padding: 25px;
-  background-color: #161a27;
-  color: #e8eff5;
-  border-radius: 12px;
-  font-family: 'Roboto', sans-serif;
-  border: 1px solid rgba(0, 217, 255, 0.25);
-  box-shadow: 0 6px 25px rgba(0, 217, 255, 0.1);
-}
-
-.checkout-container h2 {
-  text-align: center;
-  color: #00d9ff;
-  font-family: 'Orbitron', sans-serif;
-  margin-bottom: 30px;
-  text-shadow: 0 0 8px rgba(0, 217, 255, 0.7);
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-}
-
-.empty-cart-message {
-  text-align: center;
-  padding: 50px 20px;
-  font-size: 1.2rem;
-  color: #adb5bd;
-  background-color: rgba(31, 41, 55, 0.5);
-  border-radius: 8px;
-  border: 1px solid #2d3748;
-}
-
-.table-responsive {
-  overflow-x: auto;
-  margin-bottom: 20px;
-}
-
-.checkout-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.checkout-table th, .checkout-table td {
-  border: 1px solid #2d3748;
-  padding: 12px 15px;
-  text-align: left;
-  vertical-align: middle;
-}
-
-.checkout-table th {
-  background-color: #1f2937;
-  color: #00d9ff;
-  font-weight: 600;
-  white-space: nowrap; 
-}
-
-.checkout-item-image {
-  max-width: 70px;
-  max-height: 70px;
-  object-fit: contain;
-  border-radius: 6px;
-  background-color: #252f42;
-  border: 1px solid #3a475b;
-}
-
-.qty-input {
-  width: 65px;
-  padding: 8px 10px;
-  border-radius: 5px;
-  border: 1px solid #3a475b;
-  background: #1f2937;
-  color: #e0e0e0;
-  text-align: center;
-}
-
-.remove-item-button {
-  background-color: transparent;
-  color: #ff6b6b;
-  border: 1px solid #ff6b6b;
-  padding: 7px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.8rem;
-}
-
-.checkout-summary {
-  margin-top: 30px;
-  padding-top: 25px;
-  border-top: 1px solid #2d3748;
-}
-
-.total-text {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: #00d9ff;
-  margin-bottom: 25px;
-  text-align: right;
-}
-
-.checkout-summary button[type="submit"] { 
-  padding: 14px 35px;
-  background: linear-gradient(45deg, #00d9ff, #00aaff);
-  color: #111622;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  display: block; 
-  margin: 0 auto; 
-}
-.checkout-summary button[type="submit"]:disabled {
-  background: #4a5568;
-  cursor: not-allowed;
-}
-
-.payment-loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(22, 26, 39, 0.9);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1050; 
-  color: #e8eff5;
-  backdrop-filter: blur(5px);
-}
-
-.spinner {
-  border: 6px solid #3a475b;
-  border-top: 6px solid #00d9ff;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.payment-status-message {
-  padding: 25px;
-  margin: 30px auto;
-  border-radius: 8px;
-  text-align: center;
-  max-width: 600px;
-  line-height: 1.6;
-}
-.payment-status-message.success {
-  background-color: #1f2937;
-  border: 1px solid #28a745;
-  color: #d4edda;
-}
-.payment-status-message.error {
-  background-color: #1f2937;
-  border: 1px solid #dc3545;
-  color: #f8d7da;
-}
-.payment-status-message button.btn-small-action {
-  margin-top: 20px;
-  padding: 10px 22px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.payment-status-message.success button.btn-small-action { background-color: #28a745; color: white; border: none; }
-.payment-status-message.error button.btn-small-action { background-color: #dc3545; color: white; border: none; }
-</style>

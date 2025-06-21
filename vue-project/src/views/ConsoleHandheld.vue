@@ -62,7 +62,7 @@
       <div v-else-if="filteredConsoles.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-2" style="min-height:320px;">
         <div v-for="consoleItem in filteredConsoles" :key="consoleItem.id" class="col">
           <div class="card h-100 border-info text-light d-flex flex-column" role="button" @click="showDetails(consoleItem)">
-            <img :src="consoleItem.image" :alt="consoleItem.name" class="card-img-top" style="height:120px;object-fit:cover;background:#101829;" loading="lazy"/>
+            <img :src="getImageUrl(consoleItem.image)" :alt="consoleItem.name" class="card-img-top" style="height:120px;object-fit:cover;background:#101829;" loading="lazy"/>
             <div class="card-body py-2 d-flex flex-column flex-grow-1">
               <h4 class="card-title fw-bold mb-1" style="font-family:'Orbitron',sans-serif;color:#fff;">{{ consoleItem.name }}</h4>
               <p class="mb-1"><span class="fw-semibold">Brand:</span> {{ consoleItem.brand }}</p>
@@ -87,7 +87,7 @@
             <button type="button" class="btn-close btn-close-white" @click="closeDetails"></button>
           </div>
           <div class="modal-body">
-            <img v-if="selectedProduct" :src="selectedProduct.image" :alt="selectedProduct.name" class="d-block mx-auto mb-3 rounded" style="max-width:220px;max-height:120px;object-fit:contain;background:#101829;" loading="lazy"/>
+            <img v-if="selectedProduct" :src="getImageUrl(selectedProduct.image)" :alt="selectedProduct.name" class="d-block mx-auto mb-3 rounded" style="max-width:220px;max-height:120px;object-fit:contain;background:#101829;" loading="lazy"/>
             <div v-if="selectedProduct" class="mb-2">
               <p class="mb-1"><strong>Price:</strong> <span>{{ formatPrice(selectedProduct.price) }}</span></p>
               <p class="mb-1"><strong>Brand:</strong> <span>{{ selectedProduct.brand }}</span></p>
@@ -119,6 +119,7 @@ import { Modal } from 'bootstrap';
 import { cartStore } from '@/store/cartStore';
 import { useRouter } from 'vue-router';
 import apiClient from '@/services/api.js'; // Impor apiClient
+import '@/assets/console.css';
 
 export default {
   name: "GameConsolesHub",
@@ -270,106 +271,17 @@ export default {
         return;
       }
       this.router.push('/checkout');
-    }
+    },
+    getImageUrl(imagePath) {
+      if (!imagePath || imagePath.startsWith('http')) {
+        return imagePath || 'https://placehold.co/400x300?text=No+Image';
+      }
+      const backendUrl = 'http://127.0.0.1:8000';
+      return `${backendUrl}${imagePath}`;
+    },
   },
   watch: {
     consoles: 'updatePriceSliderBounds',
   }
 };
 </script>
-
-<style scoped>
-.bg-dark { background: #181c22 !important; }
-.card { border-radius: 10px; border-width: 1.5px; background: #232b36 !important; color: #fff !important; }
-.card-img-top { border-radius: 10px 10px 0 0; }
-.visually-hidden {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0,0,0,0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
-
-.placeholder-card {
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-  border-color: var(--bs-info);
-}
-
-.placeholder-img {
-  height: 120px;
-  background: linear-gradient(90deg, rgba(var(--bs-secondary-rgb), 0.3) 25%, rgba(var(--bs-secondary-rgb), 0.5) 50%, rgba(var(--bs-secondary-rgb), 0.3) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite linear;
-  border-radius: 10px 10px 0 0;
-}
-
-.placeholder-line {
-  height: 14px;
-  background: linear-gradient(90deg, rgba(var(--bs-secondary-rgb), 0.3) 25%, rgba(var(--bs-secondary-rgb), 0.5) 50%, rgba(var(--bs-secondary-rgb), 0.3) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite linear;
-  border-radius: 4px;
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.btn-outline-info.active,
-.btn-outline-info:active,
-.btn-outline-info:focus {
-  background-color: #00d9ff !important;
-  color: #181c22 !important;
-  border-color: #00d9ff !important;
-}
-.text-success, .fw-bold.text-success, span.text-success.fw-bold {
-  color: #1aff6b !important;
-  font-weight: bold !important;
-}
-.text-muted, .mb-2.text-muted, p.text-muted.mb-2 {
-  color: #b0b0b0 !important;
-}
-.bg-opacity-85 { opacity: 0.85; }
-.modal-footer {
-    border-top-color: var(--bs-secondary);
-}
-
-.mb-2{
-  color: white !important;
-}
-
-.btn-close-white {
-    filter: invert(1) grayscale(100%) brightness(200%);
-}
-h1.text-center.fw-bold.mb-4 {
-  position: relative;
-  display: flex; /* Use flexbox for centering */
-  flex-direction: column; /* Stack text and underline vertically */
-  justify-content: center; /* Center vertically */
-  align-items: center; /* Center horizontally */
-  text-align: center;
-}
-h1.text-center.fw-bold.mb-4::after {
-  content: '';
-  display: block;
-  margin-top: 10px; /* Space between text and underline */
-  width: 80px;
-  height: 4px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, #00d9ff 0%, #007bff 100%);
-}
-@media (max-width: 575.98px) {
-  h1.text-center.fw-bold.mb-4::after {
-    width: 50px; /* Adjust width for smaller screens */
-    height: 3px;
-    margin-top: 7px;
-  }
-}
-</style>

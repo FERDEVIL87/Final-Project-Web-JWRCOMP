@@ -124,7 +124,7 @@
               style="background:#232b36;color:#fff;cursor:pointer;"
             >
               <img
-                :src="item.image"
+                :src="getImageUrl(item.image)"
                 :alt="item.name"
                 class="card-img-top"
                 style="height:120px;width:100%;object-fit:cover;background:#101829;display:block;"
@@ -176,7 +176,7 @@
               <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="closeDetails"></button>
             </div>
             <div class="modal-body">
-              <img v-if="selectedProduct" :src="selectedProduct.image" :alt="selectedProduct.name" class="d-block mx-auto mb-3 rounded" style="max-width:220px;max-height:120px;object-fit:contain;background:#101829;" loading="lazy" width="220" height="120" />
+              <img v-if="selectedProduct" :src="getImageUrl(selectedProduct.image)" :alt="selectedProduct.name" class="d-block mx-auto mb-3 rounded" style="max-width:220px;max-height:120px;object-fit:contain;background:#101829;" loading="lazy" width="220" height="120" />
               <div v-if="selectedProduct" class="mb-3">
                 <p class="mb-1"><strong>Price:</strong> <span>{{ formatPrice(selectedProduct.price) }}</span></p>
                 <p class="mb-1"><strong>Brand:</strong> <span>{{ selectedProduct.brand }}</span></p>
@@ -236,6 +236,7 @@ import { Modal } from 'bootstrap';
 import { cartStore } from '@/store/cartStore';
 import { useRouter } from 'vue-router';
 import apiClient from '@/services/api.js'; // Use centralized API client
+import '@/assets/hardware.css';
 
 export default {
   name: "HardwareList",
@@ -424,7 +425,14 @@ export default {
         if (this.maxPriceFilter < this.minPriceFilter) {
             this.minPriceFilter = this.maxPriceFilter;
         }
-    }
+    },
+    getImageUrl(imagePath) {
+      if (!imagePath || imagePath.startsWith('http')) {
+        return imagePath || 'https://placehold.co/400x300?text=No+Image';
+      }
+      const backendUrl = 'http://127.0.0.1:8000';
+      return `${backendUrl}${imagePath}`;
+    },
   },
   async mounted() {
     await this.fetchHardwareData(); 
@@ -443,76 +451,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.bg-dark { background: #181c22 !important; }
-.card { 
-    border-radius: 10px; 
-    border-width: 1.5px; 
-}
-.card-img-top { border-radius: 10px 10px 0 0; }
-.btn-outline-info.active,
-.btn-outline-info:active,
-.btn-outline-info:focus {
-  background-color: #00d9ff !important;
-  color: #181c22 !important;
-  border-color: #00d9ff !important;
-}
-.form-control, .form-select {
-    background-color: #2a3038 !important; 
-    color: #e8eff5 !important; 
-    border-color: #00d9ff55 !important; 
-}
-.form-control::placeholder {
-    color: #adb5bdAA !important; 
-}
-.form-control:focus, .form-select:focus {
-    border-color: #00d9ff !important;
-    box-shadow: 0 0 0 0.2rem rgba(0, 217, 255, 0.25) !important;
-}
-.form-range::-webkit-slider-thumb {
-  background-color: #00d9ff;
-}
-.form-range::-moz-range-thumb {
-  background-color: #00d9ff;
-}
-.form-range::-ms-thumb {
-  background-color: #00d9ff;
-}
-
-.modal-footer {
-    border-top-color: var(--bs-secondary);
-}
-.btn-close-white {
-    filter: invert(1) grayscale(100%) brightness(200%);
-}
-h2.text-center.fw-bold.mb-4 {
-  position: relative;
-  display: inline-block;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-}
-h2.text-center.fw-bold.mb-4::after {
-  content: '';
-  display: block;
-  margin: 0 auto;
-  margin-top: 10px;
-  width: 80px;
-  height: 4px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, #00d9ff 0%, #007bff 100%);
-}
-
-.text-muted{
-  color: white !important;
-}
-
-@media (max-width: 575.98px) {
-  h2.text-center.fw-bold.mb-4::after {
-    width: 50px;
-    height: 3px;
-    margin-top: 7px;
-  }
-}
-</style>

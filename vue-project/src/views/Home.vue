@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import 'vue3-carousel/dist/carousel.css';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 import apiClient from '@/services/api.js';
+import '@/assets/Home.css';
 
 import doomVideoPoster from "/public/videos/doom.mp4";
 
@@ -33,6 +34,15 @@ const fetchBanners = async () => {
   } finally {
     isLoadingBanners.value = false;
   }
+};
+
+// Fungsi untuk mendapatkan URL gambar banner (bisa dari backend atau URL penuh)
+const getImageUrl = (imagePath) => {
+  if (imagePath && (imagePath.startsWith('http') || imagePath.startsWith('https:'))) {
+    return imagePath;
+  }
+  const backendUrl = 'http://127.0.0.1:8000';
+  return `${backendUrl}${imagePath}`;
 };
 
 // Pengaturan Carousel
@@ -73,13 +83,13 @@ const formatDate = (dateString) => {
 
 // --- DATA STATIS UNTUK TIM ---
 const team = ref([
-  { name: "Ferdy Syaifanoor", nim: "23.11.54", peran: "Frontend Developer", photo: "/imgprofil/ferdy.jpg.png" },
-  { name: "Dhimas Apryza H", nim: "23.11.5495", peran: "Backend Developer", photo: "/imgprofil/dhimas.jpg.png" },
-  { name: "Didit Gunawan", nim: "23.11.5462", peran: "UI/UX Designer", photo: "/imgprofil/didit.jpeg" },
-  { name: "Eri Oktafianto", nim: "23.11.5482", peran: "Database Engineer", photo: "/imgprofil/eri.png" },
-  { name: "R.M Alfarizky C.K", nim: "23.11.5473", peran: "Project Manager", photo: "/imgprofil/alfarizky.jpg.png" },
-  { name: "Ahmad Rafi H", nim: "23.11.5474", peran: "Quality Assurance", photo: "/imgprofil/rafi.png" },
-  { name: "Naufal Zaky A.P", nim: "23.11.5455", peran: "DevOps", photo: "/imgprofil/naufal.jpg.png" }
+  { name: "Dhimas Apryza H", nim: "23.11.5495", peran: "Frontend Developer & Leader", photo: "/imgprofil/dhimas.jpg.png" },
+  { name: "Ferdy Syaifanoor", nim: "23.11.54", peran: "Prototype & UI/UX Designer, Coordinator, Database Engineer", photo: "/imgprofil/ferdy.jpg.png" },
+  { name: "Didit Gunawan", nim: "23.11.5462", peran: "Frontend Developer", photo: "/imgprofil/didit.jpeg" },
+  { name: "Eri Oktafianto", nim: "23.11.5482", peran: "Frontend Developer", photo: "/imgprofil/eri.png" },
+  { name: "R.M Alfarizky C.K", nim: "23.11.5473", peran: "Frontend Developer", photo: "/imgprofil/alfarizky.jpg.png" },
+  { name: "Ahmad Rafi H", nim: "23.11.5474", peran: "Frontend Developer", photo: "/imgprofil/rafi.png" },
+  { name: "Naufal Zaky A.P", nim: "23.11.5455", peran: "Backend Developer", photo: "/imgprofil/naufal.jpg.png" }
 ]);
 
 // --- ONMOUNTED HOOK ---
@@ -146,7 +156,7 @@ onMounted(() => {
 
               <div class="product-image-container">
                 <img
-                  :src="banner.imageSrc"
+                  :src="getImageUrl(banner.imageSrc)"
                   :alt="banner.name"
                   class="product-image"
                   :loading="index === 0 ? 'eager' : 'lazy'"
@@ -185,8 +195,9 @@ onMounted(() => {
         </p>
         <div class="news-grid">
           <article v-for="news in techNews" :key="news.id" class="news-item">
+            <!-- Gunakan fungsi getImageUrl untuk atribut src -->
             <img
-              :src="news.imageUrl"
+              :src="getImageUrl(news.imageUrl)"
               :alt="news.title"
               class="news-image"
               loading="lazy"
@@ -221,7 +232,7 @@ onMounted(() => {
           <div class="info-block">
             <h3><i class="icon-pin" role="img" aria-label="Location pin icon"></i>Kunjungi toko kami</h3>
             <p><strong>Alamat:</strong> Jl. Ring Road Utara, Ngringin, Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55281</p>
-            <p><strong>Nomor WA:</strong> <a href="tel:+1555TECHNOW">(555) 832-4669</a></p>
+            <p><strong>Nomor WA:</strong> <a href="tel:+1555TECHNOW">(+62) 666-999</a></p>
             <p><strong>Email:</strong> <a href="mailto:jwrcomp@gmail.com">jwrcomp@gmail.com</a></p>
           </div>
 
@@ -247,17 +258,33 @@ onMounted(() => {
         <div class="map-social-container">
           <div class="map-placeholder">
             <h4><i class="icon-map" role="img" aria-label="Map icon"></i>Lokasi Kami</h4>
-            <div class="map-embed-placeholder">
-              <span>Map Interaktif (Placeholder)</span>
-              <p>Temukan kami di Yogyakarta!</p>
+            <div class="map-embed-placeholder" style="padding:0;">
+              <iframe
+                src="https://www.google.com/maps?q=-7.7876072,110.3104607&z=17&hl=en&output=embed"
+                width="100%"
+                height="250"
+                style="border:0; border-radius:8px; min-height:200px;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Lokasi JWR Comp di Google Maps"
+              ></iframe>
             </div>
           </div>
           <div class="social-links">
-              <h4><i class="icon-connect" role="img" aria-label="Connect icon"></i>Follow Kami di</h4>
-              <a href="#" aria-label="Facebook"><i class="icon-facebook" role="img" aria-hidden="true"></i><span class="visually-hidden">Facebook</span></a>
-              <a href="#" aria-label="Twitter"><i class="icon-twitter" role="img" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
-              <a href="#" aria-label="Instagram"><i class="icon-instagram" role="img" aria-hidden="true"></i><span class="visually-hidden">Instagram</span></a>
-              <a href="#" aria-label="Discord"><i class="icon-discord" role="img" aria-hidden="true"></i><span class="visually-hidden">Discord</span></a>
+            <h4><i class="icon-connect" role="img" aria-label="Connect icon"></i>Follow Kami di</h4>
+            <a href="https://www.youtube.com/@jwrcomp" aria-label="YouTube" target="_blank" rel="noopener">
+              <svg width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;"><path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.228 3.5 12 3.5 12 3.5s-7.228 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.36 0 12 0 12s0 3.64.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.772 20.5 12 20.5 12 20.5s7.228 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.64 24 12 24 12s0-3.64-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              <span class="ms-2">@jwrcomp</span>
+            </a>
+            <a href="https://www.instagram.com/jwrcomp" aria-label="Instagram" target="_blank" rel="noopener">
+              <svg width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.974.974 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.974.974-2.242 1.246-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.974-.974-1.246-2.242-1.308-3.608C2.013 15.584 2 15.204 2 12s.013-3.584.072-4.85c.059-1.281.292-2.393 1.272-3.373.98-.98 2.092-1.213 3.373-1.272C8.416 2.175 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.332.013 7.052.072 5.771.131 4.659.363 3.678 1.344c-.98.98-1.213 2.092-1.272 3.373C2.013 8.332 2 8.741 2 12c0 3.259.013 3.668.072 4.948.059 1.281.292 2.393 1.272 3.373.98.98 2.092 1.213 3.373 1.272C8.332 23.987 8.741 24 12 24s3.668-.013 4.948-.072c1.281-.059 2.393-.292 3.373-1.272.98-.98 1.213-2.092 1.272-3.373.059-1.28.072-1.689.072-4.948 0-3.259-.013-3.668-.072-4.948-.059-1.281-.292-2.393-1.272-3.373-.98-.98-2.092-1.213-3.373-1.272C15.668.013 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a3.999 3.999 0 1 1 0-7.998 3.999 3.999 0 0 1 0 7.998zm6.406-11.845a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg>
+              <span class="ms-2">@jwrcomp</span>
+            </a>
+            <a href="https://www.tiktok.com/@jwrcomp" aria-label="TikTok" target="_blank" rel="noopener">
+              <svg width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;"><path d="M12.75 2v14.25a2.25 2.25 0 1 1-2.25-2.25h.75V12h-.75a4.5 4.5 0 1 0 4.5 4.5V8.25c.69.42 1.49.75 2.25.75V6.75c-.97 0-2.25-.78-2.25-2.25V2h-2.25z"/></svg>
+              <span class="ms-2">@jwrcomp</span>
+            </a>
           </div>
         </div>
 
@@ -269,7 +296,7 @@ onMounted(() => {
       <div class="container">
         <div class="text-center mb-5">
           <h2 class="fw-bold text-info" style="font-size:2rem; letter-spacing:1px;">Tim Kami</h2>
-          <p class="text-muted" style="font-size:1.1rem;">7 orang kreatif di balik pengembangan website ini</p>
+          <p class="text-muted" style="font-size:1.1rem;">7 JWR Forces di balik pengembangan website ini</p>
         </div>
         <div class="row justify-content-center g-4">
 <div
@@ -300,52 +327,14 @@ onMounted(() => {
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap');
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
+.text-muted{
+  color: #fff !important;
 }
 
-.page-wrapper.home-page-content {
-  background-color: #000000;
-  overflow-x: hidden;
-  width: 100%;
-}
-
-.product-slide-content,
-.news-item,
-.info-block,
-.shop-now-button,
-.social-links a {
-  will-change: transform, opacity;
-}
-:deep(.carousel__slide) {
-  will-change: opacity, transform;
-}
-
-.hero-text-container h1,
-.hero-text-container p,
-.product-brand,
-.product-name,
-.product-slogan,
-.news-item-title,
-.section-title {
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
+/* Banner & Carousel Section Only */
 .video-hero-section {
   position: relative;
   height: 100vh;
-  height: 100dvh;
   width: 100%;
   overflow: hidden;
   display: flex;
@@ -355,9 +344,7 @@ onMounted(() => {
   text-align: center;
   background-color: #000000;
   padding-bottom: 10vh;
-  padding-bottom: 10dvh;
 }
-
 .hero-background-video {
   position: absolute;
   top: 50%;
@@ -369,7 +356,6 @@ onMounted(() => {
   z-index: 1;
   filter: brightness(0.5) grayscale(0.2);
 }
-
 .video-overlay {
   position: absolute;
   left: 0;
@@ -377,21 +363,16 @@ onMounted(() => {
   z-index: 2;
   pointer-events: none;
 }
-
 .video-overlay.top-gradient {
   top: 0;
   height: 20vh;
-  height: 20dvh;
   background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 70%, #000000 100%);
 }
-
 .video-overlay.bottom-gradient {
   bottom: 0;
   height: 30vh;
-  height: 30dvh;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000000 90%);
 }
-
 .hero-content-overlay {
   position: relative;
   z-index: 3;
@@ -399,7 +380,6 @@ onMounted(() => {
   width: 100%;
   max-width: 800px;
 }
-
 .hero-text-container h1 {
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(2.8rem, 7vw, 4.5rem);
@@ -410,7 +390,6 @@ onMounted(() => {
   letter-spacing: 2px;
   text-shadow: 2px 2px 10px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
 }
-
 .hero-text-container p {
   font-family: 'Roboto', sans-serif;
   font-size: clamp(0.8rem, 2vw, 1.1rem);
@@ -424,7 +403,6 @@ onMounted(() => {
   margin-right: auto;
   text-shadow: 1px 1px 8px rgba(0,0,0,0.8), 0 0 6px rgba(0,0,0,0.6);
 }
-
 .shop-now-button {
   display: inline-block;
   background-color: #4B5563;
@@ -442,7 +420,6 @@ onMounted(() => {
   letter-spacing: 1px;
   cursor: pointer;
 }
-
 .shop-now-button:hover, .shop-now-button:focus {
   background-color: #374151;
   color: #FFFFFF;
@@ -451,12 +428,10 @@ onMounted(() => {
   box-shadow: 0 6px 20px rgba(107, 114, 128, 0.3), 0 0 15px rgba(55, 65, 81, 0.2);
   outline: none;
 }
-
 .product-hero-slider {
   width: 100%;
   box-sizing: border-box;
   height: 100vh;
-  height: 100dvh;
   font-family: 'Roboto', sans-serif;
   background-color: #000000;
   position: relative;
@@ -464,14 +439,12 @@ onMounted(() => {
   align-items: center;
   overflow: hidden;
 }
-
 :deep(.carousel),
 :deep(.carousel__viewport),
 :deep(.carousel__track) {
   width: 100%;
   height: 100%;
 }
-
 .carousel__item {
   height: 100%;
   width: 100%;
@@ -483,7 +456,6 @@ onMounted(() => {
   position: relative;
   overflow: hidden;
 }
-
 .product-slide-content {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
@@ -496,7 +468,6 @@ onMounted(() => {
   gap: 20px 40px;
   height: 100%;
   max-height: 90vh;
-  max-height: 90dvh;
   box-sizing: border-box;
   width: 100%;
   max-width: 1400px;
@@ -504,14 +475,12 @@ onMounted(() => {
   margin-right: auto;
   padding: clamp(20px, 4dvh, 40px) clamp(15px, 3vw, 40px);
 }
-
 .product-text-info,
 .product-image-container,
 .product-badges-container {
   opacity: 0;
   box-sizing: border-box;
 }
-
 :deep(.carousel__slide--active) .product-text-info {
   animation: fadeInFromLeft 0.8s 0.1s ease-out forwards;
 }
@@ -521,7 +490,6 @@ onMounted(() => {
 :deep(.carousel__slide--active) .product-badges-container {
   animation: fadeInUp 0.8s 0.5s ease-out forwards;
 }
-
 .product-text-info {
   grid-area: text;
   text-align: left;
@@ -530,7 +498,6 @@ onMounted(() => {
   flex-direction: column;
   justify-content: center;
 }
-
 .product-brand {
   font-family: 'Orbitron', sans-serif;
   font-size: 1.5rem;
@@ -539,7 +506,6 @@ onMounted(() => {
   letter-spacing: 1px;
   text-transform: uppercase;
 }
-
 .product-name {
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(2.5rem, 5vw, 4rem);
@@ -548,7 +514,6 @@ onMounted(() => {
   line-height: 1.1;
   color: #F3F4F6;
 }
-
 .product-slogan {
   font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   font-weight: 300;
@@ -556,13 +521,11 @@ onMounted(() => {
   margin-bottom: 25px;
   max-width: 500px;
 }
-
 .product-features {
   list-style: none;
   padding-left: 0;
   margin-bottom: 30px;
 }
-
 .product-features li {
   font-size: 1rem;
   margin-bottom: 10px;
@@ -570,12 +533,10 @@ onMounted(() => {
   align-items: center;
   color: #D1D5DB;
 }
-
 .product-features li svg {
   margin-right: 10px;
   flex-shrink: 0;
 }
-
 .product-image-container {
   grid-area: image;
   display: flex;
@@ -583,7 +544,6 @@ onMounted(() => {
   align-items: center;
   width: 100%;
 }
-
 .product-image {
   display: block;
   max-width: 100%;
@@ -592,7 +552,6 @@ onMounted(() => {
   object-fit: contain;
   filter: drop-shadow(0 10px 25px rgba(0,0,0,0.4));
 }
-
 .product-badges-container {
   grid-area: badges;
   display: flex;
@@ -604,7 +563,6 @@ onMounted(() => {
   border-top: 1px solid #374151;
   width: 100%;
 }
-
 .product-badge {
   background-color: rgba(31, 41, 55, 0.5);
   border: 1px solid #4B5563;
@@ -624,7 +582,6 @@ onMounted(() => {
   height: 20px;
   fill: #9CA3AF;
 }
-
 .badge-main-text {
   display: block;
   font-size: 1.1rem;
@@ -632,7 +589,6 @@ onMounted(() => {
   font-family: 'Orbitron', sans-serif;
   color: #E5E7EB;
 }
-
 .badge-subtext {
   display: block;
   font-size: 0.75rem;
@@ -645,7 +601,6 @@ onMounted(() => {
   font-size: 0.7rem;
   color: #6B7280;
 }
-
 :deep(.carousel__prev),
 :deep(.carousel__next) {
   background-color: rgba(17, 24, 39, 0.6) !important;
@@ -662,7 +617,6 @@ onMounted(() => {
 }
 :deep(.carousel__prev) { left: 20px !important; }
 :deep(.carousel__next) { right: 20px !important; }
-
 :deep(.carousel__pagination) {
   position: absolute;
   bottom: clamp(15px, 3dvh, 20px);
@@ -670,7 +624,6 @@ onMounted(() => {
   transform: translateX(-50%);
   z-index: 5;
 }
-
 :deep(.carousel__pagination-button) {
   min-width: 32px;
   min-height: 32px;
@@ -691,371 +644,18 @@ onMounted(() => {
   outline: 2px solid #fff;
   outline-offset: 2px;
 }
-
-.tech-news-section {
-  padding: 70px 0;
-  background-color: #0f0f11;
-  color: #D1D5DB;
-  font-family: 'Roboto', sans-serif;
-  border-top: 1px solid #1f2937;
-  border-bottom: 1px solid #1f2937;
+@keyframes fadeInFromLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
 }
-
-.tech-news-container {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 20px;
-  box-sizing: border-box;
+@keyframes fadeInFromRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
 }
-
-.tech-news-title {
-  text-align: center;
-  font-family: 'Orbitron', sans-serif;
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  color: #E5E7EB;
-  margin-bottom: 10px;
-  font-weight: 700;
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-.tech-news-subtitle {
-  text-align: center;
-  font-size: clamp(0.9rem, 2vw, 1.15rem);
-  color: #9CA3AF;
-  margin-bottom: 50px;
-  max-width: 650px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.5;
-}
-
-.news-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-}
-
-.news-item {
-  background-color: #18181b;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #33374a;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.news-item:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-}
-
-.news-image {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 200px;
-  object-fit: cover;
-  background-color: #1F2937;
-}
-
-.news-content {
-  padding: 20px 25px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.news-item-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.3rem;
-  color: #E5E7EB;
-  margin-bottom: 12px;
-  font-weight: 700;
-  line-height: 1.3;
-}
-
-.news-item-excerpt {
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: #B0BCC8;
-  margin-bottom: 15px;
-  flex-grow: 1;
-}
-
-.news-item-footer {
-  margin-top: auto;
-  padding-top: 10px;
-  border-top: 1px solid #2a2a2e;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.news-item-meta {
-  font-size: 0.75rem;
-  color: #e0e0e0;
-  background: #23263a;
-  padding: 2px 8px;
-  border-radius: 4px;
-}
-
-.news-read-more {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #9CA3AF;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.news-read-more:hover {
-  color: #E5E7EB;
-  text-decoration: underline;
-}
-
-.icon-store::before { content: "🏢 "; }
-.icon-pin::before { content: "📍 "; }
-.icon-clock::before { content: "🕒 "; }
-.icon-services::before { content: "🛠️ "; }
-.icon-map::before { content: "🗺️ "; }
-.icon-connect::before { content: "🔗 "; }
-.icon-facebook::before { content: "📘"; }
-.icon-twitter::before { content: "🐦"; }
-.icon-instagram::before { content: "📸"; }
-.icon-discord::before { content: "💬"; }
-
-.store-info-section {
-  padding: 80px 0;
-  background: linear-gradient(180deg, #111827 0%, #000000 100%);
-  color: #D1D5DB;
-  font-family: 'Roboto', sans-serif;
-}
-
-.store-info-container {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 20px;
-  box-sizing: border-box;
-}
-
-.section-title.store-section-title {
-  text-align: center;
-  font-family: 'Orbitron', sans-serif;
-  font-size: clamp(2rem, 5vw, 3rem);
-  color: #E5E7EB;
-  margin-bottom: 15px;
-  font-weight: 700;
-}
-
-.section-subtitle.store-section-subtitle {
-  text-align: center;
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
-  color: #9CA3AF;
-  margin-bottom: 50px;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.6;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
-  margin-bottom: 50px;
-}
-
-.info-block {
-  background-color: #1F2937;
-  padding: 25px 30px;
-  border-radius: 12px;
-  border: 1px solid #374151;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.info-block:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(55, 65, 81, 0.3);
-}
-
-.info-block h3 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.5rem;
-  color: #D1D5DB;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.info-block h3 i {
-  font-size: 1em;
-  color: #9CA3AF;
-  font-style: normal;
-  display: inline-block;
-}
-
-.info-block p, .info-block li {
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: #B0BCC8;
-  margin-bottom: 10px;
-}
-
-.info-block p strong {
-  color: #E5E7EB;
-  font-weight: 500;
-}
-
-.info-block a {
-  color: #9CA3AF;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-.info-block a:hover {
-  text-decoration: underline;
-  color: #D1D5DB;
-}
-
-.info-block ul {
-  list-style: none;
-  padding-left: 0;
-}
-.info-block ul li {
-  padding-left: 25px;
-  position: relative;
-}
-.info-block ul li::before {
-  content: '✓';
-  position: absolute;
-  left: 0;
-  color: #9CA3AF;
-  font-weight: bold;
-}
-
-.map-social-container {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 30px;
-    align-items: flex-start;
-    margin-top: 40px;
-}
-
-.map-placeholder, .social-links {
-    background-color: #1F2937;
-    padding: 25px;
-    border-radius: 12px;
-    border: 1px solid #374151;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.map-placeholder h4, .social-links h4 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.3rem;
-    color: #D1D5DB;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.map-placeholder h4 i, .social-links h4 i {
-    font-size: 1em;
-    color: #9CA3AF;
-    font-style: normal;
-    display: inline-block;
-}
-
-.map-embed-placeholder {
-    background-color: #111827;
-    border: 1px dashed #374151;
-    height: 250px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    border-radius: 8px;
-    color: #9CA3AF;
-}
-.map-embed-placeholder span {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-bottom: 10px;
-}
-
-.social-links a {
-    display: inline-flex;
-    align-items: center;
-    margin-right: 15px;
-    color: #9CA3AF;
-    font-size: 1.8rem;
-    transition: color 0.3s ease, transform 0.3s ease;
-    text-decoration: none;
-}
-.social-links a:last-child {
-    margin-right: 0;
-}
-.social-links a:hover {
-    color: #D1D5DB;
-    transform: scale(1.1);
-}
-.social-links a i {
-  font-size: 1em;
-  font-style: normal;
-  line-height: 1;
-}
-
-.team-section {
-  background: #10141a;
-  border-top: 2px solid #00d9ff33;
-  border-bottom: 2px solid #00d9ff33;
-}
-
-.team-card {
-  background: linear-gradient(135deg, #181c22 80%, #00d9ff22 100%);
-  border: 1.5px solid #00d9ff55;
-  border-radius: 1.2rem;
-  box-shadow: 0 4px 24px 0 #00d9ff22;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-  min-width: 220px;
-  max-width: 260px;
-  margin: 0 auto;
-  position: relative;
-  overflow: hidden;
-}
-.team-card:hover {
-  transform: translateY(-8px) scale(1.04);
-  box-shadow: 0 8px 32px 0 #00d9ff55;
-  border-color: #00d9ff;
-}
-.team-photo {
-  width: 82px;
-  height: 82px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 3px solid #00d9ff;
-  box-shadow: 0 0 0 4px #23272f, 0 0 16px #00d9ff44;
-  background: #23272f;
-  margin-bottom: 1rem;
-  transition: box-shadow 0.2s;
-}
-.team-card:hover .team-photo {
-  box-shadow: 0 0 0 4px #23272f, 0 0 32px #00d9ff99;
-}
-.text-info {
-  color: #00d9ff !important;
-}
-.text-secondary {
-  color: #adb5bd !important;
-}
-
-.text-muted{
-  color: white !important;
-}
-
 @media (max-width: 992px) {
   .product-slide-content {
     grid-template-columns: 1fr;
@@ -1077,7 +677,6 @@ onMounted(() => {
     text-align: center;
     align-items: center;
   }
-
   .product-features li {
     margin-left: auto;
     margin-right: auto;
@@ -1090,35 +689,10 @@ onMounted(() => {
   .product-badges-container {
     margin-top: 10px;
   }
-  .map-social-container {
-      grid-template-columns: 1fr;
-  }
 }
-
-@media (max-width: 768px) {
-  .news-grid {
-    grid-template-columns: 1fr;
-  }
-  .tech-news-title {
-    font-size: clamp(1.6rem, 5vw, 2.2rem);
-  }
-  .tech-news-subtitle {
-    font-size: clamp(0.85rem, 2.5vw, 1rem);
-    margin-bottom: 30px;
-  }
-  .news-item-title {
-    font-size: 1.15rem;
-  }
-  .news-item-excerpt {
-    font-size: 0.88rem;
-  }
-}
-
-
 @media (max-width: 576px) {
   .video-hero-section {
     padding-bottom: 8vh;
-    padding-bottom: 8dvh;
   }
   .hero-text-container h1 {
     font-size: clamp(2rem, 10vw, 2.8rem);
@@ -1130,7 +704,6 @@ onMounted(() => {
     padding: 12px 25px;
     font-size: clamp(0.8rem, 2.5vw, 1rem);
   }
-
   .product-slide-content {
     gap: 15px;
     padding: clamp(20px, 4dvh, 40px) 10px clamp(50px, 7dvh, 60px);
@@ -1151,14 +724,12 @@ onMounted(() => {
   .product-image {
     max-height: clamp(25dvh, 50vw, 35dvh);
   }
-
   .badge-main-text {
     font-size: 0.9rem;
   }
   .badge-subtext, .badge-detail {
     font-size: 0.65rem;
   }
-
   :deep(.carousel__prev) {
     left: 5px !important;
     width: 30px;
@@ -1177,63 +748,5 @@ onMounted(() => {
     width: 7px;
     height: 7px;
   }
-
-  .tech-news-section {
-    padding: 50px 0 40px;
-  }
-  .tech-news-title {
-    font-size: clamp(1.5rem, 6vw, 2rem);
-  }
-  .tech-news-subtitle {
-    font-size: clamp(0.8rem, 3vw, 0.9rem);
-  }
-  .news-item-title {
-    font-size: 1.05rem;
-  }
-  .news-item-excerpt {
-    font-size: 0.82rem;
-  }
-  .news-content {
-    padding: 15px 20px;
-  }
-  .news-item-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-
-  .section-title.store-section-title {
-    font-size: clamp(1.6rem, 6vw, 2rem);
-  }
-  .section-subtitle.store-section-subtitle {
-    font-size: clamp(0.8rem, 3.5vw, 1rem);
-  }
-  .info-block h3 {
-    font-size: 1.2rem;
-  }
-  .info-block {
-    padding: 15px;
-  }
-  .info-block p, .info-block li {
-    font-size: 0.85rem;
-  }
-  .social-links a {
-    font-size: 1.5rem;
-    margin-right: 8px;
-  }
-}
-
-@keyframes fadeInFromLeft {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes fadeInFromRight {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 </style>

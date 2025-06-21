@@ -1,7 +1,8 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { RouterLink, RouterView, useRouter } from 'vue-router';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { Offcanvas } from 'bootstrap';
+import { useAuthStore } from '@/store/authStore';
 
 const items = [
   { to: '/', name: 'Tentang', color: '#00bcd4' },
@@ -42,6 +43,18 @@ const closeSidebar = () => {
     bsOffcanvas.hide();
   }
 };
+
+// Tambahkan authStore dan router
+const authStore = useAuthStore();
+const router = useRouter();
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+
+function handleLogout() {
+  if (window.confirm('Apakah Anda yakin ingin logout?')) {
+    authStore.logout();
+    router.push({ name: 'login' });
+  }
+}
 </script>
 
 <template>
@@ -74,6 +87,13 @@ const closeSidebar = () => {
                 <i></i>
               </RouterLink>
             </li>
+            <!-- Tambahkan tombol Logout jika sudah login -->
+            <li v-if="isAuthenticated" class="nav-item-bs">
+              <button class="nav-link animated-btn-bs" style="background:#e53935;--clr:#e53935;" @click="handleLogout">
+                <span>Logout</span>
+                <i></i>
+              </button>
+            </li>
           </ul>
         </div>
       </div>
@@ -99,6 +119,7 @@ const closeSidebar = () => {
       </div>
       <div class="offcanvas-body">
         <ul class="nav flex-column">
+          <!-- ...existing sidebar items... -->
           <li v-for="i in items" :key="i.to" class="nav-item-bs w-100">
             <RouterLink
               class="nav-link sidebar-btn-bs"
@@ -110,6 +131,13 @@ const closeSidebar = () => {
               <span>{{ i.name }}</span>
               <i></i>
             </RouterLink>
+          </li>
+          <!-- Tambahkan tombol Logout di sidebar jika sudah login -->
+          <li v-if="isAuthenticated" class="nav-item-bs w-100">
+            <button class="nav-link sidebar-btn-bs" style="background:#e53935;--clr:#e53935;" @click="handleLogout">
+              <span>Logout</span>
+              <i></i>
+            </button>
           </li>
         </ul>
       </div>
