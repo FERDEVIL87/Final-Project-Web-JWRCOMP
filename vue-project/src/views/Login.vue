@@ -50,20 +50,34 @@
           </form>
         </div>
       </div>
+      <!-- Success Modal Registrasi -->
+      <div v-if="showRegisterSuccessModal" class="modal-login">
+        <div class="modal-content-login">
+          <span class="close" @click="closeRegisterSuccessModal">×</span>
+          <h3>Berhasil Registrasi Akun</h3>
+        </div>
+      </div>
+      <!-- Success Modal Lupa Password -->
+      <div v-if="showForgotSuccessModal" class="modal-login">
+        <div class="modal-content-login">
+          <span class="close" @click="closeForgotSuccessModal">×</span>
+          <h3>Email Reset password berhasil dikirim</h3>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue';
-import { useRouter, useRoute } from 'vue-router'; // Tambahkan useRoute
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/store/authStore';
 import apiClient from '@/services/api.js';
 import '@/assets/Login.css';
 
 // --- Inisialisasi ---
 const router = useRouter();
-const route = useRoute(); // Tambahkan ini
+const route = useRoute();
 const authStore = useAuthStore();
 
 // --- State untuk Login ---
@@ -83,6 +97,9 @@ const forgotEmail = ref('');
 const forgotError = ref('');
 const forgotSuccess = ref('');
 
+// --- New success modal state ---
+const showRegisterSuccessModal = ref(false);
+const showForgotSuccessModal = ref(false);
 
 // --- Metode Login ---
 async function handleLogin() {
@@ -116,6 +133,12 @@ async function handleRegister() {
     registerSuccess.value = response.data.message;
     // Reset form
     Object.assign(registerForm, { username: '', email: '', password: '', password_confirmation: '' });
+
+    // Auto-close register modal and show success modal
+    setTimeout(() => {
+      closeRegisterModal();
+      showRegisterSuccessModal.value = true;
+    }, 1000);
   } catch (err) {
     registerError.value = err.response?.data?.message || 'Terjadi kesalahan saat registrasi.';
   } finally {
@@ -131,13 +154,18 @@ async function handleForgotPassword() {
     try {
         const response = await apiClient.post('/forgot-password', { email: forgotEmail.value });
         forgotSuccess.value = response.data.message;
+
+        // Auto-close forgot password modal and show success modal
+        setTimeout(() => {
+          closeForgotModal();
+          showForgotSuccessModal.value = true;
+        }, 1000);
     } catch (err) {
         forgotError.value = err.response?.data?.message || 'Terjadi kesalahan.';
     } finally {
         loading.value = false;
     }
 }
-
 
 // --- Metode untuk Modal ---
 function closeRegisterModal() {
@@ -150,5 +178,14 @@ function closeForgotModal() {
   showForgotModal.value = false;
   forgotError.value = '';
   forgotSuccess.value = '';
+}
+
+// --- New method to close success modal ---
+function closeRegisterSuccessModal() {
+  showRegisterSuccessModal.value = false;
+}
+
+function closeForgotSuccessModal() {
+  showForgotSuccessModal.value = false;
 }
 </script>

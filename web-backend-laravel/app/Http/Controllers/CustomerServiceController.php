@@ -5,6 +5,18 @@ use Illuminate\Http\Request;
 
 class CustomerServiceController extends Controller
 {
+    /**
+     * Menampilkan daftar pesan di halaman admin.
+     */
+    public function index()
+    {
+        $messages = CustomerService::latest()->get();
+        return view('customer_service.index', compact('messages'));
+    }
+
+    /**
+     * Menerima dan menyimpan pesan baru dari API (Vue.js).
+     */
     public function store(Request $request)
     {
         // Validasi dari frontend 'name', 'email', 'message' sudah benar
@@ -23,11 +35,20 @@ class CustomerServiceController extends Controller
 
         return response()->json(['message' => 'Pesan Anda telah berhasil terkirim!'], 201);
     }
-    
-    // Ubah juga metode index untuk halaman admin
-    public function index()
+
+    /**
+     * ==========================================================
+     * METODE BARU: Menghapus pesan dari database.
+     * ==========================================================
+     */
+    public function destroy(CustomerService $customerService)
     {
-        $messages = CustomerService::latest()->get();
-        return view('customer_service.index', compact('messages'));
+        // Laravel akan otomatis mencari CustomerService berdasarkan ID yang dikirim.
+        // Ini disebut Route Model Binding.
+
+        $customerService->delete();
+
+        // Arahkan kembali ke halaman daftar dengan pesan sukses.
+        return redirect()->route('customer-service.index')->with('success', 'Pesan berhasil dihapus.');
     }
 }

@@ -220,7 +220,7 @@ onMounted(() => {
       <div class="store-info-container">
         <h2 class="section-title store-section-title">Welcome to JWR Comp</h2>
         <p class="section-subtitle store-section-subtitle">
-          Destinasi Utama untuk Perangkat Gaming Terkini, Konsultasi Ahli, dan Pengalaman Bermain Tanpa Tanding.
+          Jogja Workstation and Rig a.k.a JWR, Destinasi Utama untuk Perangkat Gaming Terkini, Konsultasi Ahli, dan Pengalaman Bermain Tanpa Tanding.
         </p>
 
         <div class="info-grid">
@@ -231,7 +231,7 @@ onMounted(() => {
 
           <div class="info-block">
             <h3><i class="icon-pin" role="img" aria-label="Location pin icon"></i>Kunjungi toko kami</h3>
-            <p><strong>Alamat:</strong> Jl. Ring Road Utara, Ngringin, Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55281</p>
+            <p><strong>Alamat:</strong> Sidoarum, Sleman Regency, Special Region of Yogyakarta</p>
             <p><strong>Nomor WA:</strong> <a href="tel:+1555TECHNOW">(+62) 666-999</a></p>
             <p><strong>Email:</strong> <a href="mailto:jwrcomp@gmail.com">jwrcomp@gmail.com</a></p>
           </div>

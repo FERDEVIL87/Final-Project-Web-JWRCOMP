@@ -21,21 +21,21 @@ class AuthController extends Controller
     // Memproses registrasi
     public function register(Request $request)
     {
-        $validatedData = $request->validate([
-            'username' => 'required|string|unique:users,username',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|confirmed',
-            // role tidak divalidasi/dikirim dari form
+        $request->validate([
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            // Aturan 'unique' untuk password sudah dihapus
+            'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::min(6)],
         ]);
 
         User::create([
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'admin', // Set otomatis admin
+            'role' => 'admin',
         ]);
 
-        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
+        return redirect()->route('login')->with('status', 'Registrasi admin berhasil! Silakan login.');
     }
 
     // Menampilkan halaman login

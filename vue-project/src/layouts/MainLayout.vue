@@ -5,7 +5,7 @@ import { Offcanvas } from 'bootstrap';
 import { useAuthStore } from '@/store/authStore';
 
 const items = [
-  { to: '/', name: 'Tentang', color: '#00bcd4' },
+  { to: '/', name: 'Home', color: '#00bcd4' },
   { to: '/paketrakitan', name: 'Paket Rakitan PC', color: '#00bcd4' },
   { to: '/laptop', name: 'Laptop', color: '#00bcd4' },
   { to: '/consolehh', name: 'Console and Handheld PC', color: '#00bcd4' },

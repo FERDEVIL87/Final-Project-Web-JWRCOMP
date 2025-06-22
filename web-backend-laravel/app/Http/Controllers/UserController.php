@@ -27,7 +27,8 @@ class UserController extends Controller
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'role' => 'required|in:user,admin',
-            'password' => ['required', 'confirmed', Password::min(6)],
+            // Aturan 'unique' untuk password sudah dihapus
+            'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::min(6)],
         ]);
 
         User::create([

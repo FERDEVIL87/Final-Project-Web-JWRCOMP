@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     // Rute untuk update status
     Route::patch('/checkouts/{transaction_id}/status', [CheckoutController::class, 'updateStatus'])->name('checkouts.updateStatus');
     Route::get('/customer-service', [CustomerServiceController::class, 'index'])->name('customer-service.index');
+    Route::delete('/customer-service/{customerService}', [CustomerServiceController::class, 'destroy'])->name('customer-service.destroy');
     Route::resource('console-and-handhelds', ConsoleAndHandheldController::class);
     Route::resource('laptops', LaptopController::class);
     Route::resource('tech-news', TechNewsController::class);
