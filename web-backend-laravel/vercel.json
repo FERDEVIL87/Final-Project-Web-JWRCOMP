@@ -1,0 +1,48 @@
+{
+  "version": 2,
+  "framework": null,
+  "builds": [
+    {
+      "src": "public/index.php",
+      "use": "vercel/php@0.6.1" 
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(css|js|images|favicon.ico)(.*)",
+      "dest": "/public/$1$2"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/index.php"
+    }
+  ],
+  "env": {
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
+    "APP_URL": "https://nama-domain-anda.vercel.app",
+
+    "APP_KEY": "@app_key",
+    "APP_STORAGE": "/tmp/storage",
+
+    "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
+    "SESSION_DRIVER": "file",
+    "SESSION_LIFETIME": "120",
+    "SESSION_PATH": "/tmp/storage/framework/sessions",
+    "CACHE_DRIVER": "file",
+    "CACHE_STORE_PATH": "/tmp/storage/framework/cache/data",
+    
+    "LOG_CHANNEL": "stderr",
+
+    "DB_CONNECTION": "mysql",
+    "DB_HOST": "@db_host",
+    "DB_PORT": "@db_port",
+    "DB_DATABASE": "@db_database",
+    "DB_USERNAME": "@db_username",
+    "DB_PASSWORD": "@db_password"
+  }
+}
