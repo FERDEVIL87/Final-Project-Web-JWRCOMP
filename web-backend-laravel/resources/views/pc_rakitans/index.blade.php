@@ -16,9 +16,48 @@
         <div class="errors" style="margin-bottom: 20px;"><p>{{ session('error') }}</p></div>
     @endif
 
+    {{-- Total Data --}}
+    <div class="mb-2" style="color:#00d9ff;font-weight:bold;">
+        Total Paket Rakitan PC: {{ $pakets->count() }}
+    </div>
+
+    {{-- Menu search --}}
+    <form method="get" class="row g-2 align-items-center mb-3" style="max-width: 600px;">
+        <div class="col-auto">
+            <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari nama/kategori..." value="{{ request('search') }}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-info btn-sm">Search</button>
+        </div>
+        {{-- Keep sort and dir params --}}
+        <input type="hidden" name="sort" value="{{ request('sort', 'name') }}">
+        <input type="hidden" name="dir" value="{{ request('dir', 'asc') }}">
+    </form>
+
     @php
         $sort = request('sort', 'name');
         $dir = request('dir', 'asc');
+        // Filter by search
+        $filtered = $pakets;
+        if(request('search')) {
+            $filtered = $filtered->filter(function($paket) {
+                $q = strtolower(request('search'));
+                return str_contains(strtolower($paket->name), $q)
+                    || str_contains(strtolower($paket->category), $q);
+            });
+        }
+        // Sort
+        $sorted = $filtered->sortBy(function($paket) use ($sort) {
+            if ($sort === 'specs') {
+                return is_array($paket->specs) ? implode(' ', array_keys($paket->specs)) : '';
+            }
+            return $paket->{$sort};
+        }, SORT_REGULAR, $dir === 'desc');
+        // Pagination (manual)
+        $perPage = 10;
+        $page = max(1, intval(request('page', 1)));
+        $total = $sorted->count();
+        $paged = $sorted->slice(($page-1)*$perPage, $perPage);
         function sort_link_paket($label, $col) {
             $currentSort = request('sort', 'name');
             $currentDir = request('dir', 'asc');
@@ -46,15 +85,7 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    $sorted = $pakets->sortBy(function($paket) use ($sort) {
-                        if ($sort === 'specs') {
-                            return is_array($paket->specs) ? implode(' ', array_keys($paket->specs)) : '';
-                        }
-                        return $paket->{$sort};
-                    }, SORT_REGULAR, $dir === 'desc');
-                @endphp
-                @forelse ($sorted as $paket)
+                @forelse ($paged as $paket)
                     <tr>
                         <td>
                             <img src="{{ $paket->image }}" alt="{{ $paket->name }}" style="max-width: 70px; margin-right: 15px; border-radius: 4px;">
@@ -93,4 +124,21 @@
             </tbody>
         </table>
     </div>
+
+    {{-- Pagination links --}}
+    @php
+        $lastPage = ceil($total / $perPage);
+        $query = request()->except('page');
+    @endphp
+    @if($lastPage > 1)
+        <nav>
+            <ul class="pagination pagination-sm">
+                @for($i = 1; $i <= $lastPage; $i++)
+                    <li class="page-item @if($i == $page) active @endif">
+                        <a class="page-link" href="{{ url()->current() . '?' . http_build_query(array_merge($query, ['page' => $i])) }}">{{ $i }}</a>
+                    </li>
+                @endfor
+            </ul>
+        </nav>
+    @endif
 @endsection

@@ -12,9 +12,48 @@
         <div class="errors" style="margin-bottom: 20px;"><p>{{ session('error') }}</p></div>
     @endif
 
+    {{-- Total Data --}}
+    <div class="mb-2" style="color:#00d9ff;font-weight:bold;">
+        Total Berita: {{ $newsItems->count() }}
+    </div>
+
+    {{-- Menu search --}}
+    <form method="get" class="row g-2 align-items-center mb-3" style="max-width: 600px;">
+        <div class="col-auto">
+            <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari judul/sumber..." value="{{ request('search') }}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-info btn-sm">Search</button>
+        </div>
+        {{-- Keep sort and dir params --}}
+        <input type="hidden" name="sort" value="{{ request('sort', 'date') }}">
+        <input type="hidden" name="dir" value="{{ request('dir', 'desc') }}">
+    </form>
+
     @php
         $sort = request('sort', 'date');
         $dir = request('dir', 'desc');
+        // Filter by search
+        $filtered = $newsItems;
+        if(request('search')) {
+            $filtered = $filtered->filter(function($news) {
+                $q = strtolower(request('search'));
+                return str_contains(strtolower($news->title), $q)
+                    || str_contains(strtolower($news->source), $q);
+            });
+        }
+        // Sort
+        $sorted = $filtered->sortBy(function($news) use ($sort) {
+            if ($sort === 'date') {
+                return $news->date;
+            }
+            return $news->{$sort};
+        }, SORT_REGULAR, $dir === 'desc');
+        // Pagination (manual)
+        $perPage = 10;
+        $page = max(1, intval(request('page', 1)));
+        $total = $sorted->count();
+        $paged = $sorted->slice(($page-1)*$perPage, $perPage);
         function sort_link_news($label, $col) {
             $currentSort = request('sort', 'date');
             $currentDir = request('dir', 'desc');
@@ -41,15 +80,7 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    $sorted = $newsItems->sortBy(function($news) use ($sort) {
-                        if ($sort === 'date') {
-                            return $news->date;
-                        }
-                        return $news->{$sort};
-                    }, SORT_REGULAR, $dir === 'desc');
-                @endphp
-                @forelse ($sorted as $news)
+                @forelse ($paged as $news)
                     <tr>
                         <td class="text-center">
                             @if($news->imageUrl)
@@ -75,4 +106,21 @@
             </tbody>
         </table>
     </div>
+
+    {{-- Pagination links --}}
+    @php
+        $lastPage = ceil($total / $perPage);
+        $query = request()->except('page');
+    @endphp
+    @if($lastPage > 1)
+        <nav>
+            <ul class="pagination pagination-sm">
+                @for($i = 1; $i <= $lastPage; $i++)
+                    <li class="page-item @if($i == $page) active @endif">
+                        <a class="page-link" href="{{ url()->current() . '?' . http_build_query(array_merge($query, ['page' => $i])) }}">{{ $i }}</a>
+                    </li>
+                @endfor
+            </ul>
+        </nav>
+    @endif
 @endsection

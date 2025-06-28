@@ -8,9 +8,52 @@
         <a href="{{ route('banners.create') }}" class="btn">Tambah Banner Baru</a>
     </div>
 
+    {{-- Total Banner --}}
+    <div class="mb-2" style="color:#00d9ff;font-weight:bold;">
+        Total Banner: {{ $banners->count() }}
+    </div>
+
+    {{-- Menu search --}}
+    <form method="get" class="row g-2 align-items-center mb-3" style="max-width: 600px;">
+        <div class="col-auto">
+            <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari banner..." value="{{ request('search') }}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-info btn-sm">Search</button>
+        </div>
+        {{-- Keep sort and dir params --}}
+        <input type="hidden" name="sort" value="{{ request('sort', 'order_column') }}">
+        <input type="hidden" name="dir" value="{{ request('dir', 'asc') }}">
+    </form>
+
     @php
         $sort = request('sort', 'order_column');
         $dir = request('dir', 'asc');
+        // Filter by search
+        $filtered = $banners;
+        if(request('search')) {
+            $filtered = $filtered->filter(function($banner) {
+                $q = strtolower(request('search'));
+                return str_contains(strtolower($banner->brand), $q)
+                    || str_contains(strtolower($banner->name), $q)
+                    || str_contains(strtolower($banner->is_active ? 'aktif' : 'tidak aktif'), $q);
+            });
+        }
+        // Sort
+        $sorted = $filtered->sortBy(function($banner) use ($sort) {
+            // Support for nested sort (brand & name)
+            if ($sort === 'brand') {
+                return $banner->brand . ' ' . $banner->name;
+            }
+            return $banner->{$sort};
+        }, SORT_REGULAR, $dir === 'desc');
+        // Pagination (manual)
+        $perPage = 10;
+        $page = max(1, intval(request('page', 1)));
+        $total = $sorted->count();
+        $paged = $sorted->slice(($page-1)*$perPage, $perPage);
+
+        // Define sort_link function here
         function sort_link($label, $col) {
             $currentSort = request('sort', 'order_column');
             $currentDir = request('dir', 'asc');
@@ -45,16 +88,7 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    $sorted = $banners->sortBy(function($banner) use ($sort) {
-                        // Support for nested sort (brand & name)
-                        if ($sort === 'brand') {
-                            return $banner->brand . ' ' . $banner->name;
-                        }
-                        return $banner->{$sort};
-                    }, SORT_REGULAR, $dir === 'desc');
-                @endphp
-                @forelse ($sorted as $banner)
+                @forelse ($paged as $banner)
                     <tr>
                         <td>{{ $banner->order_column }}</td>
                         <td>
@@ -88,4 +122,21 @@
             </tbody>
         </table>
     </div>
+
+    {{-- Pagination links --}}
+    @php
+        $lastPage = ceil($total / $perPage);
+        $query = request()->except('page');
+    @endphp
+    @if($lastPage > 1)
+        <nav>
+            <ul class="pagination pagination-sm">
+                @for($i = 1; $i <= $lastPage; $i++)
+                    <li class="page-item @if($i == $page) active @endif">
+                        <a class="page-link" href="{{ url()->current() . '?' . http_build_query(array_merge($query, ['page' => $i])) }}">{{ $i }}</a>
+                    </li>
+                @endfor
+            </ul>
+        </nav>
+    @endif
 @endsection

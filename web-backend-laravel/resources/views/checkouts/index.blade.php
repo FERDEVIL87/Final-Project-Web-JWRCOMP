@@ -5,7 +5,6 @@
 @section('content')
     <h2 class="section-title-bs">Daftar Pesanan Masuk</h2>
 
-    {{-- Dropdown Sorting Responsive --}}
     @php
         $sort = request('sort', 'purchase_date');
         $dir = request('dir', 'desc');
@@ -17,7 +16,51 @@
             'status_order' => 'Status',
             'transaction_id' => 'ID Transaksi',
         ];
+        // Gabungkan semua transaksi jadi satu collection untuk sorting global
+        $allTransactions = $groupedByName->flatten(1);
+        // Filter by search
+        if(request('search')) {
+            $q = strtolower(request('search'));
+            $allTransactions = $allTransactions->filter(function($item) use ($q) {
+                return str_contains(strtolower($item->customer_name), $q)
+                    || str_contains(strtolower($item->product_name), $q)
+                    || str_contains(strtolower($item->customer_phone), $q)
+                    || str_contains(strtolower($item->customer_address), $q)
+                    || str_contains(strtolower($item->transaction_id), $q);
+            });
+        }
+        // Sort
+        $sortedTransactions = $allTransactions->sortBy(function($item) use ($sort) {
+            return $item->{$sort};
+        }, SORT_REGULAR, $dir === 'desc');
+        // Pagination (manual)
+        $perPage = 10;
+        $page = max(1, intval(request('page', 1)));
+        $total = $sortedTransactions->count();
+        $paged = $sortedTransactions->slice(($page-1)*$perPage, $perPage);
+        // Group kembali setelah sorting dan paging
+        $groupedSorted = $paged->groupBy('customer_name');
     @endphp
+
+    {{-- Total Data --}}
+    <div class="mb-2" style="color:#00d9ff;font-weight:bold;">
+        Total Pesanan Masuk: {{ $allTransactions->count() }}
+    </div>
+
+    {{-- Menu search --}}
+    <form method="get" class="row g-2 align-items-center mb-3" style="max-width: 600px;">
+        <div class="col-auto">
+            <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari nama pelanggan/produk..." value="{{ request('search') }}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-info btn-sm">Search</button>
+        </div>
+        {{-- Keep sort and dir params --}}
+        <input type="hidden" name="sort" value="{{ request('sort', 'purchase_date') }}">
+        <input type="hidden" name="dir" value="{{ request('dir', 'desc') }}">
+    </form>
+
+    {{-- Dropdown Sorting Responsive --}}
     <form method="get" class="mb-4">
         <div class="row g-2 align-items-center justify-content-start flex-wrap" style="max-width: 600px;">
             <div class="col-12 col-md-5">
@@ -38,6 +81,8 @@
             <div class="col-4 col-md-3 d-flex align-items-end">
                 <button type="submit" class="btn btn-info w-100" style="min-width:100px;">Sort</button>
             </div>
+            {{-- Keep search param --}}
+            <input type="hidden" name="search" value="{{ request('search') }}">
         </div>
     </form>
 
@@ -45,21 +90,12 @@
         <div class="success" style="margin-bottom: 20px;"><p>{{ session('success') }}</p></div>
     @endif
 
-    @if($groupedByName->isEmpty())
+    @if($paged->isEmpty())
         <div class="alert alert-info" style="background-color: #1f2937; border-color: #00d9ff; color: #e8eff5;">
             Belum ada pesanan yang masuk.
         </div>
     @else
         {{-- Loop untuk setiap nama pelanggan dengan variabel $loop --}}
-        @php
-            // Gabungkan semua transaksi jadi satu collection untuk sorting global
-            $allTransactions = $groupedByName->flatten(1);
-            $sortedTransactions = $allTransactions->sortBy(function($item) use ($sort) {
-                return $item->{$sort};
-            }, SORT_REGULAR, $dir === 'desc');
-            // Group kembali setelah sorting
-            $groupedSorted = $sortedTransactions->groupBy('customer_name');
-        @endphp
         @foreach($groupedSorted as $customerName => $transactions)
             @php
                 $groupedTransactions = $transactions->groupBy('transaction_id');
@@ -139,5 +175,22 @@
                 @endforeach
             </div>
         @endforeach
+
+        {{-- Pagination links --}}
+        @php
+            $lastPage = ceil($total / $perPage);
+            $query = request()->except('page');
+        @endphp
+        @if($lastPage > 1)
+            <nav>
+                <ul class="pagination pagination-sm">
+                    @for($i = 1; $i <= $lastPage; $i++)
+                        <li class="page-item @if($i == $page) active @endif">
+                            <a class="page-link" href="{{ url()->current() . '?' . http_build_query(array_merge($query, ['page' => $i])) }}">{{ $i }}</a>
+                        </li>
+                    @endfor
+                </ul>
+            </nav>
+        @endif
     @endif
 @endsection

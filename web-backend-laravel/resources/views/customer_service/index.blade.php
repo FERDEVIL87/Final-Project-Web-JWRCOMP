@@ -5,13 +5,48 @@
 @section('content')
     <h2 class="section-title-bs">Pesan Masuk dari Customer</h2>
 
-    @if(session('success'))
-        <div class="success" style="margin-bottom: 20px;"><p>{{ session('success') }}</p></div>
-    @endif
+    {{-- Total Pesan --}}
+    <div class="mb-2" style="color:#00d9ff;font-weight:bold;">
+        Total Pesan: {{ $messages->count() }}
+    </div>
+
+    {{-- Menu search --}}
+    <form method="get" class="row g-2 align-items-center mb-3" style="max-width: 600px;">
+        <div class="col-auto">
+            <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari nama/email/pesan..." value="{{ request('search') }}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-info btn-sm">Search</button>
+        </div>
+        {{-- Keep sort and dir params --}}
+        <input type="hidden" name="sort" value="{{ request('sort', 'created_at') }}">
+        <input type="hidden" name="dir" value="{{ request('dir', 'desc') }}">
+    </form>
 
     @php
         $sort = request('sort', 'created_at');
         $dir = request('dir', 'desc');
+        // Filter by search
+        $filtered = $messages;
+        if(request('search')) {
+            $filtered = $filtered->filter(function($msg) {
+                $q = strtolower(request('search'));
+                return str_contains(strtolower($msg->nama), $q)
+                    || str_contains(strtolower($msg->email), $q)
+                    || str_contains(strtolower($msg->pesan), $q);
+            });
+        }
+        // Sort
+        $sorted = $filtered->sortBy(function($msg, $idx) use ($sort) {
+            if ($sort === 'no') return $idx;
+            if ($sort === 'created_at') return $msg->created_at;
+            return $msg->{$sort};
+        }, SORT_REGULAR, $dir === 'desc');
+        // Pagination (manual)
+        $perPage = 10;
+        $page = max(1, intval(request('page', 1)));
+        $total = $sorted->count();
+        $paged = $sorted->slice(($page-1)*$perPage, $perPage);
         function sort_link_cs($label, $col) {
             $currentSort = request('sort', 'created_at');
             $currentDir = request('dir', 'desc');
@@ -26,7 +61,7 @@
         }
     @endphp
 
-    @if($messages->isEmpty())
+    @if($paged->isEmpty())
         <div class="alert alert-info" style="background-color: #1f2937; border-color: #00d9ff; color: #e8eff5;">
             Belum ada pesan yang masuk.
         </div>
@@ -44,14 +79,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                        $sorted = $messages->sortBy(function($msg, $idx) use ($sort) {
-                            if ($sort === 'no') return $idx;
-                            if ($sort === 'created_at') return $msg->created_at;
-                            return $msg->{$sort};
-                        }, SORT_REGULAR, $dir === 'desc');
-                    @endphp
-                    @foreach($sorted->values() as $index => $message)
+                    @foreach($paged->values() as $index => $message)
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $message->created_at->format('d M Y, H:i') }}</td>
@@ -74,5 +102,21 @@
                 </tbody>
             </table>
         </div>
+        {{-- Pagination links --}}
+        @php
+            $lastPage = ceil($total / $perPage);
+            $query = request()->except('page');
+        @endphp
+        @if($lastPage > 1)
+            <nav>
+                <ul class="pagination pagination-sm">
+                    @for($i = 1; $i <= $lastPage; $i++)
+                        <li class="page-item @if($i == $page) active @endif">
+                            <a class="page-link" href="{{ url()->current() . '?' . http_build_query(array_merge($query, ['page' => $i])) }}">{{ $i }}</a>
+                        </li>
+                    @endfor
+                </ul>
+            </nav>
+        @endif
     @endif
 @endsection

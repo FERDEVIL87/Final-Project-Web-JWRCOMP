@@ -16,9 +16,46 @@
         <div class="errors" style="margin-bottom: 20px;"><p>{{ session('error') }}</p></div>
     @endif
 
+    {{-- Total Data --}}
+    <div class="mb-2" style="color:#00d9ff;font-weight:bold;">
+        Total Data Laptop: {{ $laptops->count() }}
+    </div>
+
+    {{-- Menu search --}}
+    <form method="get" class="row g-2 align-items-center mb-3" style="max-width: 600px;">
+        <div class="col-auto">
+            <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari nama/brand/kategori..." value="{{ request('search') }}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-info btn-sm">Search</button>
+        </div>
+        {{-- Keep sort and dir params --}}
+        <input type="hidden" name="sort" value="{{ request('sort', 'name') }}">
+        <input type="hidden" name="dir" value="{{ request('dir', 'asc') }}">
+    </form>
+
     @php
         $sort = request('sort', 'name');
         $dir = request('dir', 'asc');
+        // Filter by search
+        $filtered = $laptops;
+        if(request('search')) {
+            $filtered = $filtered->filter(function($laptop) {
+                $q = strtolower(request('search'));
+                return str_contains(strtolower($laptop->name), $q)
+                    || str_contains(strtolower($laptop->brand), $q)
+                    || str_contains(strtolower($laptop->category), $q);
+            });
+        }
+        // Sort
+        $sorted = $filtered->sortBy(function($laptop) use ($sort) {
+            return $laptop->{$sort};
+        }, SORT_REGULAR, $dir === 'desc');
+        // Pagination (manual)
+        $perPage = 10;
+        $page = max(1, intval(request('page', 1)));
+        $total = $sorted->count();
+        $paged = $sorted->slice(($page-1)*$perPage, $perPage);
         function sort_link_laptop($label, $col) {
             $currentSort = request('sort', 'name');
             $currentDir = request('dir', 'asc');
@@ -47,12 +84,7 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    $sorted = $laptops->sortBy(function($laptop) use ($sort) {
-                        return $laptop->{$sort};
-                    }, SORT_REGULAR, $dir === 'desc');
-                @endphp
-                @forelse ($sorted as $laptop)
+                @forelse ($paged as $laptop)
                     <tr>
                         <td>
                             <img src="{{ $laptop->image }}" alt="{{ $laptop->name }}" style="max-width: 60px; border-radius: 4px;">
@@ -79,4 +111,21 @@
             </tbody>
         </table>
     </div>
+
+    {{-- Pagination links --}}
+    @php
+        $lastPage = ceil($total / $perPage);
+        $query = request()->except('page');
+    @endphp
+    @if($lastPage > 1)
+        <nav>
+            <ul class="pagination pagination-sm">
+                @for($i = 1; $i <= $lastPage; $i++)
+                    <li class="page-item @if($i == $page) active @endif">
+                        <a class="page-link" href="{{ url()->current() . '?' . http_build_query(array_merge($query, ['page' => $i])) }}">{{ $i }}</a>
+                    </li>
+                @endfor
+            </ul>
+        </nav>
+    @endif
 @endsection
