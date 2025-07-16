@@ -5,7 +5,7 @@ import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 import apiClient from '@/services/api.js';
 import '@/assets/Home.css';
 
-import doomVideoPoster from "/public/videos/doom.mp4";
+import doomVideoPoster from "/public/videos/doom.webm";
 
 // --- LOGIKA UNTUK BANNER (DINAMIS) ---
 const banners = ref([]);
